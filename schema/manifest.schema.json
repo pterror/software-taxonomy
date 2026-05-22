@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rhi.zone/software-taxonomy/schema/manifest.schema.json",
+  "title": "Lens manifest",
+  "type": "object",
+  "required": ["id", "label", "description", "register", "depends_on", "source_required", "author"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*$",
+      "description": "Unique lens id in kebab-case."
+    },
+    "label": {
+      "type": "string",
+      "description": "Human-readable lens name."
+    },
+    "description": {
+      "type": "string",
+      "description": "What this lens is about."
+    },
+    "register": {
+      "type": "string",
+      "enum": ["factual", "interpretive", "fictional", "folkloric"],
+      "description": "Epistemic register of this lens."
+    },
+    "family": {
+      "type": "string",
+      "description": "Optional grouping tag (e.g. 'worldbuilding', 'taxonomy', 'culture'). Free-form."
+    },
+    "depends_on": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Lens ids that must be loaded before this lens."
+    },
+    "source_required": {
+      "type": "boolean",
+      "description": "If true, every non-structural statement on entities owned by this lens must have a source."
+    },
+    "author": {
+      "type": "string",
+      "description": "Author or maintainer identifier."
+    }
+  }
+}

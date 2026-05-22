@@ -25,6 +25,7 @@ async function checkSlug(id: string, slug: string): Promise<void> {
 }
 
 async function run(): Promise<void> {
+  // Load entities from all lenses
   const entityRecords = loadEntities();
 
   // Collect entities that have a wikipedia statement

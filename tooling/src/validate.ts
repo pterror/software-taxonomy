@@ -2,7 +2,22 @@ import { readFileSync } from "fs";
 import { resolve } from "path";
 import Ajv from "ajv/dist/2020";
 import addFormats from "ajv-formats";
-import { loadEntities, loadPredicates, loadSources, schemaDir, dataDir, Entity } from "./lib/load.ts";
+import { loadLensSet, schemaDir } from "./lib/load.ts";
+import { validate } from "./lib/validate-lib.ts";
+
+// ---- CLI args ----
+
+const args = process.argv.slice(2);
+
+function getArg(flag: string): string | undefined {
+  const idx = args.indexOf(flag);
+  return idx !== -1 ? args[idx + 1] : undefined;
+}
+
+const lensArg = getArg("--lens");
+const lensFilter = lensArg ? lensArg.split(",").map((s) => s.trim()) : undefined;
+
+// ---- Schema validation ----
 
 function loadSchema(name: string) {
   return JSON.parse(readFileSync(resolve(schemaDir, name), "utf-8"));
@@ -14,123 +29,107 @@ addFormats(ajv);
 const entitySchema = loadSchema("entity.schema.json");
 const predicateSchema = loadSchema("predicate.schema.json");
 const sourceSchema = loadSchema("source.schema.json");
+const manifestSchema = loadSchema("manifest.schema.json");
 
-const validateEntity = ajv.compile(entitySchema);
-const validatePredicate = ajv.compile(predicateSchema);
-const validateSource = ajv.compile(sourceSchema);
+const validateEntitySchema = ajv.compile(entitySchema);
+const validatePredicateSchema = ajv.compile(predicateSchema);
+const validateSourceSchema = ajv.compile(sourceSchema);
+const validateManifestSchema = ajv.compile(manifestSchema);
 
-let errors = 0;
-let warnings = 0;
+let schemaErrors = 0;
+let schemaWarnings = 0;
 
-function error(file: string, line: number, entityId: string, msg: string) {
-  console.error(`ERROR  ${file}:${line} [${entityId}]: ${msg}`);
-  errors++;
+function schemaError(file: string, line: number, id: string, msg: string) {
+  console.error(`ERROR  ${file}:${line} [${id}]: ${msg}`);
+  schemaErrors++;
 }
 
-function warn(file: string, line: number, entityId: string, msg: string) {
-  console.warn(`WARN   ${file}:${line} [${entityId}]: ${msg}`);
-  warnings++;
-}
+// ---- Load lens set ----
 
-const entityFile = resolve(dataDir, "entities.jsonl");
-const predicateFile = resolve(dataDir, "predicates.jsonl");
-const sourcesFile = resolve(dataDir, "sources.jsonl");
+// Always load ALL lenses for transitive checks; filter only controls which to report
+const fullLensSet = loadLensSet();
 
-const entityRecords = loadEntities();
-const predicateRecords = loadPredicates();
-const sourceRecords = loadSources();
+// Schema-validate all records
+for (const lensId of fullLensSet.order) {
+  const lens = fullLensSet.lenses.get(lensId)!;
 
-const entityIds = new Set<string>();
-const predicateIds = new Set<string>();
-const sourceIds = new Set<string>();
-
-// Pass 1: schema-validate all records and collect ids
-for (const { record, line } of predicateRecords) {
-  if (!validatePredicate(record)) {
-    for (const err of validatePredicate.errors ?? []) {
-      error(predicateFile, line, (record as { id?: string }).id ?? "?", `schema: ${err.instancePath} ${err.message}`);
+  // Validate manifest
+  if (!validateManifestSchema(lens.manifest)) {
+    for (const err of validateManifestSchema.errors ?? []) {
+      schemaError(lens.manifestPath, 0, lensId, `manifest schema: ${err.instancePath} ${err.message}`);
     }
-  } else {
-    predicateIds.add(record.id);
-  }
-}
-
-for (const { record, line } of sourceRecords) {
-  if (!validateSource(record)) {
-    for (const err of validateSource.errors ?? []) {
-      error(sourcesFile, line, (record as { id?: string }).id ?? "?", `schema: ${err.instancePath} ${err.message}`);
-    }
-  } else {
-    sourceIds.add(record.id);
-  }
-}
-
-// Collect entity ids first so forward refs work
-for (const { record } of entityRecords) {
-  entityIds.add(record.id);
-}
-
-// Pass 2: schema-validate entities and check integrity
-for (const { record, line } of entityRecords) {
-  if (!validateEntity(record)) {
-    for (const err of validateEntity.errors ?? []) {
-      error(entityFile, line, (record as { id?: string }).id ?? "?", `schema: ${err.instancePath} ${err.message}`);
-    }
-    continue;
   }
 
-  const entity = record as Entity;
-
-  // Determine if this is a class entity (to relax source warnings)
-  const instanceOfValues = (entity.statements["instance_of"] ?? []).map((e) => e.value);
-  const isClassEntity = instanceOfValues.includes("@class");
-
-  for (const [predicate, entries] of Object.entries(entity.statements)) {
-    // Warn on unknown predicates
-    if (!predicateIds.has(predicate)) {
-      warn(entityFile, line, entity.id, `unknown predicate '${predicate}'`);
+  // Validate predicates
+  for (const { record, file, line } of lens.predicates) {
+    if (!validatePredicateSchema(record)) {
+      for (const err of validatePredicateSchema.errors ?? []) {
+        schemaError(file, line, (record as { id?: string }).id ?? "?",
+          `predicate schema: ${err.instancePath} ${err.message}`);
+      }
     }
+  }
 
-    for (const entry of entries) {
-      // Resolve entity references in value
-      if (typeof entry.value === "string" && entry.value.startsWith("@")) {
-        const refId = entry.value.slice(1);
-        if (!entityIds.has(refId)) {
-          error(entityFile, line, entity.id, `dangling entity ref '${entry.value}' in predicate '${predicate}'`);
-        }
+  // Validate sources
+  for (const { record, file, line } of lens.sources) {
+    if (!validateSourceSchema(record)) {
+      for (const err of validateSourceSchema.errors ?? []) {
+        schemaError(file, line, (record as { id?: string }).id ?? "?",
+          `source schema: ${err.instancePath} ${err.message}`);
       }
+    }
+  }
 
-      // Resolve source reference
-      if (entry.source != null && !sourceIds.has(entry.source)) {
-        error(entityFile, line, entity.id, `dangling source ref '${entry.source}' in predicate '${predicate}'`);
-      }
-
-      // Warn on missing source, except structural predicates on class entities
-      const isStructuralOnClass = isClassEntity && (predicate === "instance_of" || predicate === "subclass_of");
-      if (entry.source == null && !isStructuralOnClass) {
-        warn(entityFile, line, entity.id, `no source on predicate '${predicate}'`);
-      }
-
-      // Resolve qualifier entity refs
-      if (entry.qualifiers != null) {
-        for (const [qPred, qVal] of Object.entries(entry.qualifiers)) {
-          if (typeof qVal === "string" && qVal.startsWith("@")) {
-            const refId = qVal.slice(1);
-            if (!entityIds.has(refId)) {
-              error(entityFile, line, entity.id, `dangling entity ref '${qVal}' in qualifier '${qPred}' on predicate '${predicate}'`);
-            }
-          }
-        }
+  // Validate entities
+  for (const { record, file, line } of lens.entities) {
+    if (!validateEntitySchema(record)) {
+      for (const err of validateEntitySchema.errors ?? []) {
+        schemaError(file, line, (record as { id?: string }).id ?? "?",
+          `entity schema: ${err.instancePath} ${err.message}`);
       }
     }
   }
 }
 
-console.log(
-  `\nValidation complete: ${entityRecords.length} entities, ${predicateRecords.length} predicates, ${sourceRecords.length} sources.`
-);
-console.log(`${errors} error(s), ${warnings} warning(s).`);
+if (schemaErrors > 0) {
+  console.error(`\n${schemaErrors} schema error(s) found. Aborting semantic validation.`);
+  process.exit(1);
+}
 
-if (errors > 0) {
+// ---- Semantic validation ----
+
+const targetLens = lensFilter ? new Set(lensFilter) : undefined;
+const result = validate(fullLensSet, targetLens);
+
+// Print violations
+for (const v of result.violations) {
+  const prefix = v.severity === "error" ? "ERROR " : "WARN  ";
+  const loc = v.file && v.line ? `${v.file}:${v.line}` : v.file || "(unknown)";
+  console[v.severity === "error" ? "error" : "warn"](
+    `${prefix} [${v.lens}] ${loc} [${v.entityId}] {${v.predicateId}} ${v.rule}: ${v.message}`
+  );
+}
+
+// Print summary
+console.log("\n--- Validation Summary ---");
+let totalEntities = 0;
+let totalPredicates = 0;
+let totalSources = 0;
+
+for (const s of result.summaries) {
+  const show = !targetLens || targetLens.has(s.lensId);
+  if (!show) continue;
+  console.log(
+    `  ${s.lensId.padEnd(20)} entities: ${String(s.entities).padStart(3)}  predicates: ${String(s.predicates).padStart(3)}  sources: ${String(s.sources).padStart(3)}  errors: ${s.errors}  warnings: ${s.warnings}`
+  );
+  totalEntities += s.entities;
+  totalPredicates += s.predicates;
+  totalSources += s.sources;
+}
+
+console.log(`\nTotal: ${totalEntities} entities, ${totalPredicates} predicates, ${totalSources} sources`);
+console.log(`${result.totalErrors} error(s), ${result.totalWarnings} warning(s).`);
+
+if (result.totalErrors > 0) {
   process.exit(1);
 }

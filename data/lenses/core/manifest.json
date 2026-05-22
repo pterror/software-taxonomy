@@ -1,0 +1,10 @@
+{
+  "id": "core",
+  "label": "Core factual graph",
+  "description": "Factual, sourced knowledge about software: identity, classification, authorship, technical properties, release timeline, licensing. The austere foundation that all other lenses overlay.",
+  "register": "factual",
+  "family": "core",
+  "depends_on": [],
+  "source_required": true,
+  "author": "pterror"
+}

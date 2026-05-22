@@ -1,12 +1,23 @@
 import { buildGraph, subclassesOf, instancesOf, getEntity } from "./lib/graph.ts";
 
 const args = process.argv.slice(2);
+
+function getArg(flag: string): string | undefined {
+  const idx = args.indexOf(flag);
+  return idx !== -1 ? args[idx + 1] : undefined;
+}
+
 const rootIdx = args.indexOf("--root");
 let rootId = rootIdx !== -1 ? args[rootIdx + 1] : "software";
 // strip leading @ if passed
 if (rootId.startsWith("@")) rootId = rootId.slice(1);
 
-const graph = buildGraph();
+const lensArg = getArg("--lens");
+const lensFilter = lensArg ? lensArg.split(",").map((s) => s.trim()) : undefined;
+
+// Build graph: always load all lenses for entity resolution, but pass filter for subclass edges
+const graph = buildGraph(lensFilter);
+const lensFilterSet = lensFilter ? new Set(lensFilter) : undefined;
 
 const rootEntity = getEntity(graph, rootId);
 if (!rootEntity) {
@@ -17,11 +28,11 @@ if (!rootEntity) {
 // Build parent map for the subtree rooted at rootId
 // We need direct children (subclassesOf non-transitive) for tree rendering
 function directSubclasses(id: string): string[] {
-  return subclassesOf(graph, id, { transitive: false });
+  return subclassesOf(graph, id, { transitive: false, lensFilter: lensFilterSet });
 }
 
 function directInstances(id: string): string[] {
-  return instancesOf(graph, id, { transitive: false });
+  return instancesOf(graph, id, { transitive: false, lensFilter: lensFilterSet });
 }
 
 function getLabel(id: string): string {
@@ -36,7 +47,6 @@ function renderNode(id: string, prefix: string, isLast: boolean): void {
   const childPrefix = prefix + (isLast ? "   " : "│  ");
   const childClasses = directSubclasses(id);
   const childInstances = directInstances(id);
-  const totalChildren = childClasses.length + childInstances.length;
 
   childClasses.forEach((childId, i) => {
     const last = i === childClasses.length - 1 && childInstances.length === 0;

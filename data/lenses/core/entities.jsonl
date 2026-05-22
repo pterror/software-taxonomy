@@ -1,0 +1,3 @@
+{"id":"class","labels":{"en":"Class"},"description":"The meta-class: the class of all classes. Every entity that is a type or category is instance_of @class.","statements":{"instance_of":[{"value":"@class"}]}}
+{"id":"software","labels":{"en":"Software"},"description":"All software. Root of the software class hierarchy. Every program that executes on a substrate is a member of this class.","statements":{"instance_of":[{"value":"@class"}]}}
+{"id":"sendmail","labels":{"en":"Sendmail"},"description":"Mail transfer agent originating at UC Berkeley, the dominant Unix MTA of the 1980s–1990s. Notorious for its labyrinthine configuration syntax (sendmail.cf). Still in production use.","statements":{"instance_of":[{"value":"@software","source":"wp:sendmail"}]}}

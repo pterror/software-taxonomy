@@ -1,0 +1,10 @@
+{
+  "id": "biology",
+  "label": "Biological taxonomy",
+  "description": "Software as living organisms — kingdoms, metabolism, organs, vestigial features, convergent evolution. An interpretive overlay on the core factual graph.",
+  "register": "interpretive",
+  "family": "taxonomy",
+  "depends_on": ["core"],
+  "source_required": false,
+  "author": "pterror"
+}

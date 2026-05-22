@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rhi.zone/software-taxonomy/schema/clade.schema.json",
+  "title": "Clade",
+  "type": "object",
+  "required": ["id", "name", "parent"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$",
+      "description": "Kebab-case slug, unique across all clades."
+    },
+    "name": {
+      "type": "string"
+    },
+    "parent": {
+      "oneOf": [
+        { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+        { "type": "null" }
+      ],
+      "description": "Parent clade id, or null for the root."
+    },
+    "rank_hint": {
+      "type": "string",
+      "description": "Advisory Linnaean-style rank label. Does not constrain structure."
+    },
+    "definition": {
+      "type": "string"
+    },
+    "synapomorphies": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Derived traits shared by all members of this clade."
+    },
+    "type_genus": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$",
+      "description": "Exemplar species id."
+    },
+    "etymology": {
+      "type": "string"
+    },
+    "sister_clades": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" }
+    },
+    "notes": {
+      "type": "string"
+    }
+  }
+}

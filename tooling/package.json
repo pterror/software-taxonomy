@@ -1,0 +1,15 @@
+{
+  "name": "@rhizone/software-taxonomy-tools",
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "validate": "bun src/validate.ts",
+    "query": "bun src/query.ts",
+    "tree": "bun src/tree.ts",
+    "check-links": "bun src/check-links.ts"
+  },
+  "devDependencies": {
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1"
+  }
+}

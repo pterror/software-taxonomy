@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rhi.zone/software-taxonomy/schema/source.schema.json",
+  "title": "Source",
+  "type": "object",
+  "required": ["id", "kind", "title", "url"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique source id, e.g. 'wp:Microsoft_Word@1234567890'."
+    },
+    "kind": {
+      "type": "string",
+      "description": "Source type, e.g. 'wikipedia', 'official', 'paper'."
+    },
+    "title": {
+      "type": "string"
+    },
+    "url": {
+      "type": "string",
+      "format": "uri"
+    },
+    "revid": {
+      "type": "integer",
+      "description": "Wikipedia revision id."
+    },
+    "fetched": {
+      "type": "string",
+      "description": "ISO date when the source was fetched."
+    }
+  }
+}

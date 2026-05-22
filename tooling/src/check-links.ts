@@ -1,14 +1,4 @@
-import { resolve, dirname } from "path";
-import { fileURLToPath } from "url";
-import { loadJsonl } from "./lib/load.ts";
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const dataDir = resolve(__dirname, "../../data");
-
-interface Species {
-  id: string;
-  wikipedia?: string;
-}
+import { loadEntities } from "./lib/load.ts";
 
 const CONCURRENCY = 4;
 const DELAY_MS = 100;
@@ -35,14 +25,21 @@ async function checkSlug(id: string, slug: string): Promise<void> {
 }
 
 async function run(): Promise<void> {
-  const species = loadJsonl<Species>(resolve(dataDir, "species.jsonl")).map(
-    (r) => r.record
-  );
+  const entityRecords = loadEntities();
 
-  const withWikipedia = species.filter((sp) => sp.wikipedia != null);
+  // Collect entities that have a wikipedia statement
+  const withWikipedia: Array<{ id: string; slug: string }> = [];
+  for (const { record } of entityRecords) {
+    const wpEntries = record.statements["wikipedia"] ?? [];
+    for (const entry of wpEntries) {
+      if (typeof entry.value === "string") {
+        withWikipedia.push({ id: record.id, slug: entry.value });
+      }
+    }
+  }
 
   if (withWikipedia.length === 0) {
-    console.log("No species with wikipedia fields to check.");
+    console.log("No entities with wikipedia statements to check.");
     return;
   }
 
@@ -53,8 +50,8 @@ async function run(): Promise<void> {
 
   async function worker(): Promise<void> {
     while (queue.length > 0) {
-      const sp = queue.shift()!;
-      await checkSlug(sp.id, sp.wikipedia!);
+      const item = queue.shift()!;
+      await checkSlug(item.id, item.slug);
       if (queue.length > 0) await sleep(DELAY_MS);
     }
   }

@@ -1,4 +1,10 @@
 import { readFileSync } from "fs";
+import { resolve, dirname } from "path";
+import { fileURLToPath } from "url";
+
+export const __dirname = dirname(fileURLToPath(import.meta.url));
+export const dataDir = resolve(__dirname, "../../../data");
+export const schemaDir = resolve(__dirname, "../../../schema");
 
 export interface LoadedRecord<T = unknown> {
   record: T;
@@ -34,4 +40,50 @@ export function loadJsonl<T = unknown>(filePath: string): LoadedRecord<T>[] {
   }
 
   return results;
+}
+
+export interface StatementEntry {
+  value: string | number | boolean;
+  source?: string;
+  qualifiers?: Record<string, string | number | boolean>;
+  rank?: "preferred" | "normal" | "deprecated";
+}
+
+export interface Entity {
+  id: string;
+  labels: Record<string, string>;
+  aliases?: string[];
+  description?: string;
+  statements: Record<string, StatementEntry[]>;
+}
+
+export interface Predicate {
+  id: string;
+  label: string;
+  description: string;
+  domain_hint?: string[];
+  range_hint?: string[];
+  inverse?: string;
+  transitive?: boolean;
+}
+
+export interface Source {
+  id: string;
+  kind: string;
+  title: string;
+  url: string;
+  revid?: number;
+  fetched?: string;
+}
+
+export function loadEntities(): LoadedRecord<Entity>[] {
+  return loadJsonl<Entity>(resolve(dataDir, "entities.jsonl"));
+}
+
+export function loadPredicates(): LoadedRecord<Predicate>[] {
+  return loadJsonl<Predicate>(resolve(dataDir, "predicates.jsonl"));
+}
+
+export function loadSources(): LoadedRecord<Source>[] {
+  return loadJsonl<Source>(resolve(dataDir, "sources.jsonl"));
 }

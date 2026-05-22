@@ -1,13 +1,8 @@
 import { readFileSync } from "fs";
-import { resolve, dirname } from "path";
-import { fileURLToPath } from "url";
+import { resolve } from "path";
 import Ajv from "ajv/dist/2020";
 import addFormats from "ajv-formats";
-import { loadJsonl } from "./lib/load.ts";
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const schemaDir = resolve(__dirname, "../../schema");
-const dataDir = resolve(__dirname, "../../data");
+import { loadEntities, loadPredicates, loadSources, schemaDir, dataDir, Entity } from "./lib/load.ts";
 
 function loadSchema(name: string) {
   return JSON.parse(readFileSync(resolve(schemaDir, name), "utf-8"));
@@ -16,123 +11,123 @@ function loadSchema(name: string) {
 const ajv = new Ajv({ allErrors: true });
 addFormats(ajv);
 
-const cladeSchema = loadSchema("clade.schema.json");
-const speciesSchema = loadSchema("species.schema.json");
-const edgeSchema = loadSchema("edge.schema.json");
+const entitySchema = loadSchema("entity.schema.json");
+const predicateSchema = loadSchema("predicate.schema.json");
 const sourceSchema = loadSchema("source.schema.json");
 
-const validateClade = ajv.compile(cladeSchema);
-const validateSpecies = ajv.compile(speciesSchema);
-const validateEdge = ajv.compile(edgeSchema);
+const validateEntity = ajv.compile(entitySchema);
+const validatePredicate = ajv.compile(predicateSchema);
 const validateSource = ajv.compile(sourceSchema);
 
 let errors = 0;
 let warnings = 0;
 
-function error(file: string, line: number, msg: string) {
-  console.error(`ERROR  ${file}:${line}: ${msg}`);
+function error(file: string, line: number, entityId: string, msg: string) {
+  console.error(`ERROR  ${file}:${line} [${entityId}]: ${msg}`);
   errors++;
 }
 
-function warn(file: string, line: number, msg: string) {
-  console.warn(`WARN   ${file}:${line}: ${msg}`);
+function warn(file: string, line: number, entityId: string, msg: string) {
+  console.warn(`WARN   ${file}:${line} [${entityId}]: ${msg}`);
   warnings++;
 }
 
-const cladeFile = resolve(dataDir, "clades.jsonl");
-const speciesFile = resolve(dataDir, "species.jsonl");
-const edgesFile = resolve(dataDir, "edges.jsonl");
+const entityFile = resolve(dataDir, "entities.jsonl");
+const predicateFile = resolve(dataDir, "predicates.jsonl");
 const sourcesFile = resolve(dataDir, "sources.jsonl");
 
-const cladeRecords = loadJsonl(cladeFile);
-const speciesRecords = loadJsonl(speciesFile);
-const edgeRecords = loadJsonl(edgesFile);
-const sourceRecords = loadJsonl(sourcesFile);
+const entityRecords = loadEntities();
+const predicateRecords = loadPredicates();
+const sourceRecords = loadSources();
 
-const cladeIds = new Set<string>();
-const speciesIds = new Set<string>();
+const entityIds = new Set<string>();
+const predicateIds = new Set<string>();
 const sourceIds = new Set<string>();
 
-for (const { record, line } of cladeRecords) {
-  if (!validateClade(record)) {
-    for (const err of validateClade.errors ?? []) {
-      error(cladeFile, line, `schema: ${err.instancePath} ${err.message}`);
+// Pass 1: schema-validate all records and collect ids
+for (const { record, line } of predicateRecords) {
+  if (!validatePredicate(record)) {
+    for (const err of validatePredicate.errors ?? []) {
+      error(predicateFile, line, (record as { id?: string }).id ?? "?", `schema: ${err.instancePath} ${err.message}`);
     }
   } else {
-    const clade = record as { id: string };
-    cladeIds.add(clade.id);
+    predicateIds.add(record.id);
   }
 }
 
 for (const { record, line } of sourceRecords) {
   if (!validateSource(record)) {
     for (const err of validateSource.errors ?? []) {
-      error(sourcesFile, line, `schema: ${err.instancePath} ${err.message}`);
+      error(sourcesFile, line, (record as { id?: string }).id ?? "?", `schema: ${err.instancePath} ${err.message}`);
     }
   } else {
-    const source = record as { id: string };
-    sourceIds.add(source.id);
+    sourceIds.add(record.id);
   }
 }
 
-for (const { record, line } of cladeRecords) {
-  const clade = record as { id: string; parent: string | null };
-  if (clade.parent !== null && !cladeIds.has(clade.parent)) {
-    error(cladeFile, line, `referential integrity: parent '${clade.parent}' not found in clades`);
-  }
+// Collect entity ids first so forward refs work
+for (const { record } of entityRecords) {
+  entityIds.add(record.id);
 }
 
-for (const { record, line } of speciesRecords) {
-  if (!validateSpecies(record)) {
-    for (const err of validateSpecies.errors ?? []) {
-      error(speciesFile, line, `schema: ${err.instancePath} ${err.message}`);
+// Pass 2: schema-validate entities and check integrity
+for (const { record, line } of entityRecords) {
+  if (!validateEntity(record)) {
+    for (const err of validateEntity.errors ?? []) {
+      error(entityFile, line, (record as { id?: string }).id ?? "?", `schema: ${err.instancePath} ${err.message}`);
     }
     continue;
   }
 
-  const species = record as {
-    id: string;
-    clade: string;
-    sources?: string[];
-  };
+  const entity = record as Entity;
 
-  speciesIds.add(species.id);
+  // Determine if this is a class entity (to relax source warnings)
+  const instanceOfValues = (entity.statements["instance_of"] ?? []).map((e) => e.value);
+  const isClassEntity = instanceOfValues.includes("@class");
 
-  if (!cladeIds.has(species.clade)) {
-    error(speciesFile, line, `referential integrity: clade '${species.clade}' not found in clades`);
-  }
+  for (const [predicate, entries] of Object.entries(entity.statements)) {
+    // Warn on unknown predicates
+    if (!predicateIds.has(predicate)) {
+      warn(entityFile, line, entity.id, `unknown predicate '${predicate}'`);
+    }
 
-  if (!species.sources || species.sources.length === 0) {
-    warn(speciesFile, line, `species '${species.id}' has no sources`);
-  } else {
-    for (const srcId of species.sources) {
-      if (!sourceIds.has(srcId)) {
-        error(speciesFile, line, `referential integrity: source '${srcId}' not found in sources`);
+    for (const entry of entries) {
+      // Resolve entity references in value
+      if (typeof entry.value === "string" && entry.value.startsWith("@")) {
+        const refId = entry.value.slice(1);
+        if (!entityIds.has(refId)) {
+          error(entityFile, line, entity.id, `dangling entity ref '${entry.value}' in predicate '${predicate}'`);
+        }
+      }
+
+      // Resolve source reference
+      if (entry.source != null && !sourceIds.has(entry.source)) {
+        error(entityFile, line, entity.id, `dangling source ref '${entry.source}' in predicate '${predicate}'`);
+      }
+
+      // Warn on missing source, except structural predicates on class entities
+      const isStructuralOnClass = isClassEntity && (predicate === "instance_of" || predicate === "subclass_of");
+      if (entry.source == null && !isStructuralOnClass) {
+        warn(entityFile, line, entity.id, `no source on predicate '${predicate}'`);
+      }
+
+      // Resolve qualifier entity refs
+      if (entry.qualifiers != null) {
+        for (const [qPred, qVal] of Object.entries(entry.qualifiers)) {
+          if (typeof qVal === "string" && qVal.startsWith("@")) {
+            const refId = qVal.slice(1);
+            if (!entityIds.has(refId)) {
+              error(entityFile, line, entity.id, `dangling entity ref '${qVal}' in qualifier '${qPred}' on predicate '${predicate}'`);
+            }
+          }
+        }
       }
     }
   }
 }
 
-for (const { record, line } of edgeRecords) {
-  if (!validateEdge(record)) {
-    for (const err of validateEdge.errors ?? []) {
-      error(edgesFile, line, `schema: ${err.instancePath} ${err.message}`);
-    }
-    continue;
-  }
-
-  const edge = record as { from: string; to: string };
-
-  if (!speciesIds.has(edge.from)) {
-    error(edgesFile, line, `referential integrity: edge.from '${edge.from}' not found in species`);
-  }
-  if (!speciesIds.has(edge.to)) {
-    error(edgesFile, line, `referential integrity: edge.to '${edge.to}' not found in species`);
-  }
-}
-
 console.log(
-  `\nValidation complete: ${cladeRecords.length} clades, ${speciesRecords.length} species, ${edgeRecords.length} edges, ${sourceRecords.length} sources.`
+  `\nValidation complete: ${entityRecords.length} entities, ${predicateRecords.length} predicates, ${sourceRecords.length} sources.`
 );
 console.log(`${errors} error(s), ${warnings} warning(s).`);
 

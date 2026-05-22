@@ -1,96 +1,67 @@
-import { resolve, dirname } from "path";
-import { fileURLToPath } from "url";
-import { loadJsonl } from "./lib/load.ts";
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const dataDir = resolve(__dirname, "../../data");
-
-interface Clade {
-  id: string;
-  name: string;
-  parent: string | null;
-  rank_hint?: string;
-}
-
-interface Species {
-  id: string;
-  name: string;
-  clade: string;
-}
+import { buildGraph, subclassesOf, instancesOf, getEntity } from "./lib/graph.ts";
 
 const args = process.argv.slice(2);
 const rootIdx = args.indexOf("--root");
-const rootId = rootIdx !== -1 ? args[rootIdx + 1] : "cellularia";
+let rootId = rootIdx !== -1 ? args[rootIdx + 1] : "software";
+// strip leading @ if passed
+if (rootId.startsWith("@")) rootId = rootId.slice(1);
 
-const clades = loadJsonl<Clade>(resolve(dataDir, "clades.jsonl")).map((r) => r.record);
-const species = loadJsonl<Species>(resolve(dataDir, "species.jsonl")).map((r) => r.record);
+const graph = buildGraph();
 
-const cladeChildren = new Map<string, string[]>();
-const cladeById = new Map<string, Clade>();
-
-for (const clade of clades) {
-  cladeById.set(clade.id, clade);
-  if (!cladeChildren.has(clade.id)) cladeChildren.set(clade.id, []);
-  if (clade.parent !== null) {
-    if (!cladeChildren.has(clade.parent)) cladeChildren.set(clade.parent, []);
-    cladeChildren.get(clade.parent)!.push(clade.id);
-  }
-}
-
-const speciesByClade = new Map<string, Species[]>();
-for (const sp of species) {
-  if (!speciesByClade.has(sp.clade)) speciesByClade.set(sp.clade, []);
-  speciesByClade.get(sp.clade)!.push(sp);
-}
-
-function renderTree(id: string, prefix: string, isLast: boolean): void {
-  const clade = cladeById.get(id);
-  if (!clade) {
-    console.error(`Unknown clade: ${id}`);
-    return;
-  }
-
-  const connector = isLast ? "└─" : "├─";
-  const rankTag = clade.rank_hint ? ` [${clade.rank_hint}]` : "";
-  console.log(`${prefix}${connector} ${clade.name}${rankTag}`);
-
-  const childPrefix = prefix + (isLast ? "   " : "│  ");
-
-  const childClades = cladeChildren.get(id) ?? [];
-  const childSpecies = speciesByClade.get(id) ?? [];
-  const totalChildren = childClades.length + childSpecies.length;
-
-  childClades.forEach((childId, i) => {
-    const last = i === childClades.length - 1 && childSpecies.length === 0;
-    renderTree(childId, childPrefix, last);
-  });
-
-  childSpecies.forEach((sp, i) => {
-    const last = i === childSpecies.length - 1;
-    const spConnector = last ? "└─" : "├─";
-    console.log(`${childPrefix}${spConnector} ● ${sp.name}`);
-  });
-}
-
-if (!cladeById.has(rootId)) {
-  console.error(`Root clade '${rootId}' not found.`);
+const rootEntity = getEntity(graph, rootId);
+if (!rootEntity) {
+  console.error(`Root entity '${rootId}' not found.`);
   process.exit(1);
 }
 
-const root = cladeById.get(rootId)!;
-const rankTag = root.rank_hint ? ` [${root.rank_hint}]` : "";
-console.log(`${root.name}${rankTag}`);
+// Build parent map for the subtree rooted at rootId
+// We need direct children (subclassesOf non-transitive) for tree rendering
+function directSubclasses(id: string): string[] {
+  return subclassesOf(graph, id, { transitive: false });
+}
 
-const rootChildren = cladeChildren.get(rootId) ?? [];
-const rootSpecies = speciesByClade.get(rootId) ?? [];
+function directInstances(id: string): string[] {
+  return instancesOf(graph, id, { transitive: false });
+}
 
-rootChildren.forEach((childId, i) => {
-  const last = i === rootChildren.length - 1 && rootSpecies.length === 0;
-  renderTree(childId, "", last);
+function getLabel(id: string): string {
+  const entity = getEntity(graph, id);
+  return entity?.labels["en"] ?? id;
+}
+
+function renderNode(id: string, prefix: string, isLast: boolean): void {
+  const connector = isLast ? "└─" : "├─";
+  console.log(`${prefix}${connector} ${getLabel(id)}`);
+
+  const childPrefix = prefix + (isLast ? "   " : "│  ");
+  const childClasses = directSubclasses(id);
+  const childInstances = directInstances(id);
+  const totalChildren = childClasses.length + childInstances.length;
+
+  childClasses.forEach((childId, i) => {
+    const last = i === childClasses.length - 1 && childInstances.length === 0;
+    renderNode(childId, childPrefix, last);
+  });
+
+  childInstances.forEach((instId, i) => {
+    const last = i === childInstances.length - 1;
+    const instConnector = last ? "└─" : "├─";
+    console.log(`${childPrefix}${instConnector} ● ${getLabel(instId)}`);
+  });
+}
+
+console.log(getLabel(rootId));
+
+const topClasses = directSubclasses(rootId);
+const topInstances = directInstances(rootId);
+
+topClasses.forEach((childId, i) => {
+  const last = i === topClasses.length - 1 && topInstances.length === 0;
+  renderNode(childId, "", last);
 });
 
-rootSpecies.forEach((sp, i) => {
-  const last = i === rootSpecies.length - 1;
+topInstances.forEach((instId, i) => {
+  const last = i === topInstances.length - 1;
   const connector = last ? "└─" : "├─";
-  console.log(`${connector} ● ${sp.name}`);
+  console.log(`${connector} ● ${getLabel(instId)}`);
 });

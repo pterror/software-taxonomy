@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rhi.zone/software-taxonomy/schema/predicate.schema.json",
+  "title": "Predicate",
+  "type": "object",
+  "required": ["id", "label", "description"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$",
+      "description": "Unique predicate id in snake_case."
+    },
+    "label": {
+      "type": "string",
+      "description": "Human-readable predicate label."
+    },
+    "description": {
+      "type": "string",
+      "description": "What this predicate means and when to use it."
+    },
+    "domain_hint": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Entity ids (prefixed with @) suggesting valid subject types."
+    },
+    "range_hint": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Entity ids (prefixed with @) suggesting valid value types."
+    },
+    "inverse": {
+      "type": "string",
+      "description": "Id of the inverse predicate, if one exists."
+    },
+    "transitive": {
+      "type": "boolean",
+      "description": "Whether this predicate chains transitively (default false)."
+    }
+  }
+}

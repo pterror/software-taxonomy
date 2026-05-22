@@ -12,7 +12,8 @@
     },
     "kind": {
       "type": "string",
-      "description": "Source type, e.g. 'wikipedia', 'official', 'paper'."
+      "enum": ["wikipedia", "official", "paper", "book", "personal_communication", "other"],
+      "description": "Source type."
     },
     "title": {
       "type": "string"

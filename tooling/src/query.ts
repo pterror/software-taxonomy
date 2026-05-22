@@ -1,22 +1,5 @@
-import { resolve, dirname } from "path";
-import { fileURLToPath } from "url";
-import { loadJsonl } from "./lib/load.ts";
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const dataDir = resolve(__dirname, "../../data");
-
-interface Clade {
-  id: string;
-  parent: string | null;
-}
-
-interface Species {
-  id: string;
-  name: string;
-  clade: string;
-  features?: Record<string, unknown>;
-  [key: string]: unknown;
-}
+import { buildGraph, getEntity, instancesOf, subclassesOf, statementsByPredicate } from "./lib/graph.ts";
+import { Entity } from "./lib/load.ts";
 
 const args = process.argv.slice(2);
 
@@ -25,61 +8,105 @@ function getArg(flag: string): string | undefined {
   return idx !== -1 ? args[idx + 1] : undefined;
 }
 
-const inClade = getArg("--in-clade");
-const featureKey = getArg("--feature");
-const hasTraitArg = getArg("--has-trait");
+function hasFlag(flag: string): boolean {
+  return args.includes(flag);
+}
 
-const clades = loadJsonl<Clade>(resolve(dataDir, "clades.jsonl")).map((r) => r.record);
-const species = loadJsonl<Species>(resolve(dataDir, "species.jsonl")).map((r) => r.record);
+const entityArg = getArg("--entity");
+const instanceOfArg = getArg("--instance-of");
+const subclassOfArg = getArg("--subclass-of");
+const hasPredicateArg = getArg("--has-predicate");
+const transitive = hasFlag("--transitive");
+const format = getArg("--format") ?? "json";
 
-function buildDescendants(rootId: string): Set<string> {
-  const children = new Map<string, string[]>();
-  for (const c of clades) {
-    if (c.parent !== null) {
-      if (!children.has(c.parent)) children.set(c.parent, []);
-      children.get(c.parent)!.push(c.id);
+function stripAt(id: string): string {
+  return id.startsWith("@") ? id.slice(1) : id;
+}
+
+function formatEntity(entity: Entity): string {
+  if (format === "text") {
+    const lines: string[] = [];
+    lines.push(`${entity.labels["en"] ?? entity.id} (${entity.id})`);
+    if (entity.description) lines.push(`  ${entity.description}`);
+    if (entity.aliases && entity.aliases.length > 0) {
+      lines.push(`  aliases: ${entity.aliases.join(", ")}`);
     }
-  }
-
-  const result = new Set<string>();
-  const queue = [rootId];
-  while (queue.length > 0) {
-    const id = queue.shift()!;
-    result.add(id);
-    for (const child of children.get(id) ?? []) {
-      queue.push(child);
+    lines.push("  statements:");
+    for (const [pred, entries] of Object.entries(entity.statements)) {
+      lines.push(`    ${pred}:`);
+      for (const entry of entries) {
+        const parts: string[] = [`      value: ${entry.value}`];
+        if (entry.rank && entry.rank !== "normal") parts.push(`rank: ${entry.rank}`);
+        if (entry.source) parts.push(`source: ${entry.source}`);
+        if (entry.qualifiers) {
+          const qParts = Object.entries(entry.qualifiers).map(([k, v]) => `${k}=${v}`);
+          parts.push(`qualifiers: {${qParts.join(", ")}}`);
+        }
+        lines.push(parts.join("  "));
+      }
     }
+    return lines.join("\n");
   }
-  return result;
+  return JSON.stringify(entity, null, 2);
 }
 
-let results: Species[] = species;
+const graph = buildGraph();
 
-if (inClade) {
-  const descendants = buildDescendants(inClade);
-  results = results.filter((sp) => descendants.has(sp.clade));
-}
-
-if (featureKey) {
-  results = results.filter(
-    (sp) => sp.features != null && featureKey in sp.features
-  );
-}
-
-if (hasTraitArg) {
-  const eqIdx = hasTraitArg.indexOf("=");
-  if (eqIdx === -1) {
-    console.error(`--has-trait requires key=value format, got: ${hasTraitArg}`);
+if (entityArg) {
+  const id = stripAt(entityArg);
+  const entity = getEntity(graph, id);
+  if (!entity) {
+    console.error(`Entity '${id}' not found.`);
     process.exit(1);
   }
-  const key = hasTraitArg.slice(0, eqIdx);
-  const value = hasTraitArg.slice(eqIdx + 1);
-  results = results.filter(
-    (sp) =>
-      sp.features != null &&
-      key in sp.features &&
-      String(sp.features[key]) === value
+  console.log(formatEntity(entity));
+} else if (instanceOfArg) {
+  const classId = stripAt(instanceOfArg);
+  const ids = instancesOf(graph, classId, { transitive });
+  if (format === "text") {
+    for (const id of ids) {
+      const e = getEntity(graph, id);
+      console.log(`${id}  ${e?.labels["en"] ?? ""}`);
+    }
+  } else {
+    const entities = ids.map((id) => getEntity(graph, id)).filter(Boolean);
+    console.log(JSON.stringify(entities, null, 2));
+  }
+} else if (subclassOfArg) {
+  const classId = stripAt(subclassOfArg);
+  const ids = subclassesOf(graph, classId, { transitive });
+  if (format === "text") {
+    for (const id of ids) {
+      const e = getEntity(graph, id);
+      console.log(`${id}  ${e?.labels["en"] ?? ""}`);
+    }
+  } else {
+    const entities = ids.map((id) => getEntity(graph, id)).filter(Boolean);
+    console.log(JSON.stringify(entities, null, 2));
+  }
+} else if (hasPredicateArg) {
+  const pred = hasPredicateArg;
+  const results: Entity[] = [];
+  for (const [, entity] of graph.entities) {
+    if (pred in entity.statements) {
+      results.push(entity);
+    }
+  }
+  if (format === "text") {
+    for (const e of results) {
+      console.log(`${e.id}  ${e.labels["en"] ?? ""}`);
+    }
+  } else {
+    console.log(JSON.stringify(results, null, 2));
+  }
+} else {
+  console.error(
+    "Usage:\n" +
+    "  bun run query --entity <id>\n" +
+    "  bun run query --instance-of <@id> [--transitive]\n" +
+    "  bun run query --subclass-of <@id> [--transitive]\n" +
+    "  bun run query --has-predicate <predicate-id>\n" +
+    "  Add --format text for human-readable output."
   );
+  process.exit(1);
 }
-
-console.log(JSON.stringify(results, null, 2));

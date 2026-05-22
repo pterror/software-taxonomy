@@ -1,31 +1,64 @@
 # software-taxonomy
 
-A real, structured, queryable cladistic taxonomy of software treated as biological organisms — JSONL corpus with rich featuresets and modelled evolutionary history.
-
 ## Origin
 
-This project exists because a "funny idea → taxonomy of software → biological taxonomy" conversation turned out to be worth making into an actual corpus, not just an essay. Software evolves: it forks, merges, goes extinct, gives rise to descendants. Linnaean taxonomy is wrong for it (no fixed ranks), but cladistics fits — shared derived features, branching history, no forced hierarchy depth.
+A cladistic taxonomy of software as living organisms — started as a conversation, became a corpus. The key insight: software evolves like biology (forks, merges, convergent solutions, extinct lineages), and cladistics (not Linnaean ranks) fits it best. Phase 1 inverted the original schema: the primary artifact is a **general knowledge graph**; taxonomy is a derived view over `subclass_of`.
 
-Personal research artifact, sibling to matrix-gen, ashwren, fuwafuwa. The goal is to eventually cover every program known to the model, then every program known to Wikipedia, with rich featuresets and modelled evolutionary history.
+The repo is a standalone public corpus at https://github.com/pterror/software-taxonomy.
 
-## Data model
+## Model
 
-See `schema/` for the JSON Schema definitions. Records are stored as JSONL in `data/`: three coupled files — `clades.jsonl`, `species.jsonl`, and `edges.jsonl` — plus `sources.jsonl`. The taxonomy is variable-depth cladistic (no fixed Linnaean ranks); every record is sourced; species represent program lineages (e.g. Word from 1983 to today is one species; Word vs Word Online are separate species joined by a `forked_from` edge).
+- `data/entities.jsonl` — one entity per line, Wikidata-style. Any kind of entity: program, language, format, organization, person, feature, class.
+- `data/predicates.jsonl` — curated predicate vocabulary (~45 predicates). Validator warns on unknowns.
+- `data/sources.jsonl` — provenance records (Wikipedia revids, official URLs, etc.).
+- `schema/entity.schema.json`, `schema/predicate.schema.json`, `schema/source.schema.json` — JSON Schema Draft 2020-12.
+
+A clade is an entity with `instance_of @class`. The class hierarchy is `subclass_of` chains. Programs are `instance_of @some-class`. Everything else (people, orgs, features) is typed by their own `instance_of` statements.
+
+## Conventions
+
+- Entity ids: kebab-case, `^[a-z0-9][a-z0-9-]*$`.
+- Predicate ids: snake_case, `^[a-z][a-z0-9_]*$`.
+- Entity refs in statement values: `@entity-id` prefix.
+- Source ids in statements: must exist in `sources.jsonl`.
+- Every factual claim needs a `source`. Class structure (synapomorphies, etymologies, rank hints) is intrinsic; sourcing is aspirational but currently unsourced.
+- One record per line in all `.jsonl` files. Recompact with `jq -c`.
 
 ## Workflow
 
 ```bash
-cd tooling && bun install   # once
+cd tooling
+bun run validate        # schema + referential integrity
+bun run tree            # ASCII cladogram from @software root
+bun run query --entity <id>
+bun run query --subclass-of @<class> --transitive
+bun run query --instance-of @<class> [--transitive]
+bun run query --has-predicate <pred>
+bun run check-links     # HEAD-check wikipedia statement slugs
 ```
 
-Edit `data/*.jsonl` to add or update records. Run `bun run validate` before committing. The pre-commit hook enforces this automatically.
+The pre-commit hook runs `bun run validate`. Fix errors before committing; do not use `--no-verify`.
 
-## Conventions
+## Adding content
 
-- Ids are kebab-case ASCII (e.g. `microsoft-word`, `kingdom-documenta`).
-- Species records use program-lineage scope: one version line through time = one species. Forks become separate species joined by a `forked_from` edge.
-- Every factual claim must point to a source in `sources.jsonl` via a `source_ids` array.
+**New class (clade):**
+1. Add entity with `instance_of @class` and `subclass_of @<parent>`.
+2. Add `synapomorphy` statements for defining traits (string-valued, unsourced is fine for class entities).
+3. Run `bun run tree` to verify placement.
+
+**New program entity:**
+1. Add entity with `instance_of @<class>`.
+2. Every factual statement (`first_released`, `developed_by`, etc.) must have a `source` pointing to a record in `sources.jsonl`.
+3. Add the source record first; reference by id.
+
+**New predicate:**
+1. Add to `data/predicates.jsonl` with id, label, description, and optional inverse/transitive/domain_hint/range_hint.
+2. Consider whether an inverse predicate should also be added.
 
 ## Anti-confabulation
 
-The model hallucinates software history. The validator catches missing sources. Do not add a species record without at least one Wikipedia source. If you cannot find a Wikipedia article for a program, note it as `unverified: true` and leave a comment — do not invent publication dates, authors, or lineage without a citation.
+The validator enforces referential integrity and warns on missing sources. Do not invent release dates, author attributions, or lineage without a citable source. If you cannot find a Wikipedia article, note the entity as unverified via a `rank` qualifier on the uncertain statement.
+
+## Status
+
+**Phase 1** complete — knowledge-graph model in place, 11 class entities migrated (10 original kingdoms/orders + root `@class` meta-entity), tooling rewritten. Awaiting Phase 2 breadth seed.

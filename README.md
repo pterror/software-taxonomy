@@ -1,56 +1,94 @@
 # software-taxonomy
 
-A cladistic classification of software as living organisms.
+A general knowledge graph of software, where taxonomy is a derived view.
 
-Not an essay. Not a bit. An actual, structured, queryable corpus that grows over many critique rounds. The goal is rich per-species metadata — featuresets, habitats, metabolism, evolutionary history — across every program the model knows, and eventually every program Wikipedia knows.
+Not a fixed hierarchy. Not a bit. An actual, structured, queryable corpus that grows over many critique rounds. Entities can be programs, languages, formats, protocols, organizations, people, features, classes, or versions — all the same record shape. The cladistic classification of software is a query over `subclass_of`, not a schema.
 
-## Status
+## Origin
 
-**Phase 0** — schema scaffolded, kingdom-level clades stubbed. Awaiting first critique round before seed entries.
+This project exists because a "funny idea → taxonomy of software → biological taxonomy" conversation turned out to be worth making into an actual corpus, not just an essay. Software evolves: it forks, merges, goes extinct, gives rise to descendants. Linnaean taxonomy is wrong for it (no fixed ranks), but cladistics fits — shared derived features, branching history, no forced hierarchy depth.
 
-See `../docs/introspection/investigations/` and the conversation that spawned this for the framing.
+The graph model supersedes the original taxonomy-centric scaffold. Taxonomy is now a *view* — the transitive closure of `subclass_of` — rendered with `bun run tree`.
 
-## Layout
+## Data model
 
+### Entities (`data/entities.jsonl`)
+
+One entity per line. Wikidata-style records:
+
+```jsonc
+{
+  "id": "ms-word",
+  "labels": {"en": "Microsoft Word"},
+  "aliases": ["Word", "MS Word"],
+  "description": "Word processor developed by Microsoft.",
+  "statements": {
+    "instance_of": [{"value": "@wordprocessoria"}],
+    "developed_by": [{"value": "@microsoft"}],
+    "first_released": [{"value": "1983-10-25", "source": "wp:Microsoft_Word@1234567"}],
+    "wikipedia": [{"value": "Microsoft_Word"}]
+  }
+}
 ```
-schema/         JSON Schemas for each record type
-data/           the corpus (JSONL, line-diffable)
-  clades.jsonl     cladistic tree (variable depth, no fixed Linnaean ranks)
-  species.jsonl    one organism per line, rich record
-  edges.jsonl      evolutionary multi-graph (descent, influence, convergence, parasitism, ...)
-  sources.jsonl    provenance (Wikipedia revids, official URLs)
-tooling/        bun + TypeScript CLI (validate, query, tree)
+
+Statement shape: `{value, source?, qualifiers?, rank?}`. Values are literals or `@entity-id` references. `qualifiers` scopes a statement temporally or contextually. `rank` is `preferred | normal | deprecated`.
+
+Kind is asserted via `instance_of`, not a per-record schema type. Classes (clades) are entities with `instance_of @class`. Programs are `instance_of @some-class`.
+
+### Predicates (`data/predicates.jsonl`)
+
+Curated predicate vocabulary — ~45 predicates covering classification, identity, temporal, authorship, technical, evolutionary, and feature relationships. The validator warns (not errors) on unknown predicates, so adding new predicates is low-friction.
+
+### Sources (`data/sources.jsonl`)
+
+Wikipedia revids, official URLs, papers. Every factual statement should reference a source id here.
+
+## Taxonomy as a query
+
+The kingdom-level skeleton lives in `data/entities.jsonl` as class entities with `subclass_of @software`. Render it:
+
+```bash
+cd tooling
+bun run tree                        # rooted at @software
+bun run tree --root @documenta      # subtree
 ```
-
-## Why cladistic, not Linnaean
-
-Linnaean ranks (kingdom/phylum/class/.../species) are tidy but lie about how taxa actually relate. Real modern taxonomy is cladistic — nested clades, variable depth, no commitment that "every kingdom has exactly seven sub-levels." Software lineages have wildly uneven depth (an LLM-agent species is four nodes from the root; a Lisp dialect descendant is twelve), so the same logic applies. The `rank_hint` field on clades exists only because humans still think in ranks.
-
-## What counts as a species
-
-A program-lineage, not a version. Microsoft Word from 1983 to today is **one** species; its UI history (menu-bar → ribbon → backstage view) lives in `morphology.ui_history` and feature timestamps. A rewrite that changes metabolism — e.g. Word → Word Online (browser-native, different inputs, different distribution) — gets a separate species joined by a `forked_from` edge.
-
-## Validator-enforced anti-confabulation
-
-Every factual claim in a species record points to a `sources.jsonl` id. The validator flags fields without sources as `unverified` and refuses to bless a record as ready until each claim is sourced. The model will hallucinate Microsoft products that never shipped; the validator catches it.
 
 ## Workflow
 
-1. Edit `data/*.jsonl` (one record per line — keep line breaks; `jq -c` to recompact).
-2. `cd tooling && bun run validate` — schemas + referential integrity.
-3. `bun run tree --root cellularia` — eyeball the cladogram.
-4. `bun run query --in-clade <id>` — review a slice.
-5. Critique round. Repeat.
+```bash
+cd tooling && bun install   # once
+```
+
+Edit `data/entities.jsonl` (one record per line). Run `bun run validate` before committing. The pre-commit hook enforces this automatically.
+
+```bash
+bun run validate                               # schema + referential integrity + source warnings
+bun run tree                                   # ASCII cladogram
+bun run query --entity documenta               # pretty-print one entity
+bun run query --subclass-of @software --transitive   # all software classes
+bun run query --instance-of @wordprocessoria   # all word processors
+bun run query --has-predicate wikipedia        # all entities with a Wikipedia link
+bun run check-links                            # HEAD-check all Wikipedia slugs
+```
+
+## Anti-confabulation
+
+The model hallucinates software history. The validator catches:
+- Dangling entity refs (`@id` that doesn't exist in entities.jsonl)
+- Dangling source refs
+- Unknown predicates (warning)
+- Missing sources (warning, except structural predicates on class entities)
+
+Do not add statements about release dates, authors, or lineage without a `source` pointing to a verified record in `sources.jsonl`.
 
 ## Phasing
 
 | Phase | Output |
 |-------|--------|
-| 0 | Schemas + kingdom-level clade skeleton (this commit) |
-| 1 | Breadth seed: ~40 species, one or two per major clade |
-| 2 | Depth seed: ~40 species, exhaustive within Wordprocessoria |
-| 3 | Wikipedia ingest tool (REST API; not scraping) |
-| 4 | Bulk Wikipedia ingest with LLM-assisted classification + human review |
-| 5 | Browseable site |
-
-Phases 3+ get re-planned when reached.
+| 0 | Old taxonomy-centric scaffold (superseded) |
+| 1 | Knowledge-graph model: new schemas, migrated class entities, rewritten tooling |
+| 2 | Breadth seed: ~40 programs + their referenced entities |
+| 3 | Depth seed: Wordprocessoria + feature entities |
+| 4 | Wikipedia ingest tool |
+| 5 | Bulk ingest with LLM-assisted statement extraction |
+| 6 | Browseable site |

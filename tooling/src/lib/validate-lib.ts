@@ -3,7 +3,7 @@
  * No I/O — takes a LoadedLensSet and returns violations.
  */
 
-import { LoadedLensSet, Entity, Predicate, LensManifest, isSentinel } from "./load.ts";
+import { LoadedLensSet, Entity, Predicate, LensManifest, isSentinel, ExtensionRecord } from "./load.ts";
 import { isInstanceOf, clearTransitiveCache, buildGraph, Graph } from "./graph.ts";
 
 export type Severity = "error" | "warning" | "info";
@@ -275,6 +275,80 @@ export function validate(lensSet: LoadedLensSet, targetLens?: Set<string>): Vali
         }
       }
 
+      // Validate extension records in this lens
+      for (const { record: ext, file, line } of lens.extensions) {
+        const targetRef = ext.extends;
+        const targetId = targetRef.startsWith("@") ? targetRef.slice(1) : targetRef;
+
+        // Error if target doesn't exist
+        if (!graph.entities.has(targetId)) {
+          violation("error", lensId, file, line, targetId, "?", "dangling-extension",
+            `extension record targets '${targetRef}' which does not exist in any loaded lens`);
+          continue;
+        }
+
+        // Error if a lens extends an entity it owns
+        if (entityOwner.get(targetId) === lensId) {
+          violation("error", lensId, file, line, targetId, "?", "own-entity-extension",
+            `lens '${lensId}' owns entity '${targetId}' — use the definition record instead of an extension`);
+          continue;
+        }
+
+        // Validate extension statements using extending lens's source_required
+        for (const [predId, entries] of Object.entries(ext.statements)) {
+          const [pred] = resolvePredicate(predId);
+          if (!pred) {
+            violation("warning", lensId, file, line, targetId, predId, "unknown-predicate",
+              `predicate '${predId}' in extension record is not defined in any loaded lens`);
+            continue;
+          }
+
+          for (const entry of entries) {
+            const { value, source, rank } = entry;
+            if (rank === "deprecated") continue;
+            if (isSentinel(value)) {
+              // Source check using EXTENDING lens's source_required
+              if (manifest.source_required) {
+                if (source == null) {
+                  violation("error", lensId, file, line, targetId, predId, "source-required",
+                    `extending lens '${lensId}' requires sources, but extension statement has no source`);
+                } else if (!allSourceIds.has(source)) {
+                  violation("error", lensId, file, line, targetId, predId, "dangling-source-ref",
+                    `source '${source}' not found in any lens's sources.jsonl`);
+                }
+              }
+              continue;
+            }
+
+            // Value type check
+            const typeErr = checkValueType(value as string | number | boolean, pred);
+            if (typeErr) {
+              violation("error", lensId, file, line, targetId, predId, "value-type", typeErr);
+            }
+
+            // Entity ref resolution
+            if (pred.value_type === "entity" && typeof value === "string" && value.startsWith("@")) {
+              const refId = value.slice(1);
+              if (!graph.entities.has(refId)) {
+                violation("error", lensId, file, line, targetId, predId, "dangling-entity-ref",
+                  `entity ref '${value}' in extension record does not exist`);
+              }
+            }
+
+            // Source check using EXTENDING lens's source_required
+            if (manifest.source_required) {
+              if (source == null) {
+                violation("error", lensId, file, line, targetId, predId, "source-required",
+                  `extending lens '${lensId}' requires sources, but extension statement has no source`);
+              } else if (!allSourceIds.has(source)) {
+                violation("error", lensId, file, line, targetId, predId, "dangling-source-ref",
+                  `source '${source}' not found in any lens's sources.jsonl`);
+              }
+            }
+          }
+        }
+      }
+
       // Validate entities in this lens
       for (const { record: entity, file, line } of lens.entities) {
         const isClass = isInstanceOf(graph, entity.id, "meta:class");
@@ -511,7 +585,7 @@ export function validate(lensSet: LoadedLensSet, targetLens?: Set<string>): Vali
 
     summaries.push({
       lensId,
-      entities: lens.entities.length,
+      entities: lens.entities.length + lens.extensions.length,
       predicates: lens.predicates.length,
       sources: lens.sources.length,
       errors: lensErrors,

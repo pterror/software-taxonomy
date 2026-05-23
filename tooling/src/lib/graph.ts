@@ -1,4 +1,4 @@
-import { loadLensSet, Entity, StatementEntry, Predicate } from "./load.ts";
+import { loadLensSet, Entity, StatementEntry, Predicate, ExtensionRecord } from "./load.ts";
 
 export interface TaggedStatement {
   value: string | number | boolean | import("./load.ts").SentinelValue;
@@ -84,6 +84,33 @@ export function buildGraph(lensFilter?: string[]): Graph {
         // Merge labels (don't overwrite existing)
         for (const [lang, label] of Object.entries(record.labels)) {
           if (!existing.labels[lang]) existing.labels[lang] = label;
+        }
+      }
+    }
+  }
+
+  // Apply extension records after all definitions are loaded
+  for (const lensId of lensSet.order) {
+    const lens = lensSet.lenses.get(lensId)!;
+    for (const { record: ext } of lens.extensions) {
+      const targetId = ext.extends.startsWith("@") ? ext.extends.slice(1) : ext.extends;
+      const target = entities.get(targetId);
+      if (!target) {
+        // dangling-extension — will be reported by validator
+        continue;
+      }
+      // A lens must not extend an entity it owns
+      if (entityOwner.get(targetId) === lensId) {
+        // own-entity-extension — will be reported by validator
+        continue;
+      }
+      // Merge extension statements into target, tagging with extending lens
+      for (const [pred, entries] of Object.entries(ext.statements)) {
+        if (!target.statements[pred]) {
+          target.statements[pred] = [];
+        }
+        for (const e of entries) {
+          target.statements[pred].push({ ...e, origin_lens: lensId });
         }
       }
     }

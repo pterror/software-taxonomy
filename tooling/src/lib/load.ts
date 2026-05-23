@@ -70,6 +70,13 @@ export interface Entity {
   statements: Record<string, StatementEntry[]>;
 }
 
+export interface ExtensionRecord {
+  extends: string; // "@namespace:id" entity ref
+  statements: Record<string, StatementEntry[]>;
+  /** Set by loader to indicate which lens this extension came from */
+  _origin_lens?: string;
+}
+
 export interface Predicate {
   id: string;
   label: string;
@@ -114,6 +121,7 @@ export interface LoadedLens {
   manifestPath: string;
   predicates: LoadedRecord<Predicate>[];
   entities: LoadedRecord<Entity>[];
+  extensions: LoadedRecord<ExtensionRecord>[];
   sources: LoadedRecord<Source>[];
 }
 
@@ -211,11 +219,30 @@ export function loadLensSet(filter?: string[]): LoadedLensSet {
     const entitiesPath = join(lensDir, "entities.jsonl");
     const sourcesPath = join(lensDir, "sources.jsonl");
 
+    // Load entities.jsonl and split into definition records and extension records
+    const entityDefinitions: LoadedRecord<Entity>[] = [];
+    const entityExtensions: LoadedRecord<ExtensionRecord>[] = [];
+    if (existsSync(entitiesPath)) {
+      const rawRecords = loadJsonl<Record<string, unknown>>(entitiesPath);
+      for (const { record, line, file } of rawRecords) {
+        if ("extends" in record) {
+          // Extension record
+          const ext = record as unknown as ExtensionRecord;
+          ext._origin_lens = id;
+          entityExtensions.push({ record: ext, line, file });
+        } else {
+          // Definition record
+          entityDefinitions.push({ record: record as unknown as Entity, line, file });
+        }
+      }
+    }
+
     lenses.set(id, {
       manifest,
       manifestPath: manifestPaths.get(id)!,
       predicates: existsSync(predicatesPath) ? loadJsonl<Predicate>(predicatesPath) : [],
-      entities: existsSync(entitiesPath) ? loadJsonl<Entity>(entitiesPath) : [],
+      entities: entityDefinitions,
+      extensions: entityExtensions,
       sources: existsSync(sourcesPath) ? loadJsonl<Source>(sourcesPath) : [],
     });
   }

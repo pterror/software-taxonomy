@@ -225,8 +225,7 @@ export function validate(lensSet: LoadedLensSet, targetLens?: Set<string>): Vali
 
       // Validate entities in this lens
       for (const { record: entity, file, line } of lens.entities) {
-        const isClass = isInstanceOf(graph, entity.id, "class") ||
-          (entity.statements["instance_of"] ?? []).some(e => typeof e.value === "string" && (e.value === "@meta:class" || e.value === "@class"));
+        const isClass = isInstanceOf(graph, entity.id, "meta:class");
 
         // Cardinality check: gather all statements on this entity across all lenses
         const mergedEntity = graph.entities.get(entity.id);

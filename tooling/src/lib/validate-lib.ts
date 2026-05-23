@@ -113,6 +113,64 @@ interface StatementContext {
 }
 
 /**
+ * Validates qualifier key/value pairs for a statement.
+ * - Sentinel values ({unknown:true}, {novalue:true}) are accepted for any qualifier predicate.
+ * - Entity ref values (@<id>) must resolve when the qualifier predicate has value_type=entity.
+ * - Otherwise standard value-type checking applies.
+ */
+function validateQualifiers(
+  graph: Graph,
+  predicateIndex: Map<string, Predicate>,
+  violations: Violation[],
+  subjectId: string,
+  predId: string,
+  qualifiers: Record<string, string | number | boolean | import("./load.ts").SentinelValue>,
+  ctx: StatementContext
+): void {
+  function violation(severity: Severity, rule: string, message: string) {
+    violations.push({ severity, lens: ctx.lensId, file: ctx.file, line: ctx.line, entityId: subjectId, predicateId: predId, rule, message });
+  }
+
+  for (const [qPredId, qVal] of Object.entries(qualifiers)) {
+    // Sentinels are accepted for any qualifier predicate — skip all further checks
+    if (isSentinel(qVal)) continue;
+
+    const qPredDef = predicateIndex.get(qPredId);
+    if (!qPredDef) {
+      violation("warning", "unknown-qualifier-predicate",
+        `qualifier key '${qPredId}' is not a defined predicate`);
+      // Still check entity ref resolution for unknown predicates
+      if (typeof qVal === "string" && qVal.startsWith("@")) {
+        const refId = qVal.slice(1);
+        if (!graph.entities.has(refId)) {
+          violation("error", "dangling-qualifier-ref",
+            `dangling entity ref '${qVal}' in qualifier '${qPredId}'`);
+        }
+      }
+      continue;
+    }
+
+    // Value type check
+    const qTypeErr = checkValueType(qVal as string | number | boolean, qPredDef);
+    if (qTypeErr) {
+      violation("error", "qualifier-value-type", `qualifier '${qPredId}': ${qTypeErr}`);
+    }
+
+    // Entity ref: must resolve when qualifier predicate is value_type=entity
+    if (typeof qVal === "string" && qVal.startsWith("@")) {
+      const refId = qVal.slice(1);
+      if (!graph.entities.has(refId)) {
+        violation("error", "dangling-qualifier-ref",
+          `dangling entity ref '${qVal}' in qualifier '${qPredId}'`);
+      }
+    } else if (qPredDef.value_type === "entity" && typeof qVal === "string" && !qVal.startsWith("@")) {
+      violation("error", "qualifier-value-type",
+        `qualifier '${qPredId}': expected entity reference (starting with @), got '${qVal}'`);
+    }
+  }
+}
+
+/**
  * Validates a single statement entry against its predicate and context.
  * Returns violations. Does NOT validate cardinality (that requires all entries).
  * Does NOT skip deprecated — callers may pre-filter if needed.
@@ -142,32 +200,7 @@ function validateStatementEntry(
   // but qualifier shape validation still runs — even deprecated statements must have valid qualifiers.
   if (rank === "deprecated") {
     if (entry.qualifiers) {
-      for (const [qPredId, qVal] of Object.entries(entry.qualifiers)) {
-        const qPredDef = predicateIndex.get(qPredId);
-        if (!qPredDef) {
-          violation("warning", "unknown-qualifier-predicate",
-            `qualifier key '${qPredId}' is not a defined predicate`);
-          if (typeof qVal === "string" && qVal.startsWith("@")) {
-            const refId = qVal.slice(1);
-            if (!graph.entities.has(refId)) {
-              violation("error", "dangling-qualifier-ref",
-                `dangling entity ref '${qVal}' in qualifier '${qPredId}'`);
-            }
-          }
-          continue;
-        }
-        const qTypeErr = checkValueType(qVal as string | number | boolean, qPredDef);
-        if (qTypeErr) {
-          violation("error", "qualifier-value-type", `qualifier '${qPredId}': ${qTypeErr}`);
-        }
-        if (typeof qVal === "string" && qVal.startsWith("@")) {
-          const refId = qVal.slice(1);
-          if (!graph.entities.has(refId)) {
-            violation("error", "dangling-qualifier-ref",
-              `dangling entity ref '${qVal}' in qualifier '${qPredId}'`);
-          }
-        }
-      }
+      validateQualifiers(graph, predicateIndex, violations, subjectId, predId, entry.qualifiers, ctx);
     }
     return;
   }
@@ -263,32 +296,7 @@ function validateStatementEntry(
 
   // Qualifier validation
   if (entry.qualifiers) {
-    for (const [qPredId, qVal] of Object.entries(entry.qualifiers)) {
-      const qPredDef = predicateIndex.get(qPredId);
-      if (!qPredDef) {
-        violation("warning", "unknown-qualifier-predicate",
-          `qualifier key '${qPredId}' is not a defined predicate`);
-        if (typeof qVal === "string" && qVal.startsWith("@")) {
-          const refId = qVal.slice(1);
-          if (!graph.entities.has(refId)) {
-            violation("error", "dangling-qualifier-ref",
-              `dangling entity ref '${qVal}' in qualifier '${qPredId}'`);
-          }
-        }
-        continue;
-      }
-      const qTypeErr = checkValueType(qVal as string | number | boolean, qPredDef);
-      if (qTypeErr) {
-        violation("error", "qualifier-value-type", `qualifier '${qPredId}': ${qTypeErr}`);
-      }
-      if (typeof qVal === "string" && qVal.startsWith("@")) {
-        const refId = qVal.slice(1);
-        if (!graph.entities.has(refId)) {
-          violation("error", "dangling-qualifier-ref",
-            `dangling entity ref '${qVal}' in qualifier '${qPredId}'`);
-        }
-      }
-    }
+    validateQualifiers(graph, predicateIndex, violations, subjectId, predId, entry.qualifiers, ctx);
   }
 }
 

@@ -58,7 +58,7 @@ export function isSentinel(value: unknown): value is SentinelValue {
 export interface StatementEntry {
   value: string | number | boolean | SentinelValue;
   source?: string;
-  qualifiers?: Record<string, string | number | boolean>;
+  qualifiers?: Record<string, string | number | boolean | SentinelValue>;
   rank?: "preferred" | "normal" | "deprecated";
 }
 

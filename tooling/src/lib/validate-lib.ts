@@ -93,6 +93,174 @@ function checkValueType(
   }
 }
 
+// ---- Per-statement validation (shared between definition and extension paths) ----
+
+interface StatementContext {
+  /** Lens in which this statement physically appears */
+  lensId: string;
+  manifest: LensManifest;
+  /** Whether this statement came from an extension record */
+  fromExtension: boolean;
+  /** Lens that OWNS the entity (governs source_required policy) */
+  ownerLensId: string;
+  ownerManifest: LensManifest | undefined;
+  /** Whether the owning lens requires sources */
+  sourceRequired: boolean;
+  /** Whether the subject entity is a class */
+  isClass: boolean;
+  file: string;
+  line: number;
+}
+
+/**
+ * Validates a single statement entry against its predicate and context.
+ * Returns violations. Does NOT validate cardinality (that requires all entries).
+ * Does NOT skip deprecated — callers may pre-filter if needed.
+ */
+function validateStatementEntry(
+  graph: Graph,
+  predicateIndex: Map<string, Predicate>,
+  allSourceIds: Set<string>,
+  violations: Violation[],
+  subjectId: string,
+  predId: string,
+  pred: Predicate,
+  entry: import("./load.ts").StatementEntry,
+  ctx: StatementContext
+): void {
+  function violation(
+    severity: Severity,
+    rule: string,
+    message: string
+  ) {
+    violations.push({ severity, lens: ctx.lensId, file: ctx.file, line: ctx.line, entityId: subjectId, predicateId: predId, rule, message });
+  }
+
+  const { value, source, rank } = entry;
+
+  // Skip deprecated statements for all checks (cardinality excluded, done separately).
+  if (rank === "deprecated") return;
+
+  // Sentinel: skip value-type, value-pattern, range checks entirely
+  if (isSentinel(value)) {
+    // Domain check
+    if (pred.domain && pred.domain.length > 0) {
+      const isStructural = (predId === "instance_of" || predId === "subclass_of") && ctx.isClass;
+      if (!isStructural) {
+        const domainOk = pred.domain.some((dc) => isInstanceOf(graph, subjectId, dc.slice(1)));
+        if (!domainOk) {
+          violation("error", "domain-violation",
+            `entity '${subjectId}' must be instance_of one of [${pred.domain.join(", ")}] to use predicate '${predId}'`);
+        }
+      }
+    }
+    // Source check using OWNING lens's source_required
+    if (ctx.sourceRequired) {
+      const isStructuralOnClass = ctx.isClass && (predId === "instance_of" || predId === "subclass_of");
+      if (!isStructuralOnClass) {
+        if (source == null) {
+          violation("error", "source-required",
+            `lens '${ctx.ownerLensId}' (owner) requires sources, but ${ctx.fromExtension ? "extension " : ""}statement has no source`);
+        } else if (!allSourceIds.has(source)) {
+          violation("error", "dangling-source-ref",
+            `source '${source}' not found in any lens's sources.jsonl`);
+        }
+      }
+    }
+    return;
+  }
+
+  // Value type check
+  const typeErr = checkValueType(value as string | number | boolean, pred);
+  if (typeErr) {
+    violation("error", "value-type", `${typeErr}`);
+  }
+
+  // Entity ref resolution + range check + cross-lens fictional warning
+  if (pred.value_type === "entity" && typeof value === "string" && value.startsWith("@")) {
+    const refId = value.slice(1);
+    const refEntity = graph.entities.get(refId);
+    if (!refEntity) {
+      violation("error", "dangling-entity-ref",
+        `entity ref '${value}' does not exist in any loaded lens`);
+    } else {
+      // Range check
+      if (pred.range && pred.range.length > 0) {
+        const rangeOk = pred.range.some((rc) => isInstanceOf(graph, refId, rc.slice(1)));
+        if (!rangeOk) {
+          violation("error", "range-violation",
+            `'${value}' must be instance_of one of [${pred.range.join(", ")}] but is not`);
+        }
+      }
+
+      // Cross-lens fictional reference warning
+      const refOwnerLens = graph.entities.get(refId)?.owner_lens;
+      const refOwnerManifest = refOwnerLens ? graph.entities.get(refId) : undefined;
+      // We need the manifest from the lensSet — pass it via ctx
+      if (ctx.manifest.register === "factual" && refOwnerLens) {
+        // We don't have lensSet here; cross-lens check is done by the caller
+        // (This is unchanged from before — caller handles this separately)
+      }
+    }
+  }
+
+  // Domain check
+  if (pred.domain && pred.domain.length > 0) {
+    const isStructural = (predId === "instance_of" || predId === "subclass_of") && ctx.isClass;
+    if (!isStructural) {
+      const domainOk = pred.domain.some((dc) => isInstanceOf(graph, subjectId, dc.slice(1)));
+      if (!domainOk) {
+        violation("error", "domain-violation",
+          `entity '${subjectId}' must be instance_of one of [${pred.domain.join(", ")}] to use predicate '${predId}'`);
+      }
+    }
+  }
+
+  // Source check using OWNING lens's source_required
+  if (ctx.sourceRequired) {
+    const isStructuralOnClass = ctx.isClass && (predId === "instance_of" || predId === "subclass_of");
+    if (!isStructuralOnClass) {
+      if (source == null) {
+        violation("error", "source-required",
+          `lens '${ctx.ownerLensId}' (owner) requires sources, but ${ctx.fromExtension ? "extension " : ""}statement has no source`);
+      } else if (!allSourceIds.has(source)) {
+        violation("error", "dangling-source-ref",
+          `source '${source}' not found in any lens's sources.jsonl`);
+      }
+    }
+  }
+
+  // Qualifier validation
+  if (entry.qualifiers) {
+    for (const [qPredId, qVal] of Object.entries(entry.qualifiers)) {
+      const qPredDef = predicateIndex.get(qPredId);
+      if (!qPredDef) {
+        violation("warning", "unknown-qualifier-predicate",
+          `qualifier key '${qPredId}' is not a defined predicate`);
+        if (typeof qVal === "string" && qVal.startsWith("@")) {
+          const refId = qVal.slice(1);
+          if (!graph.entities.has(refId)) {
+            violation("error", "dangling-qualifier-ref",
+              `dangling entity ref '${qVal}' in qualifier '${qPredId}'`);
+          }
+        }
+        continue;
+      }
+      const qTypeErr = checkValueType(qVal as string | number | boolean, qPredDef);
+      if (qTypeErr) {
+        violation("error", "qualifier-value-type", `qualifier '${qPredId}': ${qTypeErr}`);
+      }
+      if (typeof qVal === "string" && qVal.startsWith("@")) {
+        const refId = qVal.slice(1);
+        if (!graph.entities.has(refId)) {
+          violation("error", "dangling-qualifier-ref",
+            `dangling entity ref '${qVal}' in qualifier '${qPredId}'`);
+        }
+      }
+    }
+  }
+}
+
 // ---- Main validation ----
 
 export function validate(lensSet: LoadedLensSet, targetLens?: Set<string>): ValidationResult {
@@ -340,61 +508,25 @@ export function validate(lensSet: LoadedLensSet, targetLens?: Set<string>): Vali
           }
 
           for (const entry of entries) {
-            const { value, source, rank } = entry;
-            if (rank === "deprecated") continue;
+            const ctx: StatementContext = {
+              lensId,
+              manifest,
+              fromExtension: true,
+              ownerLensId: targetOwnerLensId,
+              ownerManifest: targetOwnerManifest,
+              sourceRequired: extSourceRequired,
+              isClass: isTargetClass,
+              file,
+              line,
+            };
+            validateStatementEntry(graph, predicateIndex, allSourceIds, violations, targetId, predId, pred, entry, ctx);
 
-            if (isSentinel(value)) {
-              // Domain check
-              if (pred.domain && pred.domain.length > 0) {
-                const isStructural = (predId === "instance_of" || predId === "subclass_of") && isTargetClass;
-                if (!isStructural) {
-                  const domainOk = pred.domain.some((dc) => isInstanceOf(graph, targetId, dc.slice(1)));
-                  if (!domainOk) {
-                    violation("error", lensId, file, line, targetId, predId, "domain-violation",
-                      `entity '${targetId}' must be instance_of one of [${pred.domain.join(", ")}] to use predicate '${predId}'`);
-                  }
-                }
-              }
-              // Source check using OWNING lens's source_required
-              if (extSourceRequired) {
-                const isStructuralOnClass = isTargetClass && (predId === "instance_of" || predId === "subclass_of");
-                if (!isStructuralOnClass) {
-                  if (source == null) {
-                    violation("error", lensId, file, line, targetId, predId, "source-required",
-                      `lens '${targetOwnerLensId}' (owner) requires sources, but extension statement has no source`);
-                  } else if (!allSourceIds.has(source)) {
-                    violation("error", lensId, file, line, targetId, predId, "dangling-source-ref",
-                      `source '${source}' not found in any lens's sources.jsonl`);
-                  }
-                }
-              }
-              continue;
-            }
-
-            // Value type check
-            const typeErr = checkValueType(value as string | number | boolean, pred);
-            if (typeErr) {
-              violation("error", lensId, file, line, targetId, predId, "value-type", typeErr);
-            }
-
-            // Entity ref resolution + range check + cross-lens fictional warning
-            if (pred.value_type === "entity" && typeof value === "string" && value.startsWith("@")) {
+            // Cross-lens fictional reference warning (needs lensSet, done inline)
+            const { value } = entry;
+            if (entry.rank !== "deprecated" && !isSentinel(value) &&
+                pred.value_type === "entity" && typeof value === "string" && value.startsWith("@")) {
               const refId = value.slice(1);
-              const refEntity = graph.entities.get(refId);
-              if (!refEntity) {
-                violation("error", lensId, file, line, targetId, predId, "dangling-entity-ref",
-                  `entity ref '${value}' in extension record does not exist`);
-              } else {
-                // Range check
-                if (pred.range && pred.range.length > 0) {
-                  const rangeOk = pred.range.some((rc) => isInstanceOf(graph, refId, rc.slice(1)));
-                  if (!rangeOk) {
-                    violation("error", lensId, file, line, targetId, predId, "range-violation",
-                      `'${value}' must be instance_of one of [${pred.range.join(", ")}] but is not`);
-                  }
-                }
-
-                // Cross-lens fictional reference warning
+              if (graph.entities.has(refId)) {
                 const refOwnerLens = entityOwner.get(refId);
                 const refOwnerManifest = refOwnerLens ? lensSet.lenses.get(refOwnerLens)?.manifest : undefined;
                 if (
@@ -404,63 +536,6 @@ export function validate(lensSet: LoadedLensSet, targetLens?: Set<string>): Vali
                 ) {
                   violation("warning", lensId, file, line, targetId, predId, "cross-lens-fictional-ref",
                     `factual lens '${lensId}' references entity '${value}' owned by ${refOwnerManifest.register} lens '${refOwnerLens}'`);
-                }
-              }
-            }
-
-            // Domain check
-            if (pred.domain && pred.domain.length > 0) {
-              const isStructural = (predId === "instance_of" || predId === "subclass_of") && isTargetClass;
-              if (!isStructural) {
-                const domainOk = pred.domain.some((dc) => isInstanceOf(graph, targetId, dc.slice(1)));
-                if (!domainOk) {
-                  violation("error", lensId, file, line, targetId, predId, "domain-violation",
-                    `entity '${targetId}' must be instance_of one of [${pred.domain.join(", ")}] to use predicate '${predId}'`);
-                }
-              }
-            }
-
-            // Source check using OWNING lens's source_required
-            if (extSourceRequired) {
-              const isStructuralOnClass = isTargetClass && (predId === "instance_of" || predId === "subclass_of");
-              if (!isStructuralOnClass) {
-                if (source == null) {
-                  violation("error", lensId, file, line, targetId, predId, "source-required",
-                    `lens '${targetOwnerLensId}' (owner) requires sources, but extension statement has no source`);
-                } else if (!allSourceIds.has(source)) {
-                  violation("error", lensId, file, line, targetId, predId, "dangling-source-ref",
-                    `source '${source}' not found in any lens's sources.jsonl`);
-                }
-              }
-            }
-
-            // Qualifier validation
-            if (entry.qualifiers) {
-              for (const [qPredId, qVal] of Object.entries(entry.qualifiers)) {
-                const qPredDef = predicateIndex.get(qPredId);
-                if (!qPredDef) {
-                  violation("warning", lensId, file, line, targetId, predId, "unknown-qualifier-predicate",
-                    `qualifier key '${qPredId}' is not a defined predicate`);
-                  if (typeof qVal === "string" && qVal.startsWith("@")) {
-                    const refId = qVal.slice(1);
-                    if (!graph.entities.has(refId)) {
-                      violation("error", lensId, file, line, targetId, predId, "dangling-qualifier-ref",
-                        `dangling entity ref '${qVal}' in qualifier '${qPredId}'`);
-                    }
-                  }
-                  continue;
-                }
-                const qTypeErr = checkValueType(qVal as string | number | boolean, qPredDef);
-                if (qTypeErr) {
-                  violation("error", lensId, file, line, targetId, predId, "qualifier-value-type",
-                    `qualifier '${qPredId}': ${qTypeErr}`);
-                }
-                if (typeof qVal === "string" && qVal.startsWith("@")) {
-                  const refId = qVal.slice(1);
-                  if (!graph.entities.has(refId)) {
-                    violation("error", lensId, file, line, targetId, predId, "dangling-qualifier-ref",
-                      `dangling entity ref '${qVal}' in qualifier '${qPredId}'`);
-                  }
                 }
               }
             }
@@ -546,69 +621,25 @@ export function validate(lensSet: LoadedLensSet, targetLens?: Set<string>): Vali
           }
 
           for (const entry of entries) {
-            const { value, source, rank } = entry;
+            const ctx: StatementContext = {
+              lensId,
+              manifest,
+              fromExtension: false,
+              ownerLensId: entityOwner.get(entity.id) ?? lensId,
+              ownerManifest: lensSet.lenses.get(entityOwner.get(entity.id) ?? lensId)?.manifest,
+              sourceRequired: lensSet.lenses.get(entityOwner.get(entity.id) ?? lensId)?.manifest?.source_required ?? false,
+              isClass,
+              file,
+              line,
+            };
+            validateStatementEntry(graph, predicateIndex, allSourceIds, violations, entity.id, predId, pred, entry, ctx);
 
-            // Skip deprecated statements for most checks (cardinality excluded, done separately)
-            if (rank === "deprecated") continue;
-
-            // Sentinel: skip value-type, value-pattern, range checks entirely
-            if (isSentinel(value)) {
-              // Still do source check and domain check below, but skip type/range
-              // Domain check
-              if (pred.domain && pred.domain.length > 0) {
-                const isStructural = (predId === "instance_of" || predId === "subclass_of") && isClass;
-                if (!isStructural) {
-                  const domainOk = pred.domain.some((dc) => isInstanceOf(graph, entity.id, dc.slice(1)));
-                  if (!domainOk) {
-                    violation("error", lensId, file, line, entity.id, predId, "domain-violation",
-                      `entity '${entity.id}' must be instance_of one of [${pred.domain.join(", ")}] to use predicate '${predId}'`);
-                  }
-                }
-              }
-              // Source check
-              const ownerLensIdS = entityOwner.get(entity.id) ?? lensId;
-              const ownerManifestS = lensSet.lenses.get(ownerLensIdS)?.manifest;
-              if (ownerManifestS?.source_required) {
-                const isStructuralOnClass = isClass && (predId === "instance_of" || predId === "subclass_of");
-                if (!isStructuralOnClass) {
-                  if (source == null) {
-                    violation("error", lensId, file, line, entity.id, predId, "source-required",
-                      `lens '${ownerLensIdS}' requires sources, but statement has no source`);
-                  } else if (!allSourceIds.has(source)) {
-                    violation("error", lensId, file, line, entity.id, predId, "dangling-source-ref",
-                      `source '${source}' not found in any lens's sources.jsonl`);
-                  }
-                }
-              }
-              continue;
-            }
-
-            // 2. Value type check
-            const typeErr = checkValueType(value as string | number | boolean, pred);
-            if (typeErr) {
-              violation("error", lensId, file, line, entity.id, predId, "value-type",
-                `${typeErr}`);
-            }
-
-            // 3. Entity ref resolution
-            if (pred.value_type === "entity" && typeof value === "string" && value.startsWith("@")) {
+            // Cross-lens fictional reference warning (needs lensSet, done inline)
+            const { value } = entry;
+            if (entry.rank !== "deprecated" && !isSentinel(value) &&
+                pred.value_type === "entity" && typeof value === "string" && value.startsWith("@")) {
               const refId = value.slice(1);
-              const refEntity = graph.entities.get(refId);
-
-              if (!refEntity) {
-                violation("error", lensId, file, line, entity.id, predId, "dangling-entity-ref",
-                  `entity ref '${value}' does not exist in any loaded lens`);
-              } else {
-                // 4. Range check
-                if (pred.range && pred.range.length > 0) {
-                  const rangeOk = pred.range.some((rc) => isInstanceOf(graph, refId, rc.slice(1)));
-                  if (!rangeOk) {
-                    violation("error", lensId, file, line, entity.id, predId, "range-violation",
-                      `'${value}' must be instance_of one of [${pred.range.join(", ")}] but is not`);
-                  }
-                }
-
-                // 5. Cross-lens fictional reference warning
+              if (graph.entities.has(refId)) {
                 const refOwnerLens = entityOwner.get(refId);
                 const refOwnerManifest = refOwnerLens ? lensSet.lenses.get(refOwnerLens)?.manifest : undefined;
                 if (
@@ -618,74 +649,6 @@ export function validate(lensSet: LoadedLensSet, targetLens?: Set<string>): Vali
                 ) {
                   violation("warning", lensId, file, line, entity.id, predId, "cross-lens-fictional-ref",
                     `factual lens '${lensId}' references entity '${value}' owned by ${refOwnerManifest.register} lens '${refOwnerLens}'`);
-                }
-              }
-            }
-
-            // 6. Domain check
-            if (pred.domain && pred.domain.length > 0) {
-              // Exception: structural predicates on class entities
-              const isStructural = (predId === "instance_of" || predId === "subclass_of") && isClass;
-              if (!isStructural) {
-                const domainOk = pred.domain.some((dc) => isInstanceOf(graph, entity.id, dc.slice(1)));
-                if (!domainOk) {
-                  violation("error", lensId, file, line, entity.id, predId, "domain-violation",
-                    `entity '${entity.id}' must be instance_of one of [${pred.domain.join(", ")}] to use predicate '${predId}'`);
-                }
-              }
-            }
-
-            // 7. Source check (per owning lens rule, but check using the statement's lens context)
-            // Source rule: if the lens that OWNS the entity has source_required=true,
-            // each statement must have a source EXCEPT structural predicates on class entities
-            const ownerLensId = entityOwner.get(entity.id) ?? lensId;
-            const ownerManifest = lensSet.lenses.get(ownerLensId)?.manifest;
-            if (ownerManifest?.source_required) {
-              const isStructuralOnClass = isClass && (predId === "instance_of" || predId === "subclass_of");
-              if (!isStructuralOnClass) {
-                if (source == null) {
-                  violation("error", lensId, file, line, entity.id, predId, "source-required",
-                    `lens '${ownerLensId}' requires sources, but statement has no source`);
-                } else if (!allSourceIds.has(source)) {
-                  violation("error", lensId, file, line, entity.id, predId, "dangling-source-ref",
-                    `source '${source}' not found in any lens's sources.jsonl`);
-                }
-              }
-            }
-
-            // Qualifier validation
-            if (entry.qualifiers) {
-              for (const [qPredId, qVal] of Object.entries(entry.qualifiers)) {
-                // 1. Qualifier key must be a known predicate (warn if not)
-                const qPredDef = predicateIndex.get(qPredId);
-                if (!qPredDef) {
-                  violation("warning", lensId, file, line, entity.id, predId, "unknown-qualifier-predicate",
-                    `qualifier key '${qPredId}' is not a defined predicate`);
-                  // Still check entity ref resolution for unknown predicates
-                  if (typeof qVal === "string" && qVal.startsWith("@")) {
-                    const refId = qVal.slice(1);
-                    if (!graph.entities.has(refId)) {
-                      violation("error", lensId, file, line, entity.id, predId, "dangling-qualifier-ref",
-                        `dangling entity ref '${qVal}' in qualifier '${qPredId}'`);
-                    }
-                  }
-                  continue;
-                }
-
-                // 2. Qualifier value type check
-                const qTypeErr = checkValueType(qVal as string | number | boolean, qPredDef);
-                if (qTypeErr) {
-                  violation("error", lensId, file, line, entity.id, predId, "qualifier-value-type",
-                    `qualifier '${qPredId}': ${qTypeErr}`);
-                }
-
-                // 3. Entity ref qualifier values must resolve (no domain/range on qualifiers)
-                if (typeof qVal === "string" && qVal.startsWith("@")) {
-                  const refId = qVal.slice(1);
-                  if (!graph.entities.has(refId)) {
-                    violation("error", lensId, file, line, entity.id, predId, "dangling-qualifier-ref",
-                      `dangling entity ref '${qVal}' in qualifier '${qPredId}'`);
-                  }
                 }
               }
             }

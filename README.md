@@ -36,15 +36,28 @@ Statement shape: `{value, source?, qualifiers?, rank?}`. Values are literals, `@
 
 Kind is asserted via `instance_of`, not a per-record schema type. Classes (clades) are entities with `instance_of @meta:class`. Programs are `instance_of @class:<some-class>`.
 
-Entity ids use namespaced form: `<type>:<slug>`. For example: `@software:nginx`, `@org:apache-software-foundation`, `@person:linus-torvalds`, `@language:rust`, `@format:json`, `@os:linux`, `@license:mit`, `@class:database`, `@meta:class`.
+Entity ids use namespaced form: `<type>:<slug>`, pattern `^[a-z0-9][a-z0-9_-]*:[a-z0-9][a-z0-9_-]*$` — exactly one colon, non-empty parts on each side. For example: `@software:nginx`, `@org:apache-software-foundation`, `@person:linus-torvalds`, `@language:rust`, `@format:json`, `@os:linux`, `@license:mit`, `@class:database`, `@meta:class`.
+
+Sentinel cardinality rule: `{"unknown":true}` and `{"novalue":true}` count toward MAX cardinality but NOT MIN. A `1..1` required predicate with only a sentinel is a cardinality error.
 
 ### Predicates (`data/predicates.jsonl`)
 
-Curated predicate vocabulary — ~45 predicates covering classification, identity, temporal, authorship, technical, evolutionary, and feature relationships. The validator warns (not errors) on unknown predicates, so adding new predicates is low-friction.
+Curated predicate vocabulary — ~59 predicates covering classification, identity, temporal, authorship, technical, evolutionary, and feature relationships. The validator warns (not errors) on unknown predicates, so adding new predicates is low-friction.
 
 ### Sources (`data/sources.jsonl`)
 
-Wikipedia revids, official URLs, papers. Every factual statement should reference a source id here.
+Wikipedia revids (required as integer `revid` field), official URLs (require `last_verified`), papers. Every factual statement should reference a source id here.
+
+### Lens overlay (extension records)
+
+A lens can add statements to entities defined in another lens without redefining them. Add an extension record to `entities.jsonl`:
+
+```jsonc
+// Extension record — no id, no labels; just extends + statements
+{"extends": "@software:microsoft-word", "statements": {"influenced_by": [{"value": "@software:wordperfect"}]}}
+```
+
+The extending lens's `source_required` rule applies (not the owning lens's). The biology lens (`source_required: false`) uses this to add interpretive overlays to factual core entities.
 
 ## Taxonomy as a query
 
@@ -96,6 +109,7 @@ Do not add statements about release dates, authors, or lineage without a `source
 | 2 | done | Breadth seed: ~45 programs across Documenta/Servitora/Automata/Oracula |
 | 3 | done | Depth seed: multi-lens architecture (biology, folklore, mythology-demo) |
 | 3.5 | done | Pre-Phase-4 hardening: namespaced ids, supertype classes, sentinel values, validator hardening |
+| 3.6 | done | Cross-lens extension records, sentinel cardinality semantics, id pattern strictness, multi-preferred error, qualifier validation, factual corrections, predicate relocation |
 | 4 | next | Wikidata ingest tool |
 | 5 | — | Bulk ingest with LLM-assisted statement extraction |
 | 6 | — | Browseable site |

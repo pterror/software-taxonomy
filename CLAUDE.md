@@ -59,16 +59,17 @@ When a value is unknown or inapplicable, use sentinel objects instead of omittin
 - `{"unknown": true}` — "we know this property applies but the value is unknown" (Wikidata `somevalue`)
 - `{"novalue": true}` — "we know this property does not apply" (Wikidata `novalue`)
 
-Sentinels are accepted by the validator, skip type/range checks, and count as 1 satisfied statement for cardinality purposes.
+Sentinels count toward **MAX** cardinality but **NOT MIN**. A `1..1` required predicate with only `{"unknown": true}` is a cardinality error ("0 real values found, 1 required"). Sentinels assert presence, not content — use them for "known unknown" gaps, not to satisfy required fields.
 
 ## Conventions
 
-- Entity ids: namespaced form `<type>:<slug>` using `:` separator, pattern `^[a-z0-9][a-z0-9:_-]*$`.
+- Entity ids: namespaced form `<type>:<slug>`, pattern `^[a-z0-9][a-z0-9_-]*:[a-z0-9][a-z0-9_-]*$` — exactly one colon, non-empty parts on each side. No bare ids, no double colons.
 - Predicate ids: snake_case, `^[a-z][a-z0-9_]*$`.
 - Entity refs in statement values: `@<namespace>:<slug>` prefix.
 - Source ids in statements: must exist in `sources.jsonl` in any loaded lens.
 - Every factual claim needs a `source`. Class structure (synapomorphies, etymologies, rank hints) is intrinsic; structural predicates (`instance_of`, `subclass_of`) on class entities are exempt.
 - One record per line in all `.jsonl` files. Recompact with `jq -c`.
+- `instance_of` with `rank: "preferred"` disambiguates the primary class when multiple are present. **At most one** `instance_of` may be `preferred` — the validator errors on `multi-preferred-instance-of`.
 
 ## Class curation rule
 
@@ -123,12 +124,40 @@ The pre-commit hook runs `bun run validate`. Fix errors before committing; do no
 2. Consider whether an inverse predicate should also be added.
 3. See predicate vocab governance above.
 
+## Cross-lens entity extension (overlay model)
+
+A lens's `entities.jsonl` may contain two kinds of records:
+
+```jsonc
+// Definition record — owns the entity; exactly one definition per id across all lenses
+{
+  "id": "software:microsoft-word",
+  "labels": {"en": "Microsoft Word"},
+  "statements": { ... }
+}
+
+// Extension record — adds statements to an entity defined in another lens
+{
+  "extends": "@software:microsoft-word",
+  "statements": {
+    "influenced_by": [{"value": "@software:wordperfect"}]
+  }
+}
+```
+
+**Rules:**
+- A definition record has `id` (no `extends`). Exactly one definition per id globally — duplicate definition is an error.
+- An extension record has `extends` (no `id`, no `labels`, no `description`, no `aliases`). It targets a definition that must exist in another lens.
+- A lens cannot extend an entity it owns (`own-entity-extension` error — use the definition record instead).
+- Extension statements are tagged with `origin_lens` of the extending lens. Visible in `query --entity <id> --format text`.
+- `source_required` is evaluated against the **extending** lens's manifest, not the owning lens's. A biology overlay (`source_required: false`) can add unsourced statements to a factual-lens entity.
+
 ## Anti-confabulation
 
 The validator enforces referential integrity and warns on missing sources. Do not invent release dates, author attributions, or lineage without a citable source. If you cannot find a Wikipedia article, use the unknown sentinel (`{"unknown": true}`) on the uncertain statement rather than omitting it or guessing.
 
 ## Status
 
-**Phase 3.5** complete — pre-Phase-4 hardening: namespaced entity ids, supertype classes (technical-artifact, agent, collective), sentinel values, predicate governance schema fields, duplicate-id detection, alias resolution, deprecated predicate warnings, multi-class preferred-rank warnings.
+**Phase 3.6** complete — hardening pass two: cross-lens entity extension records (overlay model), sentinel cardinality semantics (count toward max, not min), tightened id pattern, multi-preferred-instance-of error, qualifier validation, source schema strictness (revid required for wikipedia, last_verified required for official), factual error corrections in seed corpus, predicate relocation (fork/lineage predicates to core), and tool improvements (tree --lens dependent loading, query --lens-family default action, structured cycle errors).
 
 Next: **Phase 4** — Wikidata ingest tool.

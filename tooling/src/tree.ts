@@ -1,4 +1,5 @@
 import { buildGraph, subclassesOf, instancesOf, getEntity } from "./lib/graph.ts";
+import { loadLensSet } from "./lib/load.ts";
 
 const args = process.argv.slice(2);
 
@@ -17,7 +18,15 @@ const lensFilter = lensArg ? lensArg.split(",").map((s) => s.trim()) : undefined
 
 // Build graph: always load all lenses for entity resolution, but pass filter for subclass edges
 const graph = buildGraph(lensFilter);
-const lensFilterSet = lensFilter ? new Set(lensFilter) : undefined;
+
+// When --lens is given, expand lensFilterSet to include all transitively-resolved depends_on lenses.
+// This ensures that tree --lens biology includes core's class hierarchy edges, since biology depends_on core.
+let lensFilterSet: Set<string> | undefined;
+if (lensFilter) {
+  // loadLensSet with the same filter already expands deps — collect what was loaded
+  const loadedSet = loadLensSet(lensFilter);
+  lensFilterSet = new Set(loadedSet.order);
+}
 
 const rootEntity = getEntity(graph, rootId);
 if (!rootEntity) {

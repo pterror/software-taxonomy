@@ -129,6 +129,21 @@ if (entityArg) {
   } else {
     console.log(JSON.stringify(results, null, 2));
   }
+} else if (lensFamilyArg && !entityArg && !instanceOfArg && !subclassOfArg && !hasPredicateArg) {
+  // --lens-family with no other filter: list all entities owned by matching lenses
+  const results: MergedEntity[] = [];
+  for (const [, entity] of graph.entities) {
+    if (lensFilterSet && lensFilterSet.has(entity.owner_lens)) {
+      results.push(entity);
+    }
+  }
+  if (format === "text") {
+    for (const e of results) {
+      console.log(`${e.id}  ${e.labels["en"] ?? ""}  [lens: ${e.owner_lens}]`);
+    }
+  } else {
+    console.log(JSON.stringify(results, null, 2));
+  }
 } else {
   console.error(
     "Usage:\n" +
@@ -138,7 +153,8 @@ if (entityArg) {
     "  bun run query --has-predicate <predicate-id>\n" +
     "  Add --format text for human-readable output.\n" +
     "  Add --lens <lens1,lens2,...> to restrict to specific lenses.\n" +
-    "  Add --lens-family <family> to load all lenses with a matching family."
+    "  Add --lens-family <family> to load all lenses with a matching family.\n" +
+    "  --lens-family alone lists all entities owned by matching-family lenses."
   );
   process.exit(1);
 }

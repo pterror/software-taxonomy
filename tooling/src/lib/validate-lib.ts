@@ -117,6 +117,20 @@ export function validate(lensSet: LoadedLensSet, targetLens?: Set<string>): Vali
     violations.push({ severity, lens, file, line, entityId, predicateId, rule, message });
   }
 
+  // Surface any cycle violations from topoSort
+  for (const msg of lensSet.cycleViolations) {
+    violations.push({
+      severity: "error",
+      lens: "global",
+      file: "(manifest)",
+      line: 0,
+      entityId: "?",
+      predicateId: "?",
+      rule: "lens-dependency-cycle",
+      message: msg,
+    });
+  }
+
   // Build global predicate index (check for duplicates)
   const predicateIndex = new Map<string, Predicate>();
   const predicateLens = new Map<string, string>();

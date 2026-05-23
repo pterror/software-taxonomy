@@ -129,16 +129,29 @@ export interface LoadedLensSet {
   lenses: Map<string, LoadedLens>;
   /** Dependency-ordered list of lens ids (dependencies first) */
   order: string[];
+  /** Cycle violation messages from topoSort (empty if no cycles) */
+  cycleViolations: string[];
 }
 
-function topoSort(lenses: Map<string, LensManifest>): string[] {
+export interface TopoSortResult {
+  order: string[];
+  /** Cycle violations found during sort (non-throwing) */
+  cycleViolations: string[];
+}
+
+function topoSort(lenses: Map<string, LensManifest>): TopoSortResult {
   const visited = new Set<string>();
   const result: string[] = [];
+  const cycleViolations: string[] = [];
 
   function visit(id: string, path: string[]): void {
     if (visited.has(id)) return;
     if (path.includes(id)) {
-      throw new Error(`Circular dependency in lenses: ${[...path, id].join(" -> ")}`);
+      cycleViolations.push(
+        `Circular dependency in lenses: ${[...path, id].join(" -> ")}`
+      );
+      visited.add(id); // mark visited to prevent infinite recursion
+      return;
     }
     const manifest = lenses.get(id);
     if (!manifest) {
@@ -158,7 +171,7 @@ function topoSort(lenses: Map<string, LensManifest>): string[] {
     visit(id, []);
   }
 
-  return result;
+  return { order: result, cycleViolations };
 }
 
 export function loadLensSet(filter?: string[]): LoadedLensSet {
@@ -189,7 +202,13 @@ export function loadLensSet(filter?: string[]): LoadedLensSet {
     manifestPaths.set(name, manifestPath);
   }
 
-  const order = topoSort(manifests);
+  const { order, cycleViolations } = topoSort(manifests);
+  if (cycleViolations.length > 0) {
+    // Surface cycle violations as errors on stderr; don't throw (callers may handle gracefully)
+    for (const msg of cycleViolations) {
+      process.stderr.write(`ERROR [lens-cycle] ${msg}\n`);
+    }
+  }
 
   // If filter specified, expand to include all deps (transitively)
   let loadSet: string[];
@@ -247,7 +266,7 @@ export function loadLensSet(filter?: string[]): LoadedLensSet {
     });
   }
 
-  return { lenses, order: loadSet };
+  return { lenses, order: loadSet, cycleViolations };
 }
 
 // ---- Legacy single-file loaders (kept for check-links compatibility) ----

@@ -211,18 +211,8 @@ function validateStatementEntry(
   }
 
   // Sentinel: skip value-type, value-pattern, range checks entirely
+  // Domain check migrated to Datalog.
   if (isSentinel(value)) {
-    // Domain check
-    if (pred.domain && pred.domain.length > 0) {
-      const isStructural = (predId === "instance_of" || predId === "subclass_of") && ctx.isClass;
-      if (!isStructural) {
-        const domainOk = pred.domain.some((dc) => isInstanceOf(graph, subjectId, dc.slice(1)));
-        if (!domainOk) {
-          violation("error", "domain-violation",
-            `entity '${subjectId}' must be instance_of one of [${pred.domain.join(", ")}] to use predicate '${predId}'`);
-        }
-      }
-    }
     // Source check using OWNING lens's source_required (dangling-source-ref migrated to Datalog)
     if (ctx.sourceRequired) {
       const isStructuralOnClass = ctx.isClass && (predId === "instance_of" || predId === "subclass_of");
@@ -248,33 +238,7 @@ function validateStatementEntry(
     violation("error", "value-type", `${typeErr}`);
   }
 
-  // Entity ref range check (dangling-entity-ref migrated to Datalog)
-  if (pred.value_type === "entity" && typeof value === "string" && value.startsWith("@")) {
-    const refId = value.slice(1);
-    const refEntity = graph.entities.get(refId);
-    if (refEntity) {
-      // Range check
-      if (pred.range && pred.range.length > 0) {
-        const rangeOk = pred.range.some((rc) => isInstanceOf(graph, refId, rc.slice(1)));
-        if (!rangeOk) {
-          violation("error", "range-violation",
-            `'${value}' must be instance_of one of [${pred.range.join(", ")}] but is not`);
-        }
-      }
-    }
-  }
-
-  // Domain check
-  if (pred.domain && pred.domain.length > 0) {
-    const isStructural = (predId === "instance_of" || predId === "subclass_of") && ctx.isClass;
-    if (!isStructural) {
-      const domainOk = pred.domain.some((dc) => isInstanceOf(graph, subjectId, dc.slice(1)));
-      if (!domainOk) {
-        violation("error", "domain-violation",
-          `entity '${subjectId}' must be instance_of one of [${pred.domain.join(", ")}] to use predicate '${predId}'`);
-      }
-    }
-  }
+  // Domain and range checks migrated to Datalog.
 
   // Source check using OWNING lens's source_required (dangling-source-ref migrated to Datalog)
   if (ctx.sourceRequired) {

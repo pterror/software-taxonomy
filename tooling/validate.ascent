@@ -72,3 +72,58 @@ dangling_entity_ref(x, p, t) <-- entity_ref(x, p, t, _), !entity(t, _);
 
 relation dangling_source_ref(String, String, String);
 dangling_source_ref(x, p, s) <-- stmt_src(x, p, _, s), !source_def(s, _);
+
+// ── Derived: class membership ─────────────────────────────────────────────────
+
+// is_class: entities that are instances of meta:class (directly or transitively)
+relation is_class(String);
+is_class(x) <-- transitive_instance_of(x, "meta:class");
+// meta:class itself is a class
+is_class("meta:class");
+
+// ── Derived: all non-deprecated statement uses ────────────────────────────────
+
+// has_stmt(x, p): entity x uses predicate p in at least one non-deprecated statement
+relation has_stmt(String, String);
+has_stmt(x, p) <-- entity_ref(x, p, _, rank), if rank != "deprecated";
+has_stmt(x, p) <-- stmt(x, p, _, rank), if rank != "deprecated";
+
+// ── Violation: domain_violation ──────────────────────────────────────────────
+// An entity uses a predicate without satisfying any of its domain classes.
+// Exception: instance_of and subclass_of on class entities are structural (no domain check).
+
+// domain_ok(x, p): entity x satisfies at least one domain class of predicate p
+relation domain_ok(String, String);
+domain_ok(x, p) <-- predicate_domain(p, d), transitive_instance_of(x, d);
+
+relation domain_violation(String, String);
+// Non-class entities: any predicate with domain that fails
+domain_violation(x, p) <--
+  has_stmt(x, p),
+  predicate_domain(p, _),
+  !domain_ok(x, p),
+  !is_class(x);
+// Class entities: only non-structural predicates (instance_of/subclass_of exempt)
+domain_violation(x, p) <--
+  has_stmt(x, p),
+  predicate_domain(p, _),
+  !domain_ok(x, p),
+  is_class(x),
+  if p != "instance_of",
+  if p != "subclass_of";
+
+// ── Violation: range_violation ───────────────────────────────────────────────
+// A target entity (entity ref) does not satisfy the range class of the predicate.
+// Exception: deprecated statements skip range check.
+// Only fires for resolvable entity refs (dangling handled by dangling_entity_ref).
+
+relation range_ok(String, String, String);
+range_ok(x, p, t) <-- entity_ref(x, p, t, _), predicate_range(p, r), transitive_instance_of(t, r);
+
+relation range_violation(String, String, String);
+range_violation(x, p, t) <--
+  entity_ref(x, p, t, rank),
+  if rank != "deprecated",
+  predicate_range(p, _),
+  !range_ok(x, p, t),
+  entity(t, _);

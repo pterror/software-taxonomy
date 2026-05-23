@@ -146,7 +146,8 @@ try {
 
   // ---- Sanity check: compare migrated checks between TS and Datalog ----
   // Checks currently in Datalog: duplicate_entity_id, dangling_entity_ref (dangling_source_ref stub)
-  const MIGRATED_RULES = new Set(["duplicate_entity_id", "dangling_entity_ref", "dangling_source_ref"]);
+  const MIGRATED_RULES = new Set(["duplicate_entity_id", "dangling_entity_ref", "dangling_source_ref",
+    "domain_violation", "range_violation"]);
 
   const tsForMigrated = result.violations.filter(v => MIGRATED_RULES.has(v.rule));
   const dlForMigrated = datalogViolations.filter(v => MIGRATED_RULES.has(v.rule));

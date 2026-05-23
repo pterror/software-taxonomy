@@ -202,6 +202,11 @@ function validateStatementEntry(
     if (entry.qualifiers) {
       validateQualifiers(graph, predicateIndex, violations, subjectId, predId, entry.qualifiers, ctx);
     }
+    // Warn if deprecated statement has no end_time qualifier — historical claim is open-ended
+    if (!entry.qualifiers?.end_time) {
+      violation("warning", "deprecated-no-end-time",
+        `deprecated statement on predicate '${predId}' has no end_time qualifier — add end_time to indicate when this relationship ended`);
+    }
     return;
   }
 
@@ -232,6 +237,12 @@ function validateStatementEntry(
       }
     }
     return;
+  }
+
+  // end-without-start warning: end_time qualifier without start_time is meaningless
+  if (entry.qualifiers?.end_time && !entry.qualifiers?.start_time) {
+    violation("warning", "end-without-start",
+      `statement on predicate '${predId}' has end_time qualifier but no start_time — add start_time or remove end_time`);
   }
 
   // Value type check
@@ -701,6 +712,14 @@ export function validate(lensSet: LoadedLensSet, targetLens?: Set<string>): Vali
             if (preferredCount > 1) {
               violation("error", lensId, file, line, entity.id, predId, "multi-preferred-rank",
                 `predicate '${predId}' has ${preferredCount} merged statements with rank: "preferred" — at most one may be preferred per predicate`);
+            }
+
+            // no-preferred-rank: if 2+ active statements exist with no preferred rank,
+            // and the predicate expects a preferred rank (expect_preferred !== false), warn.
+            const expectPreferred = pred.expect_preferred !== false;
+            if (expectPreferred && mergedForPred.length >= 2 && preferredCount === 0) {
+              violation("warning", lensId, file, line, entity.id, predId, "no-preferred-rank",
+                `predicate '${predId}' has ${mergedForPred.length} active statements but none has rank: "preferred" — designate the current/primary value or set expect_preferred: false on the predicate`);
             }
           }
 

@@ -92,6 +92,7 @@ export interface Predicate {
   deprecated?: boolean;
   alias_of?: string | null;
   since_version?: string;
+  expect_preferred?: boolean;
 }
 
 export interface Source {

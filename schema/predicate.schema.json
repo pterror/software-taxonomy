@@ -73,6 +73,10 @@
     "since_version": {
       "type": "string",
       "description": "Free-form version tag recording when this predicate was introduced. Pure metadata."
+    },
+    "expect_preferred": {
+      "type": "boolean",
+      "description": "When false, the no-preferred-rank validator warning is suppressed for this predicate. Default true. Set to false for predicates where multiple parallel current values are normal (e.g. written_in, runs_on, licensed_under)."
     }
   }
 }

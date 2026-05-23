@@ -49,6 +49,14 @@
     },
     "then": {
       "required": ["last_verified"]
+    },
+    "else": {
+      "if": {
+        "properties": {"kind": {"const": "interpretive"}}
+      },
+      "then": {
+        "required": ["last_verified"]
+      }
     }
   }
 }

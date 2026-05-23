@@ -87,6 +87,33 @@ New class checklist:
 - **To merge near-duplicates**: set `alias_of` on the deprecated predicate pointing to the canonical. The validator resolves constraints from the canonical and logs an info message on use.
 - **`expect_preferred` flag**: set `expect_preferred: false` on predicates where multiple parallel current values are the norm and designating a "primary" would be wrong (e.g. `written_in`, `runs_on`, `licensed_under`, `principal_author`, `synapomorphy`, `aspect_of`). The `no-preferred-rank` validator warning is suppressed for predicates with this flag. Default is `true`.
 
+## Validation architecture
+
+Validation is split across two layers:
+
+**JSON Schema (AJV)** — record shape. Runs first; aborts on failure.
+- `schema/entity.schema.json`, `schema/predicate.schema.json`, `schema/source.schema.json`, `schema/manifest.schema.json`
+
+**TypeScript structural checks** (`tooling/src/lib/validate-lib.ts`) — checks requiring TS semantics:
+- `lens-dependency-cycle`, `duplicate-predicate-id`, `predicate-lens-mismatch`
+- `dangling-extension`, `own-entity-extension`
+- `unknown-predicate`, `deprecated-predicate`, `alias-chain-too-long`
+- `value-type`, `qualifier-value-type`
+
+**Datalog graph invariants** (`tooling/validate.ascent`) — checks over the entity/predicate graph:
+- `duplicate_entity_id`, `dangling_entity_ref`, `dangling_source_ref`
+- `domain_violation`, `range_violation`
+- `cardinality_violation_min`, `cardinality_violation_max`
+- `multi_preferred`, `multi_preferred_instance_of`, `no_preferred_rank`
+- `deprecated_no_end_time`, `end_without_start`
+- `source_required_violation`, `cross_lens_fictional`
+- `qualifier_unknown_predicate`, `qualifier_dangling_ref`
+- `alias_self_reference`, `alias_cycle`
+
+**To add a new invariant:** edit `tooling/validate.ascent`. Declare an output relation and write the rule. The harness (`tooling/src/lib/datalog.ts`) picks it up automatically if you add the relation name to `VIOLATION_RELATIONS` and `RULE_SEVERITY`.
+
+**Regression fixtures:** `tooling/test/fixtures/`. Each fixture is a minimal lens set + `expected.json`. Run: `bun run test-fixtures`.
+
 ## Validator warnings reference
 
 | Rule | Severity | Meaning |
@@ -212,6 +239,15 @@ Extension records now validate at full parity with definition records: schema ch
 The validator enforces referential integrity and warns on missing sources. Do not invent release dates, author attributions, or lineage without a citable source. If you cannot find a Wikipedia article, use the unknown sentinel (`{"unknown": true}`) on the uncertain statement rather than omitting it or guessing.
 
 ## Status
+
+**Phase 3.9** complete — migrate graph-invariant validator from procedural TypeScript to Datalog (ascent-interpreter):
+- All graph invariants moved to `tooling/validate.ascent` (18 rule clusters, ~400 lines of Datalog).
+- `tooling/src/lib/datalog.ts` added: fact emission, subprocess harness, output parsing, provenance enrichment.
+- `tooling/src/lib/validate-lib.ts` reduced from ~770 lines to ~220: structural/value-type checks only.
+- `tooling/flake.nix` updated to expose `ascent-interpreter` binary via `nix develop`.
+- Regression fixture system added: `tooling/test/fixtures/` + `bun run test-fixtures` (5 fixtures).
+- Key Datalog design decisions: `@`-stripped entity refs in `entity_ref` facts (pre-processed in TS emitter); `entity_def` with line number for same-lens duplicate detection; sentinels as `"__sentinel__"` string + separate `is_sentinel` relation; `stmt_rank(x, p, rankKey, rank)` for per-statement qualifier tracking; `has_qualifier` + `qualifier_entity_ref` for qualifier invariants.
+- Known limitations: cardinality min only fires when entity has ≥1 statement for the predicate (absent predicates not checked); value-pattern checks remain in TS.
 
 **Phase 3.8** complete — validator structural refactor + qualifier completeness + temporal corpus completion:
 - Extracted `validateStatementEntry` as a single shared function (definition and extension paths unified — no more behavioral drift).

@@ -80,6 +80,7 @@ Edit the relevant `data/lenses/<lens>/entities.jsonl` (one record per line). Run
 
 ```bash
 bun run validate                                       # schema + referential integrity + source warnings
+bun run test-fixtures                                  # regression fixture tests
 bun run tree --root @class:software                    # ASCII cladogram
 bun run query --entity software:microsoft-word         # pretty-print one entity
 bun run query --subclass-of @class:software --transitive   # all software classes
@@ -87,6 +88,18 @@ bun run query --instance-of @class:word-processor      # all word processors
 bun run query --has-predicate wikipedia                # all entities with a Wikipedia link
 bun run check-links                                    # HEAD-check all Wikipedia slugs
 ```
+
+## How validation works
+
+`bun run validate` runs three passes:
+
+1. **JSON Schema (AJV)** — checks the shape of every record against the JSON Schema files in `schema/`. Fails fast; semantic passes are skipped on schema errors.
+
+2. **TypeScript structural checks** (`tooling/src/lib/validate-lib.ts`) — checks that require runtime type reasoning: `value-type`, `qualifier-value-type`, `unknown-predicate`, `predicate-lens-mismatch`, extension structural integrity, `alias-chain-too-long`.
+
+3. **Datalog graph invariants** (`tooling/validate.ascent`) — checks over the entity/statement/predicate graph: referential integrity, cardinality, domain/range, multi-preferred, source-required, cross-lens fictional, alias cycles, temporal qualifier rules. Evaluated by `ascent-interpreter` (available via `nix develop`).
+
+To add a new graph invariant: declare an output relation in `validate.ascent` and write the rule. Add the relation name to `VIOLATION_RELATIONS` and `RULE_SEVERITY` in `tooling/src/lib/datalog.ts`.
 
 ## Anti-confabulation
 
@@ -112,7 +125,8 @@ Do not add statements about release dates, authors, or lineage without a `source
 | 3.6 | done | Cross-lens extension records, sentinel cardinality semantics, id pattern strictness, multi-preferred error, qualifier validation, factual corrections, predicate relocation |
 | 3.7 | done | Validator parity (extension records), temporal modeling discipline (Wikidata rank pattern), concept-class splits (cron, make), two audit waves of temporal/multi-value corrections (~28 programs), tooling fixes |
 | 3.8 | done | Validator refactor (single validateStatementEntry), qualifier validation on deprecated, multi-preferred on merged graph, qualifier entity-ref/sentinel support, new warnings (deprecated-no-end-time, end-without-start, no-preferred-rank), interpretive source last_verified, temporal completions (vim, sublime-text, vscode), PostgreSQL concept split |
-| 3.9 | next | Biology overlay substrate: organ/metabolism class entities, organ vs feature naming, biology predicate expansion |
+| 3.9 | done | Migrate graph-invariant validation from TypeScript to Datalog (ascent-interpreter); 18 rule clusters in validate.ascent; regression fixture system |
+| 4 | next | Biology overlay substrate: organ/metabolism class entities, organ vs feature naming, biology predicate expansion |
 | 4 | — | Wikidata ingest tool |
 | 5 | — | Bulk ingest with LLM-assisted statement extraction |
 | 6 | — | Browseable site |

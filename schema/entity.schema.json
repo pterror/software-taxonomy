@@ -6,6 +6,22 @@
   "required": ["id", "labels", "statements"],
   "additionalProperties": false,
   "$defs": {
+    "SentinelUnknown": {
+      "type": "object",
+      "required": ["unknown"],
+      "additionalProperties": false,
+      "properties": {
+        "unknown": {"type": "boolean", "enum": [true]}
+      }
+    },
+    "SentinelNovalue": {
+      "type": "object",
+      "required": ["novalue"],
+      "additionalProperties": false,
+      "properties": {
+        "novalue": {"type": "boolean", "enum": [true]}
+      }
+    },
     "StatementEntry": {
       "type": "object",
       "required": ["value"],
@@ -15,7 +31,9 @@
           "oneOf": [
             {"type": "string"},
             {"type": "number"},
-            {"type": "boolean"}
+            {"type": "boolean"},
+            {"$ref": "#/$defs/SentinelUnknown"},
+            {"$ref": "#/$defs/SentinelNovalue"}
           ]
         },
         "source": {
@@ -42,8 +60,8 @@
   "properties": {
     "id": {
       "type": "string",
-      "pattern": "^[a-z0-9][a-z0-9-]*$",
-      "description": "Unique entity id in kebab-case."
+      "pattern": "^[a-z0-9][a-z0-9:_-]*$",
+      "description": "Unique entity id in namespaced form, e.g. 'software:microsoft-word' or 'class:operating-system'."
     },
     "labels": {
       "type": "object",

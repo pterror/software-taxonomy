@@ -29,6 +29,10 @@
     "fetched": {
       "type": "string",
       "description": "ISO date when the source was fetched."
+    },
+    "last_verified": {
+      "type": "string",
+      "description": "ISO date when the source was last manually re-checked against the underlying citation."
     }
   }
 }

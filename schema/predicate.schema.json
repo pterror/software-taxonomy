@@ -58,6 +58,21 @@
     "transitive": {
       "type": "boolean",
       "description": "Whether this predicate chains transitively (default false)."
+    },
+    "deprecated": {
+      "type": "boolean",
+      "description": "When true, using this predicate emits a validator warning. Document the successor in description."
+    },
+    "alias_of": {
+      "oneOf": [
+        {"type": "string"},
+        {"type": "null"}
+      ],
+      "description": "Id of the canonical predicate this one aliases. Validator resolves constraints from the canonical."
+    },
+    "since_version": {
+      "type": "string",
+      "description": "Free-form version tag recording when this predicate was introduced. Pure metadata."
     }
   }
 }

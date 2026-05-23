@@ -149,15 +149,67 @@ export function validate(lensSet: LoadedLensSet, targetLens?: Set<string>): Vali
     });
   }
 
-  /** Resolve predicate, following alias_of if present. Returns [resolved, aliasedFrom] */
+  /** Resolve predicate, following alias_of chains up to 5 hops. Returns [resolved, aliasedFrom] */
   function resolvePredicate(id: string): [Predicate | undefined, string | undefined] {
     const pred = predicateIndex.get(id);
     if (!pred) return [undefined, undefined];
-    if (pred.alias_of) {
-      const canonical = predicateIndex.get(pred.alias_of);
-      return [canonical, id];
+    if (!pred.alias_of) return [pred, undefined];
+
+    // Check for self-alias
+    if (pred.alias_of === pred.id) {
+      violations.push({
+        severity: "error",
+        lens: predicateLens.get(id) ?? "global",
+        file: "(predicate index)",
+        line: 0,
+        entityId: "?",
+        predicateId: id,
+        rule: "self-alias",
+        message: `predicate '${id}' has alias_of pointing to itself`,
+      });
+      return [undefined, id];
     }
-    return [pred, undefined];
+
+    // Follow chain up to 5 hops
+    let current = pred;
+    let hops = 0;
+    const firstAlias = id;
+    while (current.alias_of) {
+      hops++;
+      if (hops > 5) {
+        violations.push({
+          severity: "error",
+          lens: predicateLens.get(id) ?? "global",
+          file: "(predicate index)",
+          line: 0,
+          entityId: "?",
+          predicateId: id,
+          rule: "alias-chain-too-long",
+          message: `predicate '${id}' alias_of chain exceeds 5 hops`,
+        });
+        return [undefined, firstAlias];
+      }
+      const next = predicateIndex.get(current.alias_of);
+      if (!next) {
+        // dangling alias target — let the "unknown predicate" path handle it
+        return [undefined, firstAlias];
+      }
+      if (next.id === id) {
+        violations.push({
+          severity: "error",
+          lens: predicateLens.get(id) ?? "global",
+          file: "(predicate index)",
+          line: 0,
+          entityId: "?",
+          predicateId: id,
+          rule: "alias-cycle",
+          message: `predicate '${id}' alias_of forms a cycle`,
+        });
+        return [undefined, firstAlias];
+      }
+      current = next;
+    }
+    return [current, firstAlias];
   }
 
   // Build entity owner map — ERROR on duplicate entity id across lenses
@@ -238,6 +290,12 @@ export function validate(lensSet: LoadedLensSet, targetLens?: Set<string>): Vali
           if (!hasPreferred) {
             violation("warning", lensId, file, line, entity.id, "instance_of", "multi-class-no-preferred-rank",
               `entity has ${instanceOfEntries.length} instance_of statements but none has rank: "preferred" — add preferred rank to disambiguate primary class`);
+          }
+          // Multi-preferred error: more than one with rank=preferred
+          const preferredCount = instanceOfEntries.filter(e => e.rank === "preferred").length;
+          if (preferredCount > 1) {
+            violation("error", lensId, file, line, entity.id, "instance_of", "multi-preferred-instance-of",
+              `entity has ${preferredCount} instance_of statements with rank: "preferred" — at most one may be preferred`);
           }
         }
 
@@ -384,14 +442,38 @@ export function validate(lensSet: LoadedLensSet, targetLens?: Set<string>): Vali
               }
             }
 
-            // Qualifier entity refs
+            // Qualifier validation
             if (entry.qualifiers) {
-              for (const [qPred, qVal] of Object.entries(entry.qualifiers)) {
+              for (const [qPredId, qVal] of Object.entries(entry.qualifiers)) {
+                // 1. Qualifier key must be a known predicate (warn if not)
+                const qPredDef = predicateIndex.get(qPredId);
+                if (!qPredDef) {
+                  violation("warning", lensId, file, line, entity.id, predId, "unknown-qualifier-predicate",
+                    `qualifier key '${qPredId}' is not a defined predicate`);
+                  // Still check entity ref resolution for unknown predicates
+                  if (typeof qVal === "string" && qVal.startsWith("@")) {
+                    const refId = qVal.slice(1);
+                    if (!graph.entities.has(refId)) {
+                      violation("error", lensId, file, line, entity.id, predId, "dangling-qualifier-ref",
+                        `dangling entity ref '${qVal}' in qualifier '${qPredId}'`);
+                    }
+                  }
+                  continue;
+                }
+
+                // 2. Qualifier value type check
+                const qTypeErr = checkValueType(qVal as string | number | boolean, qPredDef);
+                if (qTypeErr) {
+                  violation("error", lensId, file, line, entity.id, predId, "qualifier-value-type",
+                    `qualifier '${qPredId}': ${qTypeErr}`);
+                }
+
+                // 3. Entity ref qualifier values must resolve (no domain/range on qualifiers)
                 if (typeof qVal === "string" && qVal.startsWith("@")) {
                   const refId = qVal.slice(1);
                   if (!graph.entities.has(refId)) {
                     violation("error", lensId, file, line, entity.id, predId, "dangling-qualifier-ref",
-                      `dangling entity ref '${qVal}' in qualifier '${qPred}'`);
+                      `dangling entity ref '${qVal}' in qualifier '${qPredId}'`);
                   }
                 }
               }
@@ -399,18 +481,22 @@ export function validate(lensSet: LoadedLensSet, targetLens?: Set<string>): Vali
           }
 
           // 8. Cardinality check (using merged statements, counted over non-deprecated)
-          // Sentinel values count as 1 satisfied statement
+          // Sentinel values count toward MAX but NOT MIN:
+          // real_count = non-deprecated non-sentinel entries (used for min check)
+          // total_count = non-deprecated entries including sentinels (used for max check)
           if (pred.cardinality) {
             const { min, max } = parseCardinality(pred.cardinality);
             const mergedEntries = allStatements[predId] ?? [];
-            const activeCount = mergedEntries.filter((e) => e.rank !== "deprecated").length;
-            if (activeCount < min) {
+            const activeEntries = mergedEntries.filter((e) => e.rank !== "deprecated");
+            const real_count = activeEntries.filter((e) => !isSentinel(e.value)).length;
+            const total_count = activeEntries.length;
+            if (real_count < min) {
               violation("error", lensId, file, line, entity.id, predId, "cardinality-violation",
-                `cardinality '${pred.cardinality}' requires min ${min} statements, found ${activeCount}`);
+                `cardinality '${pred.cardinality}' requires min ${min} real values, found ${real_count} (sentinels do not satisfy minimum)`);
             }
-            if (max !== null && activeCount > max) {
+            if (max !== null && total_count > max) {
               violation("error", lensId, file, line, entity.id, predId, "cardinality-violation",
-                `cardinality '${pred.cardinality}' allows max ${max} statements, found ${activeCount}`);
+                `cardinality '${pred.cardinality}' allows max ${max} statements, found ${total_count}`);
             }
           }
         }

@@ -60,8 +60,8 @@
   "properties": {
     "id": {
       "type": "string",
-      "pattern": "^[a-z0-9][a-z0-9:_-]*$",
-      "description": "Unique entity id in namespaced form, e.g. 'software:microsoft-word' or 'class:operating-system'."
+      "pattern": "^[a-z0-9][a-z0-9_-]*:[a-z0-9][a-z0-9_-]*$",
+      "description": "Unique entity id in namespaced form, e.g. 'software:microsoft-word' or 'class:operating-system'. Exactly one colon; non-empty parts on each side."
     },
     "labels": {
       "type": "object",

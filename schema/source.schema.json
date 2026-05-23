@@ -16,7 +16,8 @@
       "description": "Source type."
     },
     "title": {
-      "type": "string"
+      "type": "string",
+      "minLength": 1
     },
     "url": {
       "type": "string",
@@ -24,6 +25,7 @@
     },
     "revid": {
       "type": "integer",
+      "minimum": 1,
       "description": "Wikipedia revision id."
     },
     "fetched": {
@@ -33,6 +35,20 @@
     "last_verified": {
       "type": "string",
       "description": "ISO date when the source was last manually re-checked against the underlying citation."
+    }
+  },
+  "if": {
+    "properties": {"kind": {"const": "wikipedia"}}
+  },
+  "then": {
+    "required": ["revid"]
+  },
+  "else": {
+    "if": {
+      "properties": {"kind": {"const": "official"}}
+    },
+    "then": {
+      "required": ["last_verified"]
     }
   }
 }

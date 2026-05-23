@@ -103,11 +103,10 @@ const result = validate(fullLensSet, targetLens);
 
 // Print violations
 for (const v of result.violations) {
-  const prefix = v.severity === "error" ? "ERROR " : "WARN  ";
+  const prefix = v.severity === "error" ? "ERROR " : v.severity === "warning" ? "WARN  " : "INFO  ";
   const loc = v.file && v.line ? `${v.file}:${v.line}` : v.file || "(unknown)";
-  console[v.severity === "error" ? "error" : "warn"](
-    `${prefix} [${v.lens}] ${loc} [${v.entityId}] {${v.predicateId}} ${v.rule}: ${v.message}`
-  );
+  const logFn = v.severity === "error" ? console.error : v.severity === "warning" ? console.warn : console.info;
+  logFn(`${prefix} [${v.lens}] ${loc} [${v.entityId}] {${v.predicateId}} ${v.rule}: ${v.message}`);
 }
 
 // Print summary

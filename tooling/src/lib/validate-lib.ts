@@ -3,10 +3,10 @@
  * No I/O — takes a LoadedLensSet and returns violations.
  */
 
-import { LoadedLensSet, Entity, Predicate, LensManifest } from "./load.ts";
+import { LoadedLensSet, Entity, Predicate, LensManifest, isSentinel } from "./load.ts";
 import { isInstanceOf, clearTransitiveCache, buildGraph, Graph } from "./graph.ts";
 
-export type Severity = "error" | "warning";
+export type Severity = "error" | "warning" | "info";
 
 export interface Violation {
   severity: Severity;
@@ -149,13 +149,39 @@ export function validate(lensSet: LoadedLensSet, targetLens?: Set<string>): Vali
     });
   }
 
-  // Build entity owner map
+  /** Resolve predicate, following alias_of if present. Returns [resolved, aliasedFrom] */
+  function resolvePredicate(id: string): [Predicate | undefined, string | undefined] {
+    const pred = predicateIndex.get(id);
+    if (!pred) return [undefined, undefined];
+    if (pred.alias_of) {
+      const canonical = predicateIndex.get(pred.alias_of);
+      return [canonical, id];
+    }
+    return [pred, undefined];
+  }
+
+  // Build entity owner map — ERROR on duplicate entity id across lenses
   const entityOwner = new Map<string, string>(); // entity id -> lens id that owns it
+  const entityOwnerLine = new Map<string, number>(); // entity id -> line number in owning lens
   for (const lensId of lensSet.order) {
     const lens = lensSet.lenses.get(lensId)!;
-    for (const { record: entity } of lens.entities) {
-      if (!entityOwner.has(entity.id)) {
+    for (const { record: entity, file, line } of lens.entities) {
+      if (entityOwner.has(entity.id)) {
+        const ownerLens = entityOwner.get(entity.id)!;
+        const ownerLine = entityOwnerLine.get(entity.id)!;
+        violations.push({
+          severity: "error",
+          lens: lensId,
+          file,
+          line,
+          entityId: entity.id,
+          predicateId: "?",
+          rule: "duplicate-entity-id",
+          message: `Entity id '${entity.id}' also appears in lens '${ownerLens}' (line ${ownerLine}). Entity ids must be globally unique across all lenses.`,
+        });
+      } else {
         entityOwner.set(entity.id, lensId);
+        entityOwnerLine.set(entity.id, line);
       }
     }
   }
@@ -199,15 +225,26 @@ export function validate(lensSet: LoadedLensSet, targetLens?: Set<string>): Vali
 
       // Validate entities in this lens
       for (const { record: entity, file, line } of lens.entities) {
-        const isClass = isInstanceOf(graph, entity.id, "class");
+        const isClass = isInstanceOf(graph, entity.id, "class") ||
+          (entity.statements["instance_of"] ?? []).some(e => typeof e.value === "string" && (e.value === "@meta:class" || e.value === "@class"));
 
         // Cardinality check: gather all statements on this entity across all lenses
         const mergedEntity = graph.entities.get(entity.id);
         const allStatements = mergedEntity ? mergedEntity.statements : entity.statements;
 
+        // Multi-class preferred-rank warning: if entity has >1 instance_of statements, none with rank=preferred
+        const instanceOfEntries = (entity.statements["instance_of"] ?? []).filter(e => e.rank !== "deprecated");
+        if (instanceOfEntries.length > 1) {
+          const hasPreferred = instanceOfEntries.some(e => e.rank === "preferred");
+          if (!hasPreferred) {
+            violation("warning", lensId, file, line, entity.id, "instance_of", "multi-class-no-preferred-rank",
+              `entity has ${instanceOfEntries.length} instance_of statements but none has rank: "preferred" — add preferred rank to disambiguate primary class`);
+          }
+        }
+
         // We only check statements that appear in THIS lens's entity record
         for (const [predId, entries] of Object.entries(entity.statements)) {
-          const pred = predicateIndex.get(predId);
+          const [pred, aliasedFrom] = resolvePredicate(predId);
 
           // 1. Unknown predicate
           if (!pred) {
@@ -216,14 +253,70 @@ export function validate(lensSet: LoadedLensSet, targetLens?: Set<string>): Vali
             continue;
           }
 
+          // Alias usage info
+          if (aliasedFrom) {
+            violations.push({
+              severity: "info",
+              lens: lensId,
+              file,
+              line,
+              entityId: entity.id,
+              predicateId: predId,
+              rule: "alias-usage",
+              message: `predicate '${predId}' is an alias of '${pred.id}'; using canonical constraints`,
+            });
+          }
+
+          // Deprecated predicate warning (per use, for each non-deprecated statement)
+          if (pred.deprecated) {
+            for (const entry of entries) {
+              if (entry.rank !== "deprecated") {
+                violation("warning", lensId, file, line, entity.id, predId, "deprecated-predicate",
+                  `predicate '${predId}' is deprecated — see predicate description for successor`);
+              }
+            }
+          }
+
           for (const entry of entries) {
             const { value, source, rank } = entry;
 
             // Skip deprecated statements for most checks (cardinality excluded, done separately)
             if (rank === "deprecated") continue;
 
+            // Sentinel: skip value-type, value-pattern, range checks entirely
+            if (isSentinel(value)) {
+              // Still do source check and domain check below, but skip type/range
+              // Domain check
+              if (pred.domain && pred.domain.length > 0) {
+                const isStructural = (predId === "instance_of" || predId === "subclass_of") && isClass;
+                if (!isStructural) {
+                  const domainOk = pred.domain.some((dc) => isInstanceOf(graph, entity.id, dc.slice(1)));
+                  if (!domainOk) {
+                    violation("error", lensId, file, line, entity.id, predId, "domain-violation",
+                      `entity '${entity.id}' must be instance_of one of [${pred.domain.join(", ")}] to use predicate '${predId}'`);
+                  }
+                }
+              }
+              // Source check
+              const ownerLensIdS = entityOwner.get(entity.id) ?? lensId;
+              const ownerManifestS = lensSet.lenses.get(ownerLensIdS)?.manifest;
+              if (ownerManifestS?.source_required) {
+                const isStructuralOnClass = isClass && (predId === "instance_of" || predId === "subclass_of");
+                if (!isStructuralOnClass) {
+                  if (source == null) {
+                    violation("error", lensId, file, line, entity.id, predId, "source-required",
+                      `lens '${ownerLensIdS}' requires sources, but statement has no source`);
+                  } else if (!allSourceIds.has(source)) {
+                    violation("error", lensId, file, line, entity.id, predId, "dangling-source-ref",
+                      `source '${source}' not found in any lens's sources.jsonl`);
+                  }
+                }
+              }
+              continue;
+            }
+
             // 2. Value type check
-            const typeErr = checkValueType(value, pred);
+            const typeErr = checkValueType(value as string | number | boolean, pred);
             if (typeErr) {
               violation("error", lensId, file, line, entity.id, predId, "value-type",
                 `${typeErr}`);
@@ -307,6 +400,7 @@ export function validate(lensSet: LoadedLensSet, targetLens?: Set<string>): Vali
           }
 
           // 8. Cardinality check (using merged statements, counted over non-deprecated)
+          // Sentinel values count as 1 satisfied statement
           if (pred.cardinality) {
             const { min, max } = parseCardinality(pred.cardinality);
             const mergedEntries = allStatements[predId] ?? [];
@@ -324,10 +418,10 @@ export function validate(lensSet: LoadedLensSet, targetLens?: Set<string>): Vali
       }
     }
 
-    // Count violations attributed to this lens
+    // Count violations attributed to this lens (info messages not counted)
     for (let i = countViolationsBefore; i < violations.length; i++) {
       if (violations[i].severity === "error") lensErrors++;
-      else lensWarnings++;
+      else if (violations[i].severity === "warning") lensWarnings++;
     }
 
     summaries.push({
@@ -343,5 +437,6 @@ export function validate(lensSet: LoadedLensSet, targetLens?: Set<string>): Vali
   const totalErrors = violations.filter((v) => v.severity === "error").length;
   const totalWarnings = violations.filter((v) => v.severity === "warning").length;
 
+  // Info messages don't contribute to error/warning counts but are included in violations
   return { violations, summaries, totalErrors, totalWarnings };
 }

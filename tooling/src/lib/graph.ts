@@ -1,7 +1,7 @@
 import { loadLensSet, Entity, StatementEntry, Predicate } from "./load.ts";
 
 export interface TaggedStatement {
-  value: string | number | boolean;
+  value: string | number | boolean | import("./load.ts").SentinelValue;
   source?: string;
   qualifiers?: Record<string, string | number | boolean>;
   rank?: "preferred" | "normal" | "deprecated";

@@ -45,8 +45,18 @@ export function loadJsonl<T = unknown>(filePath: string): LoadedRecord<T>[] {
 
 // ---- Data types ----
 
+export type SentinelUnknown = { unknown: true };
+export type SentinelNovalue = { novalue: true };
+export type SentinelValue = SentinelUnknown | SentinelNovalue;
+
+export function isSentinel(value: unknown): value is SentinelValue {
+  if (typeof value !== "object" || value === null) return false;
+  return ("unknown" in value && (value as Record<string, unknown>)["unknown"] === true) ||
+         ("novalue" in value && (value as Record<string, unknown>)["novalue"] === true);
+}
+
 export interface StatementEntry {
-  value: string | number | boolean;
+  value: string | number | boolean | SentinelValue;
   source?: string;
   qualifiers?: Record<string, string | number | boolean>;
   rank?: "preferred" | "normal" | "deprecated";
@@ -72,6 +82,9 @@ export interface Predicate {
   cardinality: string;
   inverse?: string;
   transitive?: boolean;
+  deprecated?: boolean;
+  alias_of?: string | null;
+  since_version?: string;
 }
 
 export interface Source {

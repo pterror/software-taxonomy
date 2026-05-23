@@ -2,8 +2,9 @@ import { readFileSync } from "fs";
 import { resolve } from "path";
 import Ajv from "ajv/dist/2020";
 import addFormats from "ajv-formats";
-import { loadLensSet, schemaDir } from "./lib/load.ts";
+import { loadLensSet, schemaDir, __dirname } from "./lib/load.ts";
 import { validate } from "./lib/validate-lib.ts";
+import { emitFacts, runDatalog, enrichViolations } from "./lib/datalog.ts";
 
 // ---- CLI args ----
 
@@ -128,12 +129,46 @@ if (schemaErrors > 0) {
   process.exit(1);
 }
 
-// ---- Semantic validation ----
+// ---- Semantic validation (TS validator) ----
 
 const targetLens = lensFilter ? new Set(lensFilter) : undefined;
 const result = validate(fullLensSet, targetLens);
 
-// Print violations
+// ---- Datalog validator (runs in parallel for sanity-checking) ----
+
+const rulesPath = resolve(__dirname, "../../validate.ascent");
+const { facts, provenance } = emitFacts(fullLensSet);
+
+let datalogViolations: import("./lib/validate-lib.ts").Violation[] = [];
+try {
+  const rawDlViolations = await runDatalog(facts, rulesPath);
+  datalogViolations = enrichViolations(rawDlViolations, fullLensSet, provenance);
+
+  // ---- Sanity check: compare migrated checks between TS and Datalog ----
+  // Checks currently in Datalog: duplicate_entity_id, dangling_entity_ref (dangling_source_ref stub)
+  const MIGRATED_RULES = new Set(["duplicate_entity_id", "dangling_entity_ref"]);
+
+  const tsForMigrated = result.violations.filter(v => MIGRATED_RULES.has(v.rule));
+  const dlForMigrated = datalogViolations.filter(v => MIGRATED_RULES.has(v.rule));
+
+  if (tsForMigrated.length !== dlForMigrated.length) {
+    console.error(`\n[sanity] DRIFT: TS found ${tsForMigrated.length} violations for migrated rules, Datalog found ${dlForMigrated.length}`);
+    if (tsForMigrated.length > 0) {
+      console.error("[sanity] TS violations:");
+      for (const v of tsForMigrated) console.error(`  ${v.rule} ${v.entityId} ${v.predicateId}`);
+    }
+    if (dlForMigrated.length > 0) {
+      console.error("[sanity] Datalog violations:");
+      for (const v of dlForMigrated) console.error(`  ${v.rule} ${v.entityId} ${v.predicateId}`);
+    }
+  }
+} catch (err) {
+  console.error(`[datalog] Warning: Datalog validator failed: ${err instanceof Error ? err.message : String(err)}`);
+  console.error("[datalog] Continuing with TS validator only.");
+}
+
+// ---- Print violations (TS validator is authoritative for now) ----
+
 for (const v of result.violations) {
   const prefix = v.severity === "error" ? "ERROR " : v.severity === "warning" ? "WARN  " : "INFO  ";
   const loc = v.file && v.line ? `${v.file}:${v.line}` : v.file || "(unknown)";

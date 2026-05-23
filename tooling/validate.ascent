@@ -1,0 +1,69 @@
+// Software Taxonomy — Datalog invariant rules
+// Facts are emitted by tooling/src/lib/datalog.ts from the loaded lens set.
+// Violations are parsed from this program's stdout relation output.
+//
+// Fact schema (emitted by datalog.ts):
+//   entity(id, owner_lens)
+//   entity_ref(subject, predicate, target_id, rank)  — entity-valued stmts; target_id has @ stripped
+//   stmt(subject, predicate, value, rank)             — all stmts (non-deprecated); value: string repr
+//   stmt_src(subject, predicate, rank, source)        — source for stmts that have one
+//   is_sentinel(subject, predicate, rank_value_key)   — marks sentinel-valued stmts
+//   predicate_def(id, value_type, card_min, card_max, expect_preferred, lens_id)
+//     card_min: i32, card_max: i32 (-1 = unbounded)
+//     expect_preferred: "true" or "false"
+//   predicate_domain(predicate_id, class_id)
+//   predicate_range(predicate_id, class_id)
+//   predicate_alias(alias_id, canonical_id)
+//   source_def(id, lens_id)
+//   lens(id, register, source_required)              — source_required: "true"/"false"
+//   entity_owner(entity_id, owner_lens_id, source_required)
+//
+// To add a new invariant: declare an output relation and write a rule below.
+// Run manually: cat facts.dl validate.ascent | ascent-interpreter /dev/stdin
+
+// ── Input relations ───────────────────────────────────────────────────────────
+
+relation entity(String, String);
+relation entity_ref(String, String, String, String);
+relation stmt(String, String, String, String);
+relation stmt_src(String, String, String, String);
+relation is_sentinel(String, String, String);
+relation predicate_def(String, String, i32, i32, String, String);
+relation predicate_domain(String, String);
+relation predicate_range(String, String);
+relation predicate_alias(String, String);
+relation source_def(String, String);
+relation lens(String, String, String);
+relation entity_owner(String, String, String);
+
+// ── Derived: transitive class hierarchy ──────────────────────────────────────
+
+relation subclass_of(String, String);
+subclass_of(c, p) <-- entity_ref(c, "subclass_of", p, _);
+
+relation transitive_subclass_of(String, String);
+transitive_subclass_of(c, p) <-- subclass_of(c, p);
+transitive_subclass_of(c, p) <-- subclass_of(c, m), transitive_subclass_of(m, p);
+
+relation instance_of_direct(String, String);
+instance_of_direct(e, c) <-- entity_ref(e, "instance_of", c, _);
+
+relation transitive_instance_of(String, String);
+transitive_instance_of(e, c) <-- instance_of_direct(e, c);
+transitive_instance_of(e, c) <-- transitive_instance_of(e, m), transitive_subclass_of(m, c);
+
+// ── Violation: duplicate_entity_id ───────────────────────────────────────────
+
+relation duplicate_entity_id(String, String, String);
+duplicate_entity_id(x, l1, l2) <-- entity(x, l1), entity(x, l2), if l1 < l2;
+
+// ── Violation: dangling_entity_ref ───────────────────────────────────────────
+
+relation dangling_entity_ref(String, String, String);
+dangling_entity_ref(x, p, t) <-- entity_ref(x, p, t, _), !entity(t, _);
+
+// ── Violation: dangling_source_ref ───────────────────────────────────────────
+// (stub — activated in commit 2)
+
+relation dangling_source_ref(String, String, String);
+// dangling_source_ref(x, p, s) <-- stmt_src(x, p, _, s), !source_def(s, _);

@@ -196,6 +196,17 @@ The validator enforces referential integrity and warns on missing sources. Do no
 
 ## Status
 
+**Phase 3.7** complete — validator parity + temporal discipline + retroactive fixes:
+- Extension records now validate at full parity with definition records (schema, domain, range, qualifier, cross-lens, source-required using owner policy).
+- `source_required` for extensions uses the OWNING lens's policy, not the extending lens's.
+- `"interpretive"` added to source `kind` enum for biology/interpretive warrants.
+- Multi-preferred-rank check generalized to all predicates (not just `instance_of`).
+- cron and make split into concept classes + instance entities (`@class:cron`, `@class:make`).
+- 14 retroactive temporal fixes from audit wave 2 (nginx, mysql, openrc, travis-ci, autogpt, langchain, cmake, git, postgresql, caddy + substrates).
+- 14 programs audited and fixed in wave 3 (sendmail, gimp, vim, jenkins, adobe-photoshop, mariadb, mongodb, redis, elasticsearch, mercurial, wordperfect, emacs, systemd + substrates).
+- 5 duplicate source records deduped (cmake, bazel, ninja, kitware, postgresql).
+- Tooling: `bun run tree` default root fixed to `@class:software`; duplicate source id detection; single lens load per validate run.
+
 **Phase 3.6** complete — hardening pass two: cross-lens entity extension records (overlay model), sentinel cardinality semantics (count toward max, not min), tightened id pattern, multi-preferred-instance-of error, qualifier validation, source schema strictness (revid required for wikipedia, last_verified required for official), factual error corrections in seed corpus, predicate relocation (fork/lineage predicates to core), and tool improvements (tree --lens dependent loading, query --lens-family default action, structured cycle errors).
 
-Next: **Phase 4** — Wikidata ingest tool.
+Next: **Phase 3.8** — Biology overlay readiness (~26 organ/metabolism class entities, organ vs feature naming, biology predicate expansion).

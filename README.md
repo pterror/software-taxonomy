@@ -110,6 +110,8 @@ Do not add statements about release dates, authors, or lineage without a `source
 | 3 | done | Depth seed: multi-lens architecture (biology, folklore, mythology-demo) |
 | 3.5 | done | Pre-Phase-4 hardening: namespaced ids, supertype classes, sentinel values, validator hardening |
 | 3.6 | done | Cross-lens extension records, sentinel cardinality semantics, id pattern strictness, multi-preferred error, qualifier validation, factual corrections, predicate relocation |
-| 4 | next | Wikidata ingest tool |
+| 3.7 | done | Validator parity (extension records), temporal modeling discipline (Wikidata rank pattern), concept-class splits (cron, make), two audit waves of temporal/multi-value corrections (~28 programs), tooling fixes |
+| 3.8 | next | Biology overlay readiness: organ/metabolism class substrate, biology predicate expansion |
+| 4 | — | Wikidata ingest tool |
 | 5 | — | Bulk ingest with LLM-assisted statement extraction |
 | 6 | — | Browseable site |

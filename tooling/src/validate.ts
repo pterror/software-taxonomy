@@ -147,7 +147,9 @@ try {
   // ---- Sanity check: compare migrated checks between TS and Datalog ----
   // Checks currently in Datalog: duplicate_entity_id, dangling_entity_ref (dangling_source_ref stub)
   const MIGRATED_RULES = new Set(["duplicate_entity_id", "dangling_entity_ref", "dangling_source_ref",
-    "domain_violation", "range_violation"]);
+    "domain_violation", "range_violation",
+    "multi_preferred", "multi_preferred_instance_of", "no_preferred_rank",
+    "cardinality_violation_min", "cardinality_violation_max"]);
 
   const tsForMigrated = result.violations.filter(v => MIGRATED_RULES.has(v.rule));
   const dlForMigrated = datalogViolations.filter(v => MIGRATED_RULES.has(v.rule));
@@ -168,9 +170,26 @@ try {
   console.error("[datalog] Continuing with TS validator only.");
 }
 
-// ---- Print violations (TS validator is authoritative for now) ----
+// ---- Merge violations: TS (non-migrated) + Datalog (migrated) ----
+// Migrated rules: Datalog is authoritative; TS output for these rules is suppressed.
 
-for (const v of result.violations) {
+const MIGRATED_RULES_SET = new Set(["duplicate_entity_id", "dangling_entity_ref", "dangling_source_ref",
+  "domain_violation", "range_violation",
+  "multi_preferred", "multi_preferred_instance_of", "no_preferred_rank",
+  "cardinality_violation_min", "cardinality_violation_max"]);
+
+const tsOnlyViolations = result.violations.filter(v => !MIGRATED_RULES_SET.has(v.rule));
+const allViolations = [...tsOnlyViolations, ...datalogViolations]
+  .sort((a, b) => {
+    // Sort by severity (error first), then file, then line
+    const sevOrder = { error: 0, warning: 1, info: 2 };
+    const sA = sevOrder[a.severity] ?? 3;
+    const sB = sevOrder[b.severity] ?? 3;
+    if (sA !== sB) return sA - sB;
+    return (a.file || "").localeCompare(b.file || "") || (a.line || 0) - (b.line || 0);
+  });
+
+for (const v of allViolations) {
   const prefix = v.severity === "error" ? "ERROR " : v.severity === "warning" ? "WARN  " : "INFO  ";
   const loc = v.file && v.line ? `${v.file}:${v.line}` : v.file || "(unknown)";
   const logFn = v.severity === "error" ? console.error : v.severity === "warning" ? console.warn : console.info;
@@ -194,9 +213,12 @@ for (const s of result.summaries) {
   totalSources += s.sources;
 }
 
-console.log(`\nTotal: ${totalEntities} entities, ${totalPredicates} predicates, ${totalSources} sources`);
-console.log(`${result.totalErrors} error(s), ${result.totalWarnings} warning(s).`);
+const totalErrors = allViolations.filter(v => v.severity === "error").length;
+const totalWarnings = allViolations.filter(v => v.severity === "warning").length;
 
-if (result.totalErrors > 0) {
+console.log(`\nTotal: ${totalEntities} entities, ${totalPredicates} predicates, ${totalSources} sources`);
+console.log(`${totalErrors} error(s), ${totalWarnings} warning(s).`);
+
+if (totalErrors > 0) {
   process.exit(1);
 }

@@ -83,7 +83,7 @@ export function emitFacts(lensSet: LoadedLensSet): { facts: string; provenance: 
   // Also emit lens(id, register, source_required)
   for (const lensId of lensSet.order) {
     const lens = lensSet.lenses.get(lensId)!;
-    const srcReq = String(lens.manifest.source_required ?? false);
+    const srcReq = escStr(String(lens.manifest.source_required ?? false));
     fact("lens", escStr(lensId), escStr(lens.manifest.register), srcReq);
     // entity_owner is emitted per entity
     for (const { record: entity } of lens.entities) {
@@ -96,7 +96,7 @@ export function emitFacts(lensSet: LoadedLensSet): { facts: string; provenance: 
     const lens = lensSet.lenses.get(lensId)!;
     for (const { record: pred } of lens.predicates) {
       const [min, max] = parseCardinality(pred.cardinality ?? "0..*");
-      const expectPreferred = String(pred.expect_preferred !== false);
+      const expectPreferred = escStr(String(pred.expect_preferred !== false));
       fact("predicate_def",
         escStr(pred.id), escStr(pred.value_type),
         String(min), String(max),

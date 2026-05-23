@@ -35,16 +35,6 @@ export interface ValidationResult {
   totalWarnings: number;
 }
 
-// ---- Cardinality helpers ----
-
-function parseCardinality(card: string): { min: number; max: number | null } {
-  const parts = card.split("..");
-  if (parts.length !== 2) return { min: 0, max: null };
-  const min = parseInt(parts[0], 10);
-  const max = parts[1] === "*" ? null : parseInt(parts[1], 10);
-  return { min, max };
-}
-
 // ---- Value type checks ----
 
 const DATE_RE = /^\d{4}(-\d{2}(-\d{2})?)?$/;
@@ -525,48 +515,14 @@ export function validate(lensSet: LoadedLensSet, targetLens?: Set<string>): Vali
           }
         }
 
-        // Multi-class preferred-rank warning for merged instance_of (extensions contribute)
-        const mergedExtEntity = graph.entities.get(targetId);
-        const mergedInstanceOf = (mergedExtEntity?.statements["instance_of"] ?? []).filter(e => e.rank !== "deprecated");
-        // Only check extensions that ADD instance_of statements
-        const extInstanceOf = (ext.statements["instance_of"] ?? []).filter(e => e.rank !== "deprecated");
-        if (extInstanceOf.length > 0 && mergedInstanceOf.length > 1) {
-          const hasPreferred = mergedInstanceOf.some(e => e.rank === "preferred");
-          if (!hasPreferred) {
-            violation("warning", lensId, file, line, targetId, "instance_of", "multi-class-no-preferred-rank",
-              `entity has ${mergedInstanceOf.length} merged instance_of statements (including extension) but none has rank: "preferred"`);
-          }
-          const preferredCount = mergedInstanceOf.filter(e => e.rank === "preferred").length;
-          if (preferredCount > 1) {
-            violation("error", lensId, file, line, targetId, "instance_of", "multi-preferred-instance-of",
-              `entity has ${preferredCount} merged instance_of statements with rank: "preferred" — at most one may be preferred`);
-          }
-        }
+        // multi-preferred/no-preferred-rank for instance_of migrated to Datalog
       }
 
       // Validate entities in this lens
       for (const { record: entity, file, line } of lens.entities) {
         const isClass = isInstanceOf(graph, entity.id, "meta:class");
 
-        // Cardinality check: gather all statements on this entity across all lenses
-        const mergedEntity = graph.entities.get(entity.id);
-        const allStatements = mergedEntity ? mergedEntity.statements : entity.statements;
-
-        // Multi-class preferred-rank warning: if entity has >1 instance_of statements, none with rank=preferred
-        const instanceOfEntries = (entity.statements["instance_of"] ?? []).filter(e => e.rank !== "deprecated");
-        if (instanceOfEntries.length > 1) {
-          const hasPreferred = instanceOfEntries.some(e => e.rank === "preferred");
-          if (!hasPreferred) {
-            violation("warning", lensId, file, line, entity.id, "instance_of", "multi-class-no-preferred-rank",
-              `entity has ${instanceOfEntries.length} instance_of statements but none has rank: "preferred" — add preferred rank to disambiguate primary class`);
-          }
-          // Multi-preferred error: more than one with rank=preferred
-          const preferredCount = instanceOfEntries.filter(e => e.rank === "preferred").length;
-          if (preferredCount > 1) {
-            violation("error", lensId, file, line, entity.id, "instance_of", "multi-preferred-instance-of",
-              `entity has ${preferredCount} instance_of statements with rank: "preferred" — at most one may be preferred`);
-          }
-        }
+        // multi-class-no-preferred-rank, multi-preferred-instance-of, cardinality migrated to Datalog
 
         // We only check statements that appear in THIS lens's entity record
         for (const [predId, entries] of Object.entries(entity.statements)) {
@@ -637,44 +593,7 @@ export function validate(lensSet: LoadedLensSet, targetLens?: Set<string>): Vali
             }
           }
 
-          // 8a. Multi-preferred-rank check: use merged statements to catch cross-lens duplicates.
-          // (instance_of is handled by the dedicated multi-class check above.)
-          if (predId !== "instance_of") {
-            const mergedForPred = (allStatements[predId] ?? []).filter(e => e.rank !== "deprecated");
-            const preferredCount = mergedForPred.filter(e => e.rank === "preferred").length;
-            if (preferredCount > 1) {
-              violation("error", lensId, file, line, entity.id, predId, "multi-preferred-rank",
-                `predicate '${predId}' has ${preferredCount} merged statements with rank: "preferred" — at most one may be preferred per predicate`);
-            }
-
-            // no-preferred-rank: if 2+ active statements exist with no preferred rank,
-            // and the predicate expects a preferred rank (expect_preferred !== false), warn.
-            const expectPreferred = pred.expect_preferred !== false;
-            if (expectPreferred && mergedForPred.length >= 2 && preferredCount === 0) {
-              violation("warning", lensId, file, line, entity.id, predId, "no-preferred-rank",
-                `predicate '${predId}' has ${mergedForPred.length} active statements but none has rank: "preferred" — designate the current/primary value or set expect_preferred: false on the predicate`);
-            }
-          }
-
-          // 8. Cardinality check (using merged statements, counted over non-deprecated)
-          // Sentinel values count toward MAX but NOT MIN:
-          // real_count = non-deprecated non-sentinel entries (used for min check)
-          // total_count = non-deprecated entries including sentinels (used for max check)
-          if (pred.cardinality) {
-            const { min, max } = parseCardinality(pred.cardinality);
-            const mergedEntries = allStatements[predId] ?? [];
-            const activeEntries = mergedEntries.filter((e) => e.rank !== "deprecated");
-            const real_count = activeEntries.filter((e) => !isSentinel(e.value)).length;
-            const total_count = activeEntries.length;
-            if (real_count < min) {
-              violation("error", lensId, file, line, entity.id, predId, "cardinality-violation",
-                `cardinality '${pred.cardinality}' requires min ${min} real values, found ${real_count} (sentinels do not satisfy minimum)`);
-            }
-            if (max !== null && total_count > max) {
-              violation("error", lensId, file, line, entity.id, predId, "cardinality-violation",
-                `cardinality '${pred.cardinality}' allows max ${max} statements, found ${total_count}`);
-            }
-          }
+          // multi-preferred-rank, no-preferred-rank, and cardinality migrated to Datalog
         }
       }
     }

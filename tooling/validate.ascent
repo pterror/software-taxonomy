@@ -127,3 +127,176 @@ range_violation(x, p, t) <--
   predicate_range(p, _),
   !range_ok(x, p, t),
   entity(t, _);
+
+// ── Derived: active statements (non-deprecated) ───────────────────────────────
+
+// active_entity_ref: non-deprecated entity refs
+relation active_entity_ref(String, String, String, String);
+active_entity_ref(x, p, t, r) <-- entity_ref(x, p, t, r), if r != "deprecated";
+
+// active_stmt: non-deprecated scalar stmts (non-entity-ref stmts)
+relation active_scalar_stmt(String, String, String, String);
+active_scalar_stmt(x, p, v, r) <-- stmt(x, p, v, r), if r != "deprecated";
+
+// active_real_stmt: non-deprecated, non-sentinel stmts (for cardinality min count)
+relation active_real_scalar(String, String, String, String);
+active_real_scalar(x, p, v, r) <-- active_scalar_stmt(x, p, v, r), if v != "__sentinel__";
+
+// ── Violation: multi_preferred ───────────────────────────────────────────────
+// More than one non-deprecated statement with rank=preferred for (entity, predicate).
+// Uses merged statements (definition + extensions combined).
+
+// Count preferred entity refs per (entity, predicate)
+relation preferred_entity_ref_count(String, String, i32);
+preferred_entity_ref_count(x, p, c) <--
+  active_entity_ref(x, p, _, _),
+  agg c = count() in active_entity_ref(x, p, _, "preferred");
+
+// Count preferred scalar stmts per (entity, predicate)
+relation preferred_scalar_count(String, String, i32);
+preferred_scalar_count(x, p, c) <--
+  active_scalar_stmt(x, p, _, _),
+  agg c = count() in active_scalar_stmt(x, p, _, "preferred");
+
+// multi_preferred: for non-instance_of predicates
+relation multi_preferred(String, String);
+multi_preferred(x, p) <-- preferred_entity_ref_count(x, p, c), if c > 1, if p != "instance_of";
+multi_preferred(x, p) <-- preferred_scalar_count(x, p, c), if c > 1, if p != "instance_of";
+
+// multi_preferred_instance_of: special case
+relation multi_preferred_instance_of(String);
+multi_preferred_instance_of(x) <-- preferred_entity_ref_count(x, "instance_of", c), if c > 1;
+
+// ── Violation: no_preferred_rank ─────────────────────────────────────────────
+// 2+ non-deprecated statements, no preferred rank, predicate has expect_preferred:true.
+
+// Total active counts per (entity, predicate)
+relation active_entity_ref_count(String, String, i32);
+active_entity_ref_count(x, p, c) <--
+  active_entity_ref(x, p, _, _),
+  agg c = count() in active_entity_ref(x, p, _, _);
+
+relation active_scalar_count(String, String, i32);
+active_scalar_count(x, p, c) <--
+  active_scalar_stmt(x, p, _, _),
+  agg c = count() in active_scalar_stmt(x, p, _, _);
+
+// expect_preferred predicates
+relation expect_preferred_pred(String);
+expect_preferred_pred(p) <-- predicate_def(p, _, _, _, "true", _);
+
+// no_preferred_rank: fires when 2+ active stmts, no preferred, predicate expects preferred
+// For entity-ref predicates
+relation no_preferred_rank(String, String);
+no_preferred_rank(x, p) <--
+  active_entity_ref_count(x, p, c), if c >= 2,
+  preferred_entity_ref_count(x, p, pc), if pc == 0,
+  expect_preferred_pred(p),
+  if p != "instance_of";
+
+// For scalar predicates
+no_preferred_rank(x, p) <--
+  active_scalar_count(x, p, c), if c >= 2,
+  preferred_scalar_count(x, p, pc), if pc == 0,
+  expect_preferred_pred(p);
+
+// multi-class-no-preferred-rank (instance_of specific): warning not error
+// Reuse no_preferred_rank with instance_of special case
+no_preferred_rank(x, "instance_of") <--
+  active_entity_ref_count(x, "instance_of", c), if c >= 2,
+  preferred_entity_ref_count(x, "instance_of", pc), if pc == 0;
+
+// ── Violation: cardinality ────────────────────────────────────────────────────
+// cardinality_violation_min: real (non-sentinel) count < min
+// cardinality_violation_max: total (including sentinel) count > max
+
+// Count real (non-sentinel) values per (entity, predicate)
+relation real_entity_ref_count(String, String, i32);
+real_entity_ref_count(x, p, c) <--
+  active_entity_ref(x, p, _, _),
+  agg c = count() in active_entity_ref(x, p, _, _);
+// entity refs are never sentinels, so real_count = active_count
+
+relation real_scalar_count(String, String, i32);
+real_scalar_count(x, p, c) <--
+  active_real_scalar(x, p, _, _),
+  agg c = count() in active_real_scalar(x, p, _, _);
+
+// Entities with a given predicate defined (via any statement, including deprecated)
+relation entity_uses_pred(String, String);
+entity_uses_pred(x, p) <-- entity_ref(x, p, _, _);
+entity_uses_pred(x, p) <-- stmt(x, p, _, _);
+
+// Combined real count: entity_refs are always real; scalars count only non-sentinels
+// For predicates with entity value_type, only entity_refs count
+// For other predicates, only scalars count
+// We split by value_type
+
+relation pred_is_entity_type(String);
+pred_is_entity_type(p) <-- predicate_def(p, "entity", _, _, _, _);
+
+// Real count for entity-type predicates
+relation real_count_entity_pred(String, String, i32);
+real_count_entity_pred(x, p, c) <--
+  entity_uses_pred(x, p),
+  pred_is_entity_type(p),
+  real_entity_ref_count(x, p, c);
+
+// Zero real count for entity-type predicates with no entity_refs (only sentinels in stmt)
+real_count_entity_pred(x, p, 0) <--
+  entity_uses_pred(x, p),
+  pred_is_entity_type(p),
+  !active_entity_ref(x, p, _, _);
+
+// Real count for non-entity-type predicates
+relation real_count_scalar_pred(String, String, i32);
+real_count_scalar_pred(x, p, c) <--
+  entity_uses_pred(x, p),
+  !pred_is_entity_type(p),
+  real_scalar_count(x, p, c);
+
+real_count_scalar_pred(x, p, 0) <--
+  entity_uses_pred(x, p),
+  !pred_is_entity_type(p),
+  !active_real_scalar(x, p, _, _);
+
+// Total count (for max check): entity refs + all active scalars
+relation total_count_entity_pred(String, String, i32);
+total_count_entity_pred(x, p, c) <--
+  entity_uses_pred(x, p),
+  pred_is_entity_type(p),
+  active_entity_ref_count(x, p, c);
+
+total_count_entity_pred(x, p, 0) <--
+  entity_uses_pred(x, p),
+  pred_is_entity_type(p),
+  !active_entity_ref(x, p, _, _);
+
+relation total_count_scalar_pred(String, String, i32);
+total_count_scalar_pred(x, p, c) <--
+  entity_uses_pred(x, p),
+  !pred_is_entity_type(p),
+  active_scalar_count(x, p, c);
+
+total_count_scalar_pred(x, p, 0) <--
+  entity_uses_pred(x, p),
+  !pred_is_entity_type(p),
+  !active_scalar_stmt(x, p, _, _);
+
+// cardinality_violation_min(entity, pred, card_min_str, real_count_str)
+relation cardinality_violation_min(String, String, i32, i32);
+cardinality_violation_min(x, p, mn, c) <--
+  predicate_def(p, _, mn, _, _, _), if mn > 0,
+  real_count_entity_pred(x, p, c), if c < mn;
+cardinality_violation_min(x, p, mn, c) <--
+  predicate_def(p, _, mn, _, _, _), if mn > 0,
+  real_count_scalar_pred(x, p, c), if c < mn;
+
+// cardinality_violation_max(entity, pred, card_max_str, total_count_str)
+relation cardinality_violation_max(String, String, i32, i32);
+cardinality_violation_max(x, p, mx, c) <--
+  predicate_def(p, _, _, mx, _, _), if mx >= 0,
+  total_count_entity_pred(x, p, c), if c > mx;
+cardinality_violation_max(x, p, mx, c) <--
+  predicate_def(p, _, _, mx, _, _), if mx >= 0,
+  total_count_scalar_pred(x, p, c), if c > mx;

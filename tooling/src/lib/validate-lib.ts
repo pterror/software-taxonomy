@@ -690,6 +690,17 @@ export function validate(lensSet: LoadedLensSet, targetLens?: Set<string>): Vali
             }
           }
 
+          // 8a. Multi-preferred-rank check: at most one preferred per predicate (any predicate, not just instance_of)
+          if (predId !== "instance_of") {
+            // instance_of is already checked above with the multi-class warning
+            const activeEntries = entries.filter(e => e.rank !== "deprecated");
+            const preferredCount = activeEntries.filter(e => e.rank === "preferred").length;
+            if (preferredCount > 1) {
+              violation("error", lensId, file, line, entity.id, predId, "multi-preferred-rank",
+                `predicate '${predId}' has ${preferredCount} statements with rank: "preferred" — at most one may be preferred per predicate`);
+            }
+          }
+
           // 8. Cardinality check (using merged statements, counted over non-deprecated)
           // Sentinel values count toward MAX but NOT MIN:
           // real_count = non-deprecated non-sentinel entries (used for min check)

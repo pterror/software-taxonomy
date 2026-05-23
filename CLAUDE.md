@@ -150,7 +150,45 @@ A lens's `entities.jsonl` may contain two kinds of records:
 - An extension record has `extends` (no `id`, no `labels`, no `description`, no `aliases`). It targets a definition that must exist in another lens.
 - A lens cannot extend an entity it owns (`own-entity-extension` error — use the definition record instead).
 - Extension statements are tagged with `origin_lens` of the extending lens. Visible in `query --entity <id> --format text`.
-- `source_required` is evaluated against the **extending** lens's manifest, not the owning lens's. A biology overlay (`source_required: false`) can add unsourced statements to a factual-lens entity.
+- `source_required` is evaluated against the **owning** lens's manifest. A biology overlay (`source_required: false`) extending a core entity (`source_required: true`) must still source every statement it adds. See "Temporal modeling" section for the `kind: "interpretive"` escape hatch.
+
+## Temporal modeling (Wikidata pattern)
+
+Multi-valued historical facts (developer history, license history, language portability, platform support) use Wikidata's rank+qualifier pattern. Each historical value is its own statement:
+
+```jsonc
+"developed_by": [
+  {"value": "@person:igor-sysoev",
+   "rank": "deprecated",
+   "qualifiers": {"start_time": "2004", "end_time": "2019"},
+   "source": "wp:nginx@1353230091"},
+  {"value": "@org:f5-inc",
+   "rank": "preferred",
+   "qualifiers": {"start_time": "2019"},
+   "source": "wp:nginx@1353230091"}
+]
+```
+
+**Rank semantics:**
+- `"preferred"` — currently true. At most one per predicate per entity.
+- `"normal"` — currently true in parallel (e.g. dual-licensed: GPL + proprietary, both active simultaneously).
+- `"deprecated"` — historically true, no longer current.
+
+**ADD don't replace.** When a fact changes over time, ADD the new statement with appropriate rank/qualifiers. Do not remove the old one — it is historically true. Historical values get `rank: "deprecated"` plus `end_time` qualifier.
+
+**Qualifier conventions:**
+- `start_time` / `end_time` — ISO date strings (YYYY, YYYY-MM, or YYYY-MM-DD). Omit `end_time` while still ongoing.
+- Qualifier keys must be registered predicates (validator warns on unknowns).
+- Qualifier values may be strings, numbers, booleans, or entity refs (`@namespace:id`).
+
+**When to split into concept classes:**
+Some Wikipedia articles cover a family of implementations rather than one program. When audited and judged worth splitting, introduce a `@class:<family>` plus instance entities. Applied to: cron (→ `@class:cron` + `@software:vixie-cron` + `@software:bell-labs-cron`) and make (→ `@class:make` + `@software:bell-labs-make` + `@software:gnu-make`). Do not speculatively split more programs; default remains "one Wikipedia article = one entity."
+
+**Source kind `"interpretive"`:**
+Interpretive lens authors may use `kind: "interpretive"` for claims that are metaphorical or analytical rather than citable to an external source. This satisfies `source_required` from the owning lens without weakening factual integrity. Pattern: `{"id":"interpretive:<author>@<date>","kind":"interpretive","title":"...","url":"..."}`.
+
+**Extension-validation parity:**
+Extension records now validate at full parity with definition records: schema check, domain, range, entity-ref resolution, qualifier validation, cross-lens fictional warning. `source_required` is evaluated against the **owning** lens's policy (not the extending lens's). A biology overlay extending a core entity (`source_required: true`) must source every statement it adds, regardless of biology's own `source_required: false` setting.
 
 ## Anti-confabulation
 

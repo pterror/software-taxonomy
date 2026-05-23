@@ -138,8 +138,39 @@ function validateStatementEntry(
 
   const { value, source, rank } = entry;
 
-  // Skip deprecated statements for all checks (cardinality excluded, done separately).
-  if (rank === "deprecated") return;
+  // Deprecated statements skip domain/range/cardinality/source checks (historical truth),
+  // but qualifier shape validation still runs — even deprecated statements must have valid qualifiers.
+  if (rank === "deprecated") {
+    if (entry.qualifiers) {
+      for (const [qPredId, qVal] of Object.entries(entry.qualifiers)) {
+        const qPredDef = predicateIndex.get(qPredId);
+        if (!qPredDef) {
+          violation("warning", "unknown-qualifier-predicate",
+            `qualifier key '${qPredId}' is not a defined predicate`);
+          if (typeof qVal === "string" && qVal.startsWith("@")) {
+            const refId = qVal.slice(1);
+            if (!graph.entities.has(refId)) {
+              violation("error", "dangling-qualifier-ref",
+                `dangling entity ref '${qVal}' in qualifier '${qPredId}'`);
+            }
+          }
+          continue;
+        }
+        const qTypeErr = checkValueType(qVal as string | number | boolean, qPredDef);
+        if (qTypeErr) {
+          violation("error", "qualifier-value-type", `qualifier '${qPredId}': ${qTypeErr}`);
+        }
+        if (typeof qVal === "string" && qVal.startsWith("@")) {
+          const refId = qVal.slice(1);
+          if (!graph.entities.has(refId)) {
+            violation("error", "dangling-qualifier-ref",
+              `dangling entity ref '${qVal}' in qualifier '${qPredId}'`);
+          }
+        }
+      }
+    }
+    return;
+  }
 
   // Sentinel: skip value-type, value-pattern, range checks entirely
   if (isSentinel(value)) {
@@ -654,14 +685,14 @@ export function validate(lensSet: LoadedLensSet, targetLens?: Set<string>): Vali
             }
           }
 
-          // 8a. Multi-preferred-rank check: at most one preferred per predicate (any predicate, not just instance_of)
+          // 8a. Multi-preferred-rank check: use merged statements to catch cross-lens duplicates.
+          // (instance_of is handled by the dedicated multi-class check above.)
           if (predId !== "instance_of") {
-            // instance_of is already checked above with the multi-class warning
-            const activeEntries = entries.filter(e => e.rank !== "deprecated");
-            const preferredCount = activeEntries.filter(e => e.rank === "preferred").length;
+            const mergedForPred = (allStatements[predId] ?? []).filter(e => e.rank !== "deprecated");
+            const preferredCount = mergedForPred.filter(e => e.rank === "preferred").length;
             if (preferredCount > 1) {
               violation("error", lensId, file, line, entity.id, predId, "multi-preferred-rank",
-                `predicate '${predId}' has ${preferredCount} statements with rank: "preferred" — at most one may be preferred per predicate`);
+                `predicate '${predId}' has ${preferredCount} merged statements with rank: "preferred" — at most one may be preferred per predicate`);
             }
           }
 

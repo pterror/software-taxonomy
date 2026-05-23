@@ -145,6 +145,9 @@ export function emitFacts(lensSet: LoadedLensSet): { facts: string; provenance: 
 
         const rankKey = `${rank}\0${idx}`;
 
+        // Emit stmt_rank for per-statement rank tracking (used by qualifier violation rules)
+        fact("stmt_rank", escStr(subjectId), escStr(predId), escStr(rankKey), escStr(rank));
+
         if (isSentinel(entry.value)) {
           // Emit as stmt with sentinel marker
           fact("stmt", escStr(subjectId), escStr(predId), escStr("__sentinel__"), escStr(rank));
@@ -169,21 +172,18 @@ export function emitFacts(lensSet: LoadedLensSet): { facts: string; provenance: 
           }
         }
 
-        // Qualifier statements
+        // Qualifier facts: has_qualifier(subject, pred, rank_idx, q_pred)
+        // qualifier_entity_ref(subject, pred, rank_idx, q_pred, target_id)
         if (entry.qualifiers) {
           for (const [qPredId, qVal] of Object.entries(entry.qualifiers)) {
-            if (isSentinel(qVal)) {
-              // Sentinel qualifiers - skip for now (no Datalog check needed)
-            } else if (typeof qVal === "string" && qVal.startsWith("@")) {
-              const qTargetId = qVal.slice(1);
-              fact("entity_ref",
-                escStr(`${subjectId}@${predId}@${rank}@${idx}`),
-                escStr(qPredId),
-                escStr(qTargetId),
-                escStr("qualifier")
-              );
+            if (!isSentinel(qVal)) {
+              fact("has_qualifier", escStr(subjectId), escStr(predId), escStr(rankKey), escStr(qPredId));
+              if (typeof qVal === "string" && qVal.startsWith("@")) {
+                const qTargetId = qVal.slice(1);
+                fact("qualifier_entity_ref",
+                  escStr(subjectId), escStr(predId), escStr(rankKey), escStr(qPredId), escStr(qTargetId));
+              }
             }
-            // Other qualifier types not emitted as Datalog facts (handled by TS validator)
           }
         }
       }

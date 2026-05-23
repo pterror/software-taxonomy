@@ -36,6 +36,9 @@ relation predicate_alias(String, String);
 relation source_def(String, String);
 relation lens(String, String, String);
 relation entity_owner(String, String, String);
+relation stmt_rank(String, String, String, String);
+relation has_qualifier(String, String, String, String);
+relation qualifier_entity_ref(String, String, String, String, String);
 
 // ── Derived: transitive class hierarchy ──────────────────────────────────────
 
@@ -300,3 +303,97 @@ cardinality_violation_max(x, p, mx, c) <--
 cardinality_violation_max(x, p, mx, c) <--
   predicate_def(p, _, _, mx, _, _), if mx >= 0,
   total_count_scalar_pred(x, p, c), if c > mx;
+
+// ── Violation: deprecated_no_end_time ────────────────────────────────────────
+// Deprecated statement without an end_time qualifier.
+// rank_idx for deprecated statements starts with "deprecated\0"
+
+relation has_end_time(String, String, String);
+has_end_time(x, p, rk) <-- has_qualifier(x, p, rk, "end_time");
+
+relation deprecated_no_end_time(String, String);
+deprecated_no_end_time(x, p) <--
+  stmt_rank(x, p, rk, "deprecated"),
+  !has_end_time(x, p, rk);
+
+// ── Violation: end_without_start ─────────────────────────────────────────────
+// Non-deprecated, non-sentinel statement with end_time but no start_time.
+
+relation end_without_start(String, String);
+end_without_start(x, p) <--
+  stmt_rank(x, p, rk, rank), if rank != "deprecated",
+  has_qualifier(x, p, rk, "end_time"),
+  !has_qualifier(x, p, rk, "start_time"),
+  // Exclude sentinel stmts (is_sentinel tracks them)
+  !is_sentinel(x, p, rk);
+
+// ── Violation: source_required_violation ─────────────────────────────────────
+// Owner lens requires sources, but a non-deprecated non-structural statement has none.
+// Structural: instance_of and subclass_of on class entities are exempt.
+
+relation source_required_violation(String, String);
+// For non-class entities: any predicate without source
+source_required_violation(x, p) <--
+  stmt_rank(x, p, rk, rank), if rank != "deprecated",
+  entity_owner(x, owner, "true"),
+  !stmt_src(x, p, rank, _),
+  !is_class(x);
+
+// For class entities: only non-structural predicates
+source_required_violation(x, p) <--
+  stmt_rank(x, p, rk, rank), if rank != "deprecated",
+  entity_owner(x, owner, "true"),
+  !stmt_src(x, p, rank, _),
+  is_class(x),
+  if p != "instance_of",
+  if p != "subclass_of";
+
+// ── Violation: cross_lens_fictional ──────────────────────────────────────────
+// Factual lens references an entity owned by a fictional or interpretive lens.
+
+relation entity_owner_register(String, String);
+entity_owner_register(x, reg) <-- entity_owner(x, owner, _), lens(owner, reg, _);
+
+relation cross_lens_fictional(String, String, String);
+// subject_entity, predicate, owner_lens_of_target
+cross_lens_fictional(x, p, ref_owner) <--
+  entity_ref(x, p, t, rank), if rank != "deprecated",
+  entity_owner_register(x, "factual"),
+  entity_owner(t, ref_owner, _),
+  lens(ref_owner, ref_reg, _),
+  if ref_reg == "fictional" || ref_reg == "interpretive";
+
+// ── Violation: qualifier_unknown_predicate ────────────────────────────────────
+// A qualifier key is not a defined predicate.
+
+relation known_predicate(String);
+known_predicate(p) <-- predicate_def(p, _, _, _, _, _);
+
+relation qualifier_unknown_predicate(String, String, String);
+qualifier_unknown_predicate(x, p, qp) <--
+  has_qualifier(x, p, _, qp),
+  !known_predicate(qp);
+
+// ── Violation: qualifier_dangling_ref ────────────────────────────────────────
+// An entity-ref qualifier points to an entity that doesn't exist.
+
+relation qualifier_dangling_ref(String, String, String);
+qualifier_dangling_ref(x, p, t) <--
+  qualifier_entity_ref(x, p, _, _, t),
+  !entity(t, _);
+
+// ── Violation: alias_self_reference ──────────────────────────────────────────
+// A predicate's alias_of points to itself.
+
+relation alias_self_reference(String);
+alias_self_reference(p) <-- predicate_alias(p, p);
+
+// ── Violation: alias_cycle ────────────────────────────────────────────────────
+// An alias_of chain forms a cycle.
+
+relation alias_reachable(String, String);
+alias_reachable(a, b) <-- predicate_alias(a, b);
+alias_reachable(a, c) <-- predicate_alias(a, b), alias_reachable(b, c);
+
+relation alias_cycle(String);
+alias_cycle(p) <-- alias_reachable(p, p);

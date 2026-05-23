@@ -149,7 +149,11 @@ try {
   const MIGRATED_RULES = new Set(["duplicate_entity_id", "dangling_entity_ref", "dangling_source_ref",
     "domain_violation", "range_violation",
     "multi_preferred", "multi_preferred_instance_of", "no_preferred_rank",
-    "cardinality_violation_min", "cardinality_violation_max"]);
+    "cardinality_violation_min", "cardinality_violation_max",
+    "deprecated_no_end_time", "end_without_start",
+    "source_required_violation", "cross_lens_fictional",
+    "qualifier_unknown_predicate", "qualifier_dangling_ref",
+    "alias_self_reference", "alias_cycle"]);
 
   const tsForMigrated = result.violations.filter(v => MIGRATED_RULES.has(v.rule));
   const dlForMigrated = datalogViolations.filter(v => MIGRATED_RULES.has(v.rule));
@@ -176,7 +180,11 @@ try {
 const MIGRATED_RULES_SET = new Set(["duplicate_entity_id", "dangling_entity_ref", "dangling_source_ref",
   "domain_violation", "range_violation",
   "multi_preferred", "multi_preferred_instance_of", "no_preferred_rank",
-  "cardinality_violation_min", "cardinality_violation_max"]);
+  "cardinality_violation_min", "cardinality_violation_max",
+  "deprecated_no_end_time", "end_without_start",
+  "source_required_violation", "cross_lens_fictional",
+  "qualifier_unknown_predicate", "qualifier_dangling_ref",
+  "alias_self_reference", "alias_cycle"]);
 
 const tsOnlyViolations = result.violations.filter(v => !MIGRATED_RULES_SET.has(v.rule));
 const allViolations = [...tsOnlyViolations, ...datalogViolations]

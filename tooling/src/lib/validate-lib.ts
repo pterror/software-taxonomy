@@ -121,22 +121,14 @@ function validateQualifiers(
     violations.push({ severity, lens: ctx.lensId, file: ctx.file, line: ctx.line, entityId: subjectId, predicateId: predId, rule, message });
   }
 
+  // unknown-qualifier-predicate and dangling-qualifier-ref migrated to Datalog.
+  // qualifier-value-type remains in TS (value type checking not yet in Datalog).
   for (const [qPredId, qVal] of Object.entries(qualifiers)) {
-    // Sentinels are accepted for any qualifier predicate — skip all further checks
     if (isSentinel(qVal)) continue;
 
     const qPredDef = predicateIndex.get(qPredId);
     if (!qPredDef) {
-      violation("warning", "unknown-qualifier-predicate",
-        `qualifier key '${qPredId}' is not a defined predicate`);
-      // Still check entity ref resolution for unknown predicates
-      if (typeof qVal === "string" && qVal.startsWith("@")) {
-        const refId = qVal.slice(1);
-        if (!graph.entities.has(refId)) {
-          violation("error", "dangling-qualifier-ref",
-            `dangling entity ref '${qVal}' in qualifier '${qPredId}'`);
-        }
-      }
+      // unknown predicate — skip type check
       continue;
     }
 
@@ -146,14 +138,8 @@ function validateQualifiers(
       violation("error", "qualifier-value-type", `qualifier '${qPredId}': ${qTypeErr}`);
     }
 
-    // Entity ref: must resolve when qualifier predicate is value_type=entity
-    if (typeof qVal === "string" && qVal.startsWith("@")) {
-      const refId = qVal.slice(1);
-      if (!graph.entities.has(refId)) {
-        violation("error", "dangling-qualifier-ref",
-          `dangling entity ref '${qVal}' in qualifier '${qPredId}'`);
-      }
-    } else if (qPredDef.value_type === "entity" && typeof qVal === "string" && !qVal.startsWith("@")) {
+    // qualifier-value-type for wrong type on entity predicate
+    if (qPredDef.value_type === "entity" && typeof qVal === "string" && !qVal.startsWith("@")) {
       violation("error", "qualifier-value-type",
         `qualifier '${qPredId}': expected entity reference (starting with @), got '${qVal}'`);
     }
@@ -188,39 +174,21 @@ function validateStatementEntry(
 
   // Deprecated statements skip domain/range/cardinality/source checks (historical truth),
   // but qualifier shape validation still runs — even deprecated statements must have valid qualifiers.
+  // deprecated-no-end-time migrated to Datalog.
   if (rank === "deprecated") {
     if (entry.qualifiers) {
       validateQualifiers(graph, predicateIndex, violations, subjectId, predId, entry.qualifiers, ctx);
-    }
-    // Warn if deprecated statement has no end_time qualifier — historical claim is open-ended
-    if (!entry.qualifiers?.end_time) {
-      violation("warning", "deprecated-no-end-time",
-        `deprecated statement on predicate '${predId}' has no end_time qualifier — add end_time to indicate when this relationship ended`);
     }
     return;
   }
 
   // Sentinel: skip value-type, value-pattern, range checks entirely
-  // Domain check migrated to Datalog.
+  // Domain, source-required migrated to Datalog.
   if (isSentinel(value)) {
-    // Source check using OWNING lens's source_required (dangling-source-ref migrated to Datalog)
-    if (ctx.sourceRequired) {
-      const isStructuralOnClass = ctx.isClass && (predId === "instance_of" || predId === "subclass_of");
-      if (!isStructuralOnClass) {
-        if (source == null) {
-          violation("error", "source-required",
-            `lens '${ctx.ownerLensId}' (owner) requires sources, but ${ctx.fromExtension ? "extension " : ""}statement has no source`);
-        }
-      }
-    }
     return;
   }
 
-  // end-without-start warning: end_time qualifier without start_time is meaningless
-  if (entry.qualifiers?.end_time && !entry.qualifiers?.start_time) {
-    violation("warning", "end-without-start",
-      `statement on predicate '${predId}' has end_time qualifier but no start_time — add start_time or remove end_time`);
-  }
+  // end-without-start migrated to Datalog.
 
   // Value type check
   const typeErr = checkValueType(value as string | number | boolean, pred);
@@ -230,16 +198,7 @@ function validateStatementEntry(
 
   // Domain and range checks migrated to Datalog.
 
-  // Source check using OWNING lens's source_required (dangling-source-ref migrated to Datalog)
-  if (ctx.sourceRequired) {
-    const isStructuralOnClass = ctx.isClass && (predId === "instance_of" || predId === "subclass_of");
-    if (!isStructuralOnClass) {
-      if (source == null) {
-        violation("error", "source-required",
-          `lens '${ctx.ownerLensId}' (owner) requires sources, but ${ctx.fromExtension ? "extension " : ""}statement has no source`);
-      }
-    }
-  }
+  // source-required migrated to Datalog.
 
   // Qualifier validation
   if (entry.qualifiers) {
@@ -492,26 +451,8 @@ export function validate(lensSet: LoadedLensSet, targetLens?: Set<string>): Vali
               file,
               line,
             };
+            // cross-lens-fictional-ref migrated to Datalog
             validateStatementEntry(graph, predicateIndex, allSourceIds, violations, targetId, predId, pred, entry, ctx);
-
-            // Cross-lens fictional reference warning (needs lensSet, done inline)
-            const { value } = entry;
-            if (entry.rank !== "deprecated" && !isSentinel(value) &&
-                pred.value_type === "entity" && typeof value === "string" && value.startsWith("@")) {
-              const refId = value.slice(1);
-              if (graph.entities.has(refId)) {
-                const refOwnerLens = entityOwner.get(refId);
-                const refOwnerManifest = refOwnerLens ? lensSet.lenses.get(refOwnerLens)?.manifest : undefined;
-                if (
-                  manifest.register === "factual" &&
-                  refOwnerManifest &&
-                  (refOwnerManifest.register === "fictional" || refOwnerManifest.register === "interpretive")
-                ) {
-                  violation("warning", lensId, file, line, targetId, predId, "cross-lens-fictional-ref",
-                    `factual lens '${lensId}' references entity '${value}' owned by ${refOwnerManifest.register} lens '${refOwnerLens}'`);
-                }
-              }
-            }
           }
         }
 
@@ -571,26 +512,8 @@ export function validate(lensSet: LoadedLensSet, targetLens?: Set<string>): Vali
               file,
               line,
             };
+            // cross-lens-fictional-ref migrated to Datalog
             validateStatementEntry(graph, predicateIndex, allSourceIds, violations, entity.id, predId, pred, entry, ctx);
-
-            // Cross-lens fictional reference warning (needs lensSet, done inline)
-            const { value } = entry;
-            if (entry.rank !== "deprecated" && !isSentinel(value) &&
-                pred.value_type === "entity" && typeof value === "string" && value.startsWith("@")) {
-              const refId = value.slice(1);
-              if (graph.entities.has(refId)) {
-                const refOwnerLens = entityOwner.get(refId);
-                const refOwnerManifest = refOwnerLens ? lensSet.lenses.get(refOwnerLens)?.manifest : undefined;
-                if (
-                  manifest.register === "factual" &&
-                  refOwnerManifest &&
-                  (refOwnerManifest.register === "fictional" || refOwnerManifest.register === "interpretive")
-                ) {
-                  violation("warning", lensId, file, line, entity.id, predId, "cross-lens-fictional-ref",
-                    `factual lens '${lensId}' references entity '${value}' owned by ${refOwnerManifest.register} lens '${refOwnerLens}'`);
-                }
-              }
-            }
           }
 
           // multi-preferred-rank, no-preferred-rank, and cardinality migrated to Datalog

@@ -74,7 +74,7 @@ export interface ExtensionRecord {
   extends: string; // "@namespace:id" entity ref
   statements: Record<string, StatementEntry[]>;
   /** Set by loader to indicate which lens this extension came from */
-  _origin_lens?: string;
+  __loader_origin_lens?: string;
 }
 
 export interface Predicate {
@@ -248,7 +248,7 @@ export function loadLensSet(filter?: string[]): LoadedLensSet {
         if ("extends" in record) {
           // Extension record
           const ext = record as unknown as ExtensionRecord;
-          ext._origin_lens = id;
+          ext.__loader_origin_lens = id;
           entityExtensions.push({ record: ext, line, file });
         } else {
           // Definition record

@@ -57,7 +57,7 @@ A lens can add statements to entities defined in another lens without redefining
 {"extends": "@software:microsoft-word", "statements": {"influenced_by": [{"value": "@software:wordperfect"}]}}
 ```
 
-The extending lens's `source_required` rule applies (not the owning lens's). The biology lens (`source_required: false`) uses this to add interpretive overlays to factual core entities.
+The **owning** lens's `source_required` rule applies (not the extending lens's). A biology lens (`source_required: false`) extending a core entity (`source_required: true`) must still source every statement it adds.
 
 ## Taxonomy as a query
 
@@ -111,7 +111,8 @@ Do not add statements about release dates, authors, or lineage without a `source
 | 3.5 | done | Pre-Phase-4 hardening: namespaced ids, supertype classes, sentinel values, validator hardening |
 | 3.6 | done | Cross-lens extension records, sentinel cardinality semantics, id pattern strictness, multi-preferred error, qualifier validation, factual corrections, predicate relocation |
 | 3.7 | done | Validator parity (extension records), temporal modeling discipline (Wikidata rank pattern), concept-class splits (cron, make), two audit waves of temporal/multi-value corrections (~28 programs), tooling fixes |
-| 3.8 | next | Biology overlay readiness: organ/metabolism class substrate, biology predicate expansion |
+| 3.8 | done | Validator refactor (single validateStatementEntry), qualifier validation on deprecated, multi-preferred on merged graph, qualifier entity-ref/sentinel support, new warnings (deprecated-no-end-time, end-without-start, no-preferred-rank), interpretive source last_verified, temporal completions (vim, sublime-text, vscode), PostgreSQL concept split |
+| 3.9 | next | Biology overlay substrate: organ/metabolism class entities, organ vs feature naming, biology predicate expansion |
 | 4 | — | Wikidata ingest tool |
 | 5 | — | Bulk ingest with LLM-assisted statement extraction |
 | 6 | — | Browseable site |

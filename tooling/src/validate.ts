@@ -91,9 +91,9 @@ for (const lensId of fullLensSet.order) {
   }
 
   // Validate extension records (schema parity with definition records)
-  // Strip the loader-added _origin_lens field before schema validation
+  // Strip the loader-injected __loader_origin_lens field before schema validation
   for (const { record, file, line } of lens.extensions) {
-    const { _origin_lens: _ignored, ...recordForValidation } = record as Record<string, unknown>;
+    const { __loader_origin_lens: _ignored, ...recordForValidation } = record as Record<string, unknown>;
     if (!validateEntitySchema(recordForValidation)) {
       for (const err of validateEntitySchema.errors ?? []) {
         const extId = (record as { extends?: string }).extends ?? "?";

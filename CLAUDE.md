@@ -85,6 +85,20 @@ New class checklist:
 - **To add a predicate**: open a PR adding it to the relevant lens's `predicates.jsonl` with full `value_type`, `domain`, `range`, `cardinality` constraints, and a `since_version` tag. Consider whether an inverse is needed.
 - **To deprecate a predicate**: set `deprecated: true` and document the successor in the predicate's `description`. The validator will warn on all uses.
 - **To merge near-duplicates**: set `alias_of` on the deprecated predicate pointing to the canonical. The validator resolves constraints from the canonical and logs an info message on use.
+- **`expect_preferred` flag**: set `expect_preferred: false` on predicates where multiple parallel current values are the norm and designating a "primary" would be wrong (e.g. `written_in`, `runs_on`, `licensed_under`, `principal_author`, `synapomorphy`, `aspect_of`). The `no-preferred-rank` validator warning is suppressed for predicates with this flag. Default is `true`.
+
+## Validator warnings reference
+
+| Rule | Severity | Meaning |
+|------|----------|---------|
+| `deprecated-no-end-time` | warning | A `rank: deprecated` statement has no `end_time` qualifier — historical claim is open-ended |
+| `end-without-start` | warning | A statement has `end_time` qualifier but no `start_time` |
+| `no-preferred-rank` | warning | An entity has 2+ active statements of a predicate but none is `rank: preferred`; predicate must have `expect_preferred: true` (default) |
+| `multi-preferred-rank` | error | More than one active statement of a predicate has `rank: preferred` |
+| `deprecated-predicate` | warning | A deprecated predicate is used in a non-deprecated statement |
+| `unknown-qualifier-predicate` | warning | Qualifier key is not a registered predicate |
+| `qualifier-value-type` | error | Qualifier value fails the predicate's type check |
+| `dangling-qualifier-ref` | error | Qualifier value is an entity ref that doesn't resolve |
 
 ## Source rot model
 
@@ -179,13 +193,16 @@ Multi-valued historical facts (developer history, license history, language port
 **Qualifier conventions:**
 - `start_time` / `end_time` — ISO date strings (YYYY, YYYY-MM, or YYYY-MM-DD). Omit `end_time` while still ongoing.
 - Qualifier keys must be registered predicates (validator warns on unknowns).
-- Qualifier values may be strings, numbers, booleans, or entity refs (`@namespace:id`).
+- Qualifier values may be strings, numbers, booleans, entity refs (`@namespace:id`), or sentinel objects (`{"unknown":true}`, `{"novalue":true}`).
+- Qualifier shape validation runs on **all** statements including deprecated ones — invalid qualifier values on deprecated statements are errors.
+- Deprecated statements should have an `end_time` qualifier (validator warns `deprecated-no-end-time` if missing).
+- A statement with an `end_time` qualifier but no `start_time` emits a `end-without-start` warning.
 
 **When to split into concept classes:**
 Some Wikipedia articles cover a family of implementations rather than one program. When audited and judged worth splitting, introduce a `@class:<family>` plus instance entities. Applied to: cron (→ `@class:cron` + `@software:vixie-cron` + `@software:bell-labs-cron`) and make (→ `@class:make` + `@software:bell-labs-make` + `@software:gnu-make`). Do not speculatively split more programs; default remains "one Wikipedia article = one entity."
 
 **Source kind `"interpretive"`:**
-Interpretive lens authors may use `kind: "interpretive"` for claims that are metaphorical or analytical rather than citable to an external source. This satisfies `source_required` from the owning lens without weakening factual integrity. Pattern: `{"id":"interpretive:<author>@<date>","kind":"interpretive","title":"...","url":"..."}`.
+Interpretive lens authors may use `kind: "interpretive"` for claims that are metaphorical or analytical rather than citable to an external source. This satisfies `source_required` from the owning lens without weakening factual integrity. Pattern: `{"id":"interpretive:<author>@<date>","kind":"interpretive","title":"...","url":"...","last_verified":"YYYY-MM-DD"}`. Note: `last_verified` is **required** for `kind: "interpretive"` sources (same as `official`).
 
 **Extension-validation parity:**
 Extension records now validate at full parity with definition records: schema check, domain, range, entity-ref resolution, qualifier validation, cross-lens fictional warning. `source_required` is evaluated against the **owning** lens's policy (not the extending lens's). A biology overlay extending a core entity (`source_required: true`) must source every statement it adds, regardless of biology's own `source_required: false` setting.
@@ -195,6 +212,19 @@ Extension records now validate at full parity with definition records: schema ch
 The validator enforces referential integrity and warns on missing sources. Do not invent release dates, author attributions, or lineage without a citable source. If you cannot find a Wikipedia article, use the unknown sentinel (`{"unknown": true}`) on the uncertain statement rather than omitting it or guessing.
 
 ## Status
+
+**Phase 3.8** complete — validator structural refactor + qualifier completeness + temporal corpus completion:
+- Extracted `validateStatementEntry` as a single shared function (definition and extension paths unified — no more behavioral drift).
+- Qualifier shape validation now runs on **all** statements including `rank: deprecated` — previously silent.
+- Multi-preferred-rank check now uses MERGED statements across all lenses (catches cross-lens duplicates).
+- Qualifier values now support entity refs (`@namespace:id`) and sentinels (`{unknown:true}`, `{novalue:true}`); schema updated accordingly.
+- New validator warnings: `deprecated-no-end-time`, `end-without-start`, `no-preferred-rank` (with `expect_preferred: false` predicate flag to suppress).
+- `kind: "interpretive"` sources now require `last_verified` (same strictness as `official`).
+- `expect_preferred: false` set on `written_in`, `runs_on`, `licensed_under`, `principal_author`, `synapomorphy`, `aspect_of`.
+- Temporal completions: vim (Christian Brabandt as successor, 2023-08), sublime-text (jon-skinner → sublime-hq, 2014), vscode (stray `note` qualifier removed).
+- PostgreSQL concept split: `@class:postgres` + `@software:berkeley-postgres` (Stonebraker 1986-1994) + temporal `developed_by` on `@software:postgresql`.
+- Redundant `instance_of` removed from cron and make implementations (reachable via subclass_of chain).
+- Loader private field renamed from `_origin_lens` to `__loader_origin_lens` (double-underscore = loader-injected, not a data field).
 
 **Phase 3.7** complete — validator parity + temporal discipline + retroactive fixes:
 - Extension records now validate at full parity with definition records (schema, domain, range, qualifier, cross-lens, source-required using owner policy).
@@ -209,4 +239,4 @@ The validator enforces referential integrity and warns on missing sources. Do no
 
 **Phase 3.6** complete — hardening pass two: cross-lens entity extension records (overlay model), sentinel cardinality semantics (count toward max, not min), tightened id pattern, multi-preferred-instance-of error, qualifier validation, source schema strictness (revid required for wikipedia, last_verified required for official), factual error corrections in seed corpus, predicate relocation (fork/lineage predicates to core), and tool improvements (tree --lens dependent loading, query --lens-family default action, structured cycle errors).
 
-Next: **Phase 3.8** — Biology overlay readiness (~26 organ/metabolism class entities, organ vs feature naming, biology predicate expansion).
+Next: **Phase 3.9** — Biology overlay substrate (~26 organ/metabolism class entities, organ vs feature naming, biology predicate expansion).

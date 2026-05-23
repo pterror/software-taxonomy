@@ -9,7 +9,7 @@ function getArg(flag: string): string | undefined {
 }
 
 const rootIdx = args.indexOf("--root");
-let rootId = rootIdx !== -1 ? args[rootIdx + 1] : "software";
+let rootId = rootIdx !== -1 ? args[rootIdx + 1] : "class:software";
 // strip leading @ if passed
 if (rootId.startsWith("@")) rootId = rootId.slice(1);
 

@@ -99,7 +99,8 @@ export function validate(lensSet: LoadedLensSet, targetLens?: Set<string>): Vali
   clearTransitiveCache();
 
   // Build graph from full lens set (all loaded lenses — needed for transitive checks)
-  const graph = buildGraph();
+  // Pass the already-loaded lensSet to avoid a redundant second disk read
+  const graph = buildGraph(undefined, lensSet);
 
   const violations: Violation[] = [];
   const summaries: LensSummary[] = [];

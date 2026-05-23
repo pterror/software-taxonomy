@@ -104,6 +104,25 @@ for (const lensId of fullLensSet.order) {
   }
 }
 
+// ---- Duplicate source id detection ----
+const seenSourceIds = new Map<string, { file: string; line: number; lens: string }>();
+for (const lensId of fullLensSet.order) {
+  const lens = fullLensSet.lenses.get(lensId)!;
+  for (const { record, file, line } of lens.sources) {
+    const src = record as { id?: string };
+    const id = src.id ?? "";
+    if (id) {
+      const prev = seenSourceIds.get(id);
+      if (prev) {
+        console.error(`ERROR  ${file}:${line} [${id}]: duplicate source id (previously seen at ${prev.file}:${prev.line} in lens '${prev.lens}')`);
+        schemaErrors++;
+      } else {
+        seenSourceIds.set(id, { file, line, lens: lensId });
+      }
+    }
+  }
+}
+
 if (schemaErrors > 0) {
   console.error(`\n${schemaErrors} schema error(s) found. Aborting semantic validation.`);
   process.exit(1);

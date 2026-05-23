@@ -35,8 +35,8 @@ function stripAt(id: string): string {
   return id.startsWith("@") ? id.slice(1) : id;
 }
 
-export function buildGraph(lensFilter?: string[]): Graph {
-  const lensSet = loadLensSet(lensFilter);
+export function buildGraph(lensFilter?: string[], preloaded?: import("./load.ts").LoadedLensSet): Graph {
+  const lensSet = preloaded ?? loadLensSet(lensFilter);
 
   const entities = new Map<string, MergedEntity>();
   const predicates = new Map<string, Predicate>();

@@ -1,0 +1,3 @@
+[
+  { "rule": "duplicate_entity_id", "entityId": "thing:alpha" }
+]

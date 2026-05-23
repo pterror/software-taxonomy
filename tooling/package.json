@@ -6,7 +6,8 @@
     "validate": "bun src/validate.ts",
     "query": "bun src/query.ts",
     "tree": "bun src/tree.ts",
-    "check-links": "bun src/check-links.ts"
+    "check-links": "bun src/check-links.ts",
+    "test-fixtures": "bun src/test-fixtures.ts"
   },
   "devDependencies": {
     "ajv": "^8.17.1",

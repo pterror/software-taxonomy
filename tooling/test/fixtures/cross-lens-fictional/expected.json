@@ -1,0 +1,3 @@
+[
+  { "rule": "cross_lens_fictional", "entityId": "thing:alpha", "predicateId": "related_to" }
+]

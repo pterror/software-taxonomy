@@ -1,0 +1,9 @@
+{
+  "id": "fiction",
+  "label": "Fiction",
+  "description": "Fictional lens",
+  "register": "fictional",
+  "depends_on": [],
+  "source_required": false,
+  "author": "fixture"
+}

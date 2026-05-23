@@ -1,0 +1,4 @@
+[
+  { "rule": "alias_cycle", "predicateId": "pred_a" },
+  { "rule": "alias_cycle", "predicateId": "pred_b" }
+]

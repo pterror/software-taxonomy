@@ -38,7 +38,6 @@ const validateSourceSchema = ajv.compile(sourceSchema);
 const validateManifestSchema = ajv.compile(manifestSchema);
 
 let schemaErrors = 0;
-let schemaWarnings = 0;
 
 function schemaError(file: string, line: number, id: string, msg: string) {
   console.error(`ERROR  ${file}:${line} [${id}]: ${msg}`);
@@ -47,21 +46,18 @@ function schemaError(file: string, line: number, id: string, msg: string) {
 
 // ---- Load lens set ----
 
-// Always load ALL lenses for transitive checks; filter only controls which to report
 const fullLensSet = loadLensSet();
 
 // Schema-validate all records
 for (const lensId of fullLensSet.order) {
   const lens = fullLensSet.lenses.get(lensId)!;
 
-  // Validate manifest
   if (!validateManifestSchema(lens.manifest)) {
     for (const err of validateManifestSchema.errors ?? []) {
       schemaError(lens.manifestPath, 0, lensId, `manifest schema: ${err.instancePath} ${err.message}`);
     }
   }
 
-  // Validate predicates
   for (const { record, file, line } of lens.predicates) {
     if (!validatePredicateSchema(record)) {
       for (const err of validatePredicateSchema.errors ?? []) {
@@ -71,7 +67,6 @@ for (const lensId of fullLensSet.order) {
     }
   }
 
-  // Validate sources
   for (const { record, file, line } of lens.sources) {
     if (!validateSourceSchema(record)) {
       for (const err of validateSourceSchema.errors ?? []) {
@@ -81,7 +76,6 @@ for (const lensId of fullLensSet.order) {
     }
   }
 
-  // Validate entities (definition records)
   for (const { record, file, line } of lens.entities) {
     if (!validateEntitySchema(record)) {
       for (const err of validateEntitySchema.errors ?? []) {
@@ -91,8 +85,6 @@ for (const lensId of fullLensSet.order) {
     }
   }
 
-  // Validate extension records (schema parity with definition records)
-  // Strip the loader-injected __loader_origin_lens field before schema validation
   for (const { record, file, line } of lens.extensions) {
     const { __loader_origin_lens: _ignored, ...recordForValidation } = record as Record<string, unknown>;
     if (!validateEntitySchema(recordForValidation)) {
@@ -129,12 +121,27 @@ if (schemaErrors > 0) {
   process.exit(1);
 }
 
-// ---- Semantic validation (TS validator) ----
+// ---- Structural / value-type validation (TS) ----
 
 const targetLens = lensFilter ? new Set(lensFilter) : undefined;
-const result = validate(fullLensSet, targetLens);
+const tsResult = validate(fullLensSet, targetLens);
 
-// ---- Datalog validator (runs in parallel for sanity-checking) ----
+// TS handles: lens-dependency-cycle, duplicate-predicate-id, predicate-lens-mismatch,
+// dangling-extension, own-entity-extension, unknown-predicate, deprecated-predicate,
+// alias-chain-too-long, alias-usage, value-type, qualifier-value-type
+
+// ---- Graph-invariant validation (Datalog) ----
+
+const DATALOG_RULES = new Set([
+  "duplicate_entity_id", "dangling_entity_ref", "dangling_source_ref",
+  "domain_violation", "range_violation",
+  "multi_preferred", "multi_preferred_instance_of", "no_preferred_rank",
+  "cardinality_violation_min", "cardinality_violation_max",
+  "deprecated_no_end_time", "end_without_start",
+  "source_required_violation", "cross_lens_fictional",
+  "qualifier_unknown_predicate", "qualifier_dangling_ref",
+  "alias_self_reference", "alias_cycle",
+]);
 
 const rulesPath = resolve(__dirname, "../../validate.ascent");
 const { facts, provenance } = emitFacts(fullLensSet);
@@ -143,53 +150,15 @@ let datalogViolations: import("./lib/validate-lib.ts").Violation[] = [];
 try {
   const rawDlViolations = await runDatalog(facts, rulesPath);
   datalogViolations = enrichViolations(rawDlViolations, fullLensSet, provenance);
-
-  // ---- Sanity check: compare migrated checks between TS and Datalog ----
-  // Checks currently in Datalog: duplicate_entity_id, dangling_entity_ref (dangling_source_ref stub)
-  const MIGRATED_RULES = new Set(["duplicate_entity_id", "dangling_entity_ref", "dangling_source_ref",
-    "domain_violation", "range_violation",
-    "multi_preferred", "multi_preferred_instance_of", "no_preferred_rank",
-    "cardinality_violation_min", "cardinality_violation_max",
-    "deprecated_no_end_time", "end_without_start",
-    "source_required_violation", "cross_lens_fictional",
-    "qualifier_unknown_predicate", "qualifier_dangling_ref",
-    "alias_self_reference", "alias_cycle"]);
-
-  const tsForMigrated = result.violations.filter(v => MIGRATED_RULES.has(v.rule));
-  const dlForMigrated = datalogViolations.filter(v => MIGRATED_RULES.has(v.rule));
-
-  if (tsForMigrated.length !== dlForMigrated.length) {
-    console.error(`\n[sanity] DRIFT: TS found ${tsForMigrated.length} violations for migrated rules, Datalog found ${dlForMigrated.length}`);
-    if (tsForMigrated.length > 0) {
-      console.error("[sanity] TS violations:");
-      for (const v of tsForMigrated) console.error(`  ${v.rule} ${v.entityId} ${v.predicateId}`);
-    }
-    if (dlForMigrated.length > 0) {
-      console.error("[sanity] Datalog violations:");
-      for (const v of dlForMigrated) console.error(`  ${v.rule} ${v.entityId} ${v.predicateId}`);
-    }
-  }
 } catch (err) {
   console.error(`[datalog] Warning: Datalog validator failed: ${err instanceof Error ? err.message : String(err)}`);
   console.error("[datalog] Continuing with TS validator only.");
 }
 
-// ---- Merge violations: TS (non-migrated) + Datalog (migrated) ----
-// Migrated rules: Datalog is authoritative; TS output for these rules is suppressed.
+// ---- Merge and report ----
 
-const MIGRATED_RULES_SET = new Set(["duplicate_entity_id", "dangling_entity_ref", "dangling_source_ref",
-  "domain_violation", "range_violation",
-  "multi_preferred", "multi_preferred_instance_of", "no_preferred_rank",
-  "cardinality_violation_min", "cardinality_violation_max",
-  "deprecated_no_end_time", "end_without_start",
-  "source_required_violation", "cross_lens_fictional",
-  "qualifier_unknown_predicate", "qualifier_dangling_ref",
-  "alias_self_reference", "alias_cycle"]);
-
-const tsOnlyViolations = result.violations.filter(v => !MIGRATED_RULES_SET.has(v.rule));
-const allViolations = [...tsOnlyViolations, ...datalogViolations]
+const allViolations = [...tsResult.violations, ...datalogViolations]
   .sort((a, b) => {
-    // Sort by severity (error first), then file, then line
     const sevOrder = { error: 0, warning: 1, info: 2 };
     const sA = sevOrder[a.severity] ?? 3;
     const sB = sevOrder[b.severity] ?? 3;
@@ -204,13 +173,12 @@ for (const v of allViolations) {
   logFn(`${prefix} [${v.lens}] ${loc} [${v.entityId}] {${v.predicateId}} ${v.rule}: ${v.message}`);
 }
 
-// Print summary
 console.log("\n--- Validation Summary ---");
 let totalEntities = 0;
 let totalPredicates = 0;
 let totalSources = 0;
 
-for (const s of result.summaries) {
+for (const s of tsResult.summaries) {
   const show = !targetLens || targetLens.has(s.lensId);
   if (!show) continue;
   console.log(

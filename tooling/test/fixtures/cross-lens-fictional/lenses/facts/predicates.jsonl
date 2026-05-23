@@ -1,0 +1,1 @@
+{"id":"related_to","label":"related to","description":"General relation.","lens":"facts","value_type":"entity","domain":null,"range":null,"cardinality":"0..*","expect_preferred":false}

@@ -24,6 +24,7 @@
 // ── Input relations ───────────────────────────────────────────────────────────
 
 relation entity(String, String);
+relation entity_def(String, String, String);
 relation entity_ref(String, String, String, String);
 relation stmt(String, String, String, String);
 relation stmt_src(String, String, String, String);
@@ -53,9 +54,14 @@ transitive_instance_of(e, c) <-- instance_of_direct(e, c);
 transitive_instance_of(e, c) <-- transitive_instance_of(e, m), transitive_subclass_of(m, c);
 
 // ── Violation: duplicate_entity_id ───────────────────────────────────────────
+// Fires when the same entity id appears in two different lenses (cross-lens duplicate).
+// Also fires for same-lens duplicates via entity_def which includes line numbers.
 
 relation duplicate_entity_id(String, String, String);
-duplicate_entity_id(x, l1, l2) <-- entity(x, l1), entity(x, l2), if l1 < l2;
+// Cross-lens: two different lenses define the same entity id
+duplicate_entity_id(x, l1, l2) <-- entity_def(x, l1, _), entity_def(x, l2, _), if l1 < l2;
+// Same-lens: two definitions with same lens but different lines
+duplicate_entity_id(x, l, ln2) <-- entity_def(x, l, ln1), entity_def(x, l, ln2), if ln1 < ln2;
 
 // ── Violation: dangling_entity_ref ───────────────────────────────────────────
 
@@ -63,7 +69,6 @@ relation dangling_entity_ref(String, String, String);
 dangling_entity_ref(x, p, t) <-- entity_ref(x, p, t, _), !entity(t, _);
 
 // ── Violation: dangling_source_ref ───────────────────────────────────────────
-// (stub — activated in commit 2)
 
 relation dangling_source_ref(String, String, String);
-// dangling_source_ref(x, p, s) <-- stmt_src(x, p, _, s), !source_def(s, _);
+dangling_source_ref(x, p, s) <-- stmt_src(x, p, _, s), !source_def(s, _);

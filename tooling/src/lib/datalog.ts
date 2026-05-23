@@ -65,13 +65,17 @@ export function emitFacts(lensSet: LoadedLensSet): { facts: string; provenance: 
     lines.push(`${rel}(${args.join(", ")});`);
   }
 
-  // entity(id, owner_lens)
+  // entity(id, owner_lens) — deduplicated by Datalog; used for existence checks
+  // entity_def(id, lens, line_str) — one fact per definition; line_str makes duplicates visible
   for (const lensId of lensSet.order) {
     const lens = lensSet.lenses.get(lensId)!;
     for (const { record: entity, file, line } of lens.entities) {
       fact("entity", escStr(entity.id), escStr(lensId));
-      // Store provenance keyed by entity id
-      provenance.set(`entity\0${entity.id}`, { file, line, lensId });
+      fact("entity_def", escStr(entity.id), escStr(lensId), escStr(String(line)));
+      // Store provenance keyed by entity id (first occurrence wins)
+      if (!provenance.has(`entity\0${entity.id}`)) {
+        provenance.set(`entity\0${entity.id}`, { file, line, lensId });
+      }
     }
   }
 

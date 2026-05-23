@@ -223,16 +223,13 @@ function validateStatementEntry(
         }
       }
     }
-    // Source check using OWNING lens's source_required
+    // Source check using OWNING lens's source_required (dangling-source-ref migrated to Datalog)
     if (ctx.sourceRequired) {
       const isStructuralOnClass = ctx.isClass && (predId === "instance_of" || predId === "subclass_of");
       if (!isStructuralOnClass) {
         if (source == null) {
           violation("error", "source-required",
             `lens '${ctx.ownerLensId}' (owner) requires sources, but ${ctx.fromExtension ? "extension " : ""}statement has no source`);
-        } else if (!allSourceIds.has(source)) {
-          violation("error", "dangling-source-ref",
-            `source '${source}' not found in any lens's sources.jsonl`);
         }
       }
     }
@@ -251,14 +248,11 @@ function validateStatementEntry(
     violation("error", "value-type", `${typeErr}`);
   }
 
-  // Entity ref resolution + range check + cross-lens fictional warning
+  // Entity ref range check (dangling-entity-ref migrated to Datalog)
   if (pred.value_type === "entity" && typeof value === "string" && value.startsWith("@")) {
     const refId = value.slice(1);
     const refEntity = graph.entities.get(refId);
-    if (!refEntity) {
-      violation("error", "dangling-entity-ref",
-        `entity ref '${value}' does not exist in any loaded lens`);
-    } else {
+    if (refEntity) {
       // Range check
       if (pred.range && pred.range.length > 0) {
         const rangeOk = pred.range.some((rc) => isInstanceOf(graph, refId, rc.slice(1)));
@@ -266,15 +260,6 @@ function validateStatementEntry(
           violation("error", "range-violation",
             `'${value}' must be instance_of one of [${pred.range.join(", ")}] but is not`);
         }
-      }
-
-      // Cross-lens fictional reference warning
-      const refOwnerLens = graph.entities.get(refId)?.owner_lens;
-      const refOwnerManifest = refOwnerLens ? graph.entities.get(refId) : undefined;
-      // We need the manifest from the lensSet — pass it via ctx
-      if (ctx.manifest.register === "factual" && refOwnerLens) {
-        // We don't have lensSet here; cross-lens check is done by the caller
-        // (This is unchanged from before — caller handles this separately)
       }
     }
   }
@@ -291,16 +276,13 @@ function validateStatementEntry(
     }
   }
 
-  // Source check using OWNING lens's source_required
+  // Source check using OWNING lens's source_required (dangling-source-ref migrated to Datalog)
   if (ctx.sourceRequired) {
     const isStructuralOnClass = ctx.isClass && (predId === "instance_of" || predId === "subclass_of");
     if (!isStructuralOnClass) {
       if (source == null) {
         violation("error", "source-required",
           `lens '${ctx.ownerLensId}' (owner) requires sources, but ${ctx.fromExtension ? "extension " : ""}statement has no source`);
-      } else if (!allSourceIds.has(source)) {
-        violation("error", "dangling-source-ref",
-          `source '${source}' not found in any lens's sources.jsonl`);
       }
     }
   }
@@ -445,26 +427,13 @@ export function validate(lensSet: LoadedLensSet, targetLens?: Set<string>): Vali
     return [current, firstAlias];
   }
 
-  // Build entity owner map — ERROR on duplicate entity id across lenses
+  // Build entity owner map (duplicate-entity-id check migrated to Datalog)
   const entityOwner = new Map<string, string>(); // entity id -> lens id that owns it
   const entityOwnerLine = new Map<string, number>(); // entity id -> line number in owning lens
   for (const lensId of lensSet.order) {
     const lens = lensSet.lenses.get(lensId)!;
     for (const { record: entity, file, line } of lens.entities) {
-      if (entityOwner.has(entity.id)) {
-        const ownerLens = entityOwner.get(entity.id)!;
-        const ownerLine = entityOwnerLine.get(entity.id)!;
-        violations.push({
-          severity: "error",
-          lens: lensId,
-          file,
-          line,
-          entityId: entity.id,
-          predicateId: "?",
-          rule: "duplicate-entity-id",
-          message: `Entity id '${entity.id}' also appears in lens '${ownerLens}' (line ${ownerLine}). Entity ids must be globally unique across all lenses.`,
-        });
-      } else {
+      if (!entityOwner.has(entity.id)) {
         entityOwner.set(entity.id, lensId);
         entityOwnerLine.set(entity.id, line);
       }

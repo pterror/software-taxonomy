@@ -80,12 +80,25 @@ for (const lensId of fullLensSet.order) {
     }
   }
 
-  // Validate entities
+  // Validate entities (definition records)
   for (const { record, file, line } of lens.entities) {
     if (!validateEntitySchema(record)) {
       for (const err of validateEntitySchema.errors ?? []) {
         schemaError(file, line, (record as { id?: string }).id ?? "?",
           `entity schema: ${err.instancePath} ${err.message}`);
+      }
+    }
+  }
+
+  // Validate extension records (schema parity with definition records)
+  // Strip the loader-added _origin_lens field before schema validation
+  for (const { record, file, line } of lens.extensions) {
+    const { _origin_lens: _ignored, ...recordForValidation } = record as Record<string, unknown>;
+    if (!validateEntitySchema(recordForValidation)) {
+      for (const err of validateEntitySchema.errors ?? []) {
+        const extId = (record as { extends?: string }).extends ?? "?";
+        schemaError(file, line, extId,
+          `extension schema: ${err.instancePath} ${err.message}`);
       }
     }
   }

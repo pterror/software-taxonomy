@@ -12,7 +12,7 @@
     },
     "kind": {
       "type": "string",
-      "enum": ["wikipedia", "official", "paper", "book", "personal_communication", "other"],
+      "enum": ["wikipedia", "official", "paper", "book", "personal_communication", "interpretive", "other"],
       "description": "Source type."
     },
     "title": {

@@ -308,27 +308,63 @@ export function validate(lensSet: LoadedLensSet, targetLens?: Set<string>): Vali
           continue;
         }
 
-        // Validate extension statements using extending lens's source_required
+        // Source policy: use OWNING lens's source_required (not extending lens's)
+        const targetOwnerLensId = entityOwner.get(targetId) ?? lensId;
+        const targetOwnerManifest = lensSet.lenses.get(targetOwnerLensId)?.manifest;
+        const extSourceRequired = targetOwnerManifest?.source_required ?? false;
+
+        const isTargetClass = isInstanceOf(graph, targetId, "meta:class");
+
+        // Validate extension statements at parity with definition records
         for (const [predId, entries] of Object.entries(ext.statements)) {
-          const [pred] = resolvePredicate(predId);
+          const [pred, aliasedFrom] = resolvePredicate(predId);
           if (!pred) {
             violation("warning", lensId, file, line, targetId, predId, "unknown-predicate",
               `predicate '${predId}' in extension record is not defined in any loaded lens`);
             continue;
           }
 
+          // Alias usage info
+          if (aliasedFrom) {
+            violations.push({
+              severity: "info",
+              lens: lensId,
+              file,
+              line,
+              entityId: targetId,
+              predicateId: predId,
+              rule: "alias-usage",
+              message: `predicate '${predId}' is an alias of '${pred.id}'; using canonical constraints`,
+            });
+          }
+
           for (const entry of entries) {
             const { value, source, rank } = entry;
             if (rank === "deprecated") continue;
+
             if (isSentinel(value)) {
-              // Source check using EXTENDING lens's source_required
-              if (manifest.source_required) {
-                if (source == null) {
-                  violation("error", lensId, file, line, targetId, predId, "source-required",
-                    `extending lens '${lensId}' requires sources, but extension statement has no source`);
-                } else if (!allSourceIds.has(source)) {
-                  violation("error", lensId, file, line, targetId, predId, "dangling-source-ref",
-                    `source '${source}' not found in any lens's sources.jsonl`);
+              // Domain check
+              if (pred.domain && pred.domain.length > 0) {
+                const isStructural = (predId === "instance_of" || predId === "subclass_of") && isTargetClass;
+                if (!isStructural) {
+                  const domainOk = pred.domain.some((dc) => isInstanceOf(graph, targetId, dc.slice(1)));
+                  if (!domainOk) {
+                    violation("error", lensId, file, line, targetId, predId, "domain-violation",
+                      `entity '${targetId}' must be instance_of one of [${pred.domain.join(", ")}] to use predicate '${predId}'`);
+                  }
+                }
+              }
+              // Source check using OWNING lens's source_required
+              if (extSourceRequired) {
+                const isStructuralOnClass = isTargetClass && (predId === "instance_of" || predId === "subclass_of");
+                if (!isStructuralOnClass) {
+                  if (source == null) {
+                    violation("error", lensId, file, line, targetId, predId, "source-required",
+                      `lens '${targetOwnerLensId}' (owner) requires sources, but extension statement has no source`);
+                  } else if (!allSourceIds.has(source)) {
+                    violation("error", lensId, file, line, targetId, predId, "dangling-source-ref",
+                      `source '${source}' not found in any lens's sources.jsonl`);
+                  }
                 }
               }
               continue;
@@ -340,25 +376,111 @@ export function validate(lensSet: LoadedLensSet, targetLens?: Set<string>): Vali
               violation("error", lensId, file, line, targetId, predId, "value-type", typeErr);
             }
 
-            // Entity ref resolution
+            // Entity ref resolution + range check + cross-lens fictional warning
             if (pred.value_type === "entity" && typeof value === "string" && value.startsWith("@")) {
               const refId = value.slice(1);
-              if (!graph.entities.has(refId)) {
+              const refEntity = graph.entities.get(refId);
+              if (!refEntity) {
                 violation("error", lensId, file, line, targetId, predId, "dangling-entity-ref",
                   `entity ref '${value}' in extension record does not exist`);
+              } else {
+                // Range check
+                if (pred.range && pred.range.length > 0) {
+                  const rangeOk = pred.range.some((rc) => isInstanceOf(graph, refId, rc.slice(1)));
+                  if (!rangeOk) {
+                    violation("error", lensId, file, line, targetId, predId, "range-violation",
+                      `'${value}' must be instance_of one of [${pred.range.join(", ")}] but is not`);
+                  }
+                }
+
+                // Cross-lens fictional reference warning
+                const refOwnerLens = entityOwner.get(refId);
+                const refOwnerManifest = refOwnerLens ? lensSet.lenses.get(refOwnerLens)?.manifest : undefined;
+                if (
+                  manifest.register === "factual" &&
+                  refOwnerManifest &&
+                  (refOwnerManifest.register === "fictional" || refOwnerManifest.register === "interpretive")
+                ) {
+                  violation("warning", lensId, file, line, targetId, predId, "cross-lens-fictional-ref",
+                    `factual lens '${lensId}' references entity '${value}' owned by ${refOwnerManifest.register} lens '${refOwnerLens}'`);
+                }
               }
             }
 
-            // Source check using EXTENDING lens's source_required
-            if (manifest.source_required) {
-              if (source == null) {
-                violation("error", lensId, file, line, targetId, predId, "source-required",
-                  `extending lens '${lensId}' requires sources, but extension statement has no source`);
-              } else if (!allSourceIds.has(source)) {
-                violation("error", lensId, file, line, targetId, predId, "dangling-source-ref",
-                  `source '${source}' not found in any lens's sources.jsonl`);
+            // Domain check
+            if (pred.domain && pred.domain.length > 0) {
+              const isStructural = (predId === "instance_of" || predId === "subclass_of") && isTargetClass;
+              if (!isStructural) {
+                const domainOk = pred.domain.some((dc) => isInstanceOf(graph, targetId, dc.slice(1)));
+                if (!domainOk) {
+                  violation("error", lensId, file, line, targetId, predId, "domain-violation",
+                    `entity '${targetId}' must be instance_of one of [${pred.domain.join(", ")}] to use predicate '${predId}'`);
+                }
               }
             }
+
+            // Source check using OWNING lens's source_required
+            if (extSourceRequired) {
+              const isStructuralOnClass = isTargetClass && (predId === "instance_of" || predId === "subclass_of");
+              if (!isStructuralOnClass) {
+                if (source == null) {
+                  violation("error", lensId, file, line, targetId, predId, "source-required",
+                    `lens '${targetOwnerLensId}' (owner) requires sources, but extension statement has no source`);
+                } else if (!allSourceIds.has(source)) {
+                  violation("error", lensId, file, line, targetId, predId, "dangling-source-ref",
+                    `source '${source}' not found in any lens's sources.jsonl`);
+                }
+              }
+            }
+
+            // Qualifier validation
+            if (entry.qualifiers) {
+              for (const [qPredId, qVal] of Object.entries(entry.qualifiers)) {
+                const qPredDef = predicateIndex.get(qPredId);
+                if (!qPredDef) {
+                  violation("warning", lensId, file, line, targetId, predId, "unknown-qualifier-predicate",
+                    `qualifier key '${qPredId}' is not a defined predicate`);
+                  if (typeof qVal === "string" && qVal.startsWith("@")) {
+                    const refId = qVal.slice(1);
+                    if (!graph.entities.has(refId)) {
+                      violation("error", lensId, file, line, targetId, predId, "dangling-qualifier-ref",
+                        `dangling entity ref '${qVal}' in qualifier '${qPredId}'`);
+                    }
+                  }
+                  continue;
+                }
+                const qTypeErr = checkValueType(qVal as string | number | boolean, qPredDef);
+                if (qTypeErr) {
+                  violation("error", lensId, file, line, targetId, predId, "qualifier-value-type",
+                    `qualifier '${qPredId}': ${qTypeErr}`);
+                }
+                if (typeof qVal === "string" && qVal.startsWith("@")) {
+                  const refId = qVal.slice(1);
+                  if (!graph.entities.has(refId)) {
+                    violation("error", lensId, file, line, targetId, predId, "dangling-qualifier-ref",
+                      `dangling entity ref '${qVal}' in qualifier '${qPredId}'`);
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        // Multi-class preferred-rank warning for merged instance_of (extensions contribute)
+        const mergedExtEntity = graph.entities.get(targetId);
+        const mergedInstanceOf = (mergedExtEntity?.statements["instance_of"] ?? []).filter(e => e.rank !== "deprecated");
+        // Only check extensions that ADD instance_of statements
+        const extInstanceOf = (ext.statements["instance_of"] ?? []).filter(e => e.rank !== "deprecated");
+        if (extInstanceOf.length > 0 && mergedInstanceOf.length > 1) {
+          const hasPreferred = mergedInstanceOf.some(e => e.rank === "preferred");
+          if (!hasPreferred) {
+            violation("warning", lensId, file, line, targetId, "instance_of", "multi-class-no-preferred-rank",
+              `entity has ${mergedInstanceOf.length} merged instance_of statements (including extension) but none has rank: "preferred"`);
+          }
+          const preferredCount = mergedInstanceOf.filter(e => e.rank === "preferred").length;
+          if (preferredCount > 1) {
+            violation("error", lensId, file, line, targetId, "instance_of", "multi-preferred-instance-of",
+              `entity has ${preferredCount} merged instance_of statements with rank: "preferred" — at most one may be preferred`);
           }
         }
       }

@@ -102,22 +102,23 @@ has_stmt(x, p) <-- stmt(x, p, _, rank), if rank != "deprecated";
 // ── Violation: domain_violation ──────────────────────────────────────────────
 // An entity uses a predicate without satisfying any of its domain classes.
 // Exception: instance_of and subclass_of on class entities are structural (no domain check).
+// Uses effective_predicate_domain to cascade through aliases.
 
-// domain_ok(x, p): entity x satisfies at least one domain class of predicate p
+// domain_ok(x, p): entity x satisfies at least one effective domain class of predicate p
 relation domain_ok(String, String);
-domain_ok(x, p) <-- predicate_domain(p, d), transitive_instance_of(x, d);
+domain_ok(x, p) <-- effective_predicate_domain(p, d), transitive_instance_of(x, d);
 
 relation domain_violation(String, String);
-// Non-class entities: any predicate with domain that fails
+// Non-class entities: any predicate with effective domain that fails
 domain_violation(x, p) <--
   has_stmt(x, p),
-  predicate_domain(p, _),
+  effective_predicate_domain(p, _),
   !domain_ok(x, p),
   !is_class(x);
 // Class entities: only non-structural predicates (instance_of/subclass_of exempt)
 domain_violation(x, p) <--
   has_stmt(x, p),
-  predicate_domain(p, _),
+  effective_predicate_domain(p, _),
   !domain_ok(x, p),
   is_class(x),
   if p != "instance_of",
@@ -127,15 +128,16 @@ domain_violation(x, p) <--
 // A target entity (entity ref) does not satisfy the range class of the predicate.
 // Exception: deprecated statements skip range check.
 // Only fires for resolvable entity refs (dangling handled by dangling_entity_ref).
+// Uses effective_predicate_range to cascade through aliases.
 
 relation range_ok(String, String, String);
-range_ok(x, p, t) <-- entity_ref(x, p, t, _), predicate_range(p, r), transitive_instance_of(t, r);
+range_ok(x, p, t) <-- entity_ref(x, p, t, _), effective_predicate_range(p, r), transitive_instance_of(t, r);
 
 relation range_violation(String, String, String);
 range_violation(x, p, t) <--
   entity_ref(x, p, t, rank),
   if rank != "deprecated",
-  predicate_range(p, _),
+  effective_predicate_range(p, _),
   !range_ok(x, p, t),
   entity(t, _);
 
@@ -150,8 +152,15 @@ relation active_scalar_stmt(String, String, String, String);
 active_scalar_stmt(x, p, v, r) <-- stmt(x, p, v, r), if r != "deprecated";
 
 // active_real_stmt: non-deprecated, non-sentinel stmts (for cardinality min count)
+// Uses is_sentinel(stmt_id) — we check via statement relation cross join
 relation active_real_scalar(String, String, String, String);
 active_real_scalar(x, p, v, r) <-- active_scalar_stmt(x, p, v, r), if v != "__sentinel__";
+
+// ── Derived: expect_preferred (via effective_predicate_def) ──────────────────
+
+// expect_preferred predicates — via effective def to cascade through aliases
+relation expect_preferred_pred(String);
+expect_preferred_pred(p) <-- effective_predicate_def(p, _, _, _, "true", _);
 
 // ── Violation: multi_preferred ───────────────────────────────────────────────
 // More than one non-deprecated statement with rank=preferred for (entity, predicate).
@@ -191,10 +200,6 @@ relation active_scalar_count(String, String, i32);
 active_scalar_count(x, p, c) <--
   active_scalar_stmt(x, p, _, _),
   agg c = count() in active_scalar_stmt(x, p, _, _);
-
-// expect_preferred predicates
-relation expect_preferred_pred(String);
-expect_preferred_pred(p) <-- predicate_def(p, _, _, _, "true", _);
 
 // no_preferred_rank: fires when 2+ active stmts, no preferred, predicate expects preferred
 // For entity-ref predicates
@@ -244,7 +249,7 @@ entity_uses_pred(x, p) <-- stmt(x, p, _, _);
 // We split by value_type
 
 relation pred_is_entity_type(String);
-pred_is_entity_type(p) <-- predicate_def(p, "entity", _, _, _, _);
+pred_is_entity_type(p) <-- effective_predicate_def(p, "entity", _, _, _, _);
 
 // Real count for entity-type predicates
 relation real_count_entity_pred(String, String, i32);
@@ -294,22 +299,23 @@ total_count_scalar_pred(x, p, 0) <--
   !pred_is_entity_type(p),
   !active_scalar_stmt(x, p, _, _);
 
-// cardinality_violation_min(entity, pred, card_min_str, real_count_str)
+// cardinality_violation_min(entity, pred, card_min, real_count)
+// Uses effective_predicate_def to cascade through aliases.
 relation cardinality_violation_min(String, String, i32, i32);
 cardinality_violation_min(x, p, mn, c) <--
-  predicate_def(p, _, mn, _, _, _), if mn > 0,
+  effective_predicate_def(p, _, mn, _, _, _), if mn > 0,
   real_count_entity_pred(x, p, c), if c < mn;
 cardinality_violation_min(x, p, mn, c) <--
-  predicate_def(p, _, mn, _, _, _), if mn > 0,
+  effective_predicate_def(p, _, mn, _, _, _), if mn > 0,
   real_count_scalar_pred(x, p, c), if c < mn;
 
-// cardinality_violation_max(entity, pred, card_max_str, total_count_str)
+// cardinality_violation_max(entity, pred, card_max, total_count)
 relation cardinality_violation_max(String, String, i32, i32);
 cardinality_violation_max(x, p, mx, c) <--
-  predicate_def(p, _, _, mx, _, _), if mx >= 0,
+  effective_predicate_def(p, _, _, mx, _, _), if mx >= 0,
   total_count_entity_pred(x, p, c), if c > mx;
 cardinality_violation_max(x, p, mx, c) <--
-  predicate_def(p, _, _, mx, _, _), if mx >= 0,
+  effective_predicate_def(p, _, _, mx, _, _), if mx >= 0,
   total_count_scalar_pred(x, p, c), if c > mx;
 
 // ── Violation: deprecated_no_end_time ────────────────────────────────────────
@@ -409,3 +415,30 @@ alias_reachable(a, c) <-- predicate_alias(a, b), alias_reachable(b, c);
 
 relation alias_cycle(String);
 alias_cycle(p) <-- alias_reachable(p, p);
+
+// ── Derived: canonical predicate resolution ───────────────────────────────────
+// canonical_predicate(alias, canonical): the ultimate non-aliased predicate.
+// Transitively follows alias_of chains; terminates because cycles are caught above.
+
+relation canonical_predicate(String, String);
+// Base: predicate without alias_of is its own canonical
+canonical_predicate(p, p) <-- predicate_def(p, _, _, _, _, _), !predicate_alias(p, _);
+// Inductive: alias resolves to whatever the target resolves to
+canonical_predicate(p, c) <-- predicate_alias(p, t), canonical_predicate(t, c);
+
+// effective_predicate_def(pred_id, value_type, card_min, card_max, expect_preferred, pred_is_entity_type_str)
+// Provides the constraint definitions for pred_id, resolving through aliases.
+// All constraint rules should consult this instead of predicate_def directly.
+
+relation effective_predicate_def(String, String, i32, i32, String, String);
+effective_predicate_def(p, vt, mn, mx, ep, lens) <--
+  canonical_predicate(p, c),
+  predicate_def(c, vt, mn, mx, ep, lens);
+
+// effective_predicate_domain(pred_id, class_id): domain from the canonical predicate
+relation effective_predicate_domain(String, String);
+effective_predicate_domain(p, d) <-- canonical_predicate(p, c), predicate_domain(c, d);
+
+// effective_predicate_range(pred_id, class_id): range from the canonical predicate
+relation effective_predicate_range(String, String);
+effective_predicate_range(p, r) <-- canonical_predicate(p, c), predicate_range(c, r);

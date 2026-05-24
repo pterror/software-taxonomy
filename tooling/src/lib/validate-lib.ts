@@ -200,8 +200,8 @@ export function validate(lensSet: LoadedLensSet, targetLens?: Set<string>): Vali
             continue;
           }
           if (aliasedFrom) {
-            violation("info", lensId, file, line, targetId, predId, "alias-usage",
-              `predicate '${predId}' is an alias of '${pred.id}'; using canonical constraints`);
+            // Alias constraints now cascade via Datalog (effective_predicate_def); no INFO needed.
+            void aliasedFrom;
           }
           for (const entry of entries) {
             if (entry.rank === "deprecated" || isSentinel(entry.value)) continue;

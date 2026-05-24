@@ -168,29 +168,17 @@ export function validate(lensSet: LoadedLensSet, targetLens?: Set<string>): Vali
     const countBefore = violations.length;
 
     if (isTargeted) {
-      // Predicate lens-mismatch
-      for (const { record: pred, file, line } of lens.predicates) {
-        if (pred.lens !== lensId) {
-          violation("error", lensId, file, line, pred.id, pred.id, "predicate-lens-mismatch",
-            `predicate.lens is '${pred.lens}' but file is in lens '${lensId}'`);
-        }
-      }
+      // Note: predicate-lens-mismatch, dangling-extension, and own-entity-extension are
+      // now handled by Datalog rules in validate.ascent.
 
-      // Extension structural checks
+      // Extension value-type checks (structural checks moved to Datalog)
       for (const { record: ext, file, line } of lens.extensions) {
         const targetId = ext.extends.startsWith("@") ? ext.extends.slice(1) : ext.extends;
 
-        if (!graph.entities.has(targetId)) {
-          violation("error", lensId, file, line, targetId, "?", "dangling-extension",
-            `extension record targets '${ext.extends}' which does not exist in any loaded lens`);
-          continue;
-        }
-
-        if (entityOwner.get(targetId) === lensId) {
-          violation("error", lensId, file, line, targetId, "?", "own-entity-extension",
-            `lens '${lensId}' owns entity '${targetId}' — use the definition record instead of an extension`);
-          continue;
-        }
+        // Skip value-type checks for dangling or own-entity extensions
+        // (Datalog will report the structural violation; TS skips downstream)
+        if (!graph.entities.has(targetId)) continue;
+        if (entityOwner.get(targetId) === lensId) continue;
 
         for (const [predId, entries] of Object.entries(ext.statements)) {
           const [pred, aliasedFrom] = resolvePredicate(predId);

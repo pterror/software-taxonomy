@@ -124,6 +124,11 @@ export function emitFacts(lensSet: LoadedLensSet): { facts: string; provenance: 
       if (!predicateProv.has(pred.id)) {
         predicateProv.set(pred.id, { file, line, lensId });
       }
+      // predicate_file_lens: the lens this predicate's file belongs to (for mismatch check)
+      fact("predicate_file_lens", escStr(pred.id), escStr(lensId));
+      // predicate_claimed_lens: the lens declared in the predicate record itself
+      const claimedLens = (pred as Record<string, unknown>)["lens"] as string | undefined ?? lensId;
+      fact("predicate_claimed_lens", escStr(pred.id), escStr(claimedLens));
       if (pred.alias_of) {
         fact("predicate_alias", escStr(pred.id), escStr(pred.alias_of));
       }
@@ -147,6 +152,15 @@ export function emitFacts(lensSet: LoadedLensSet): { facts: string; provenance: 
   }
 
   // depends_on (not needed for current rules but reserved)
+
+  // extension(lens_id, target_entity_id) — for dangling-extension and own-entity-extension
+  for (const lensId of lensSet.order) {
+    const lens = lensSet.lenses.get(lensId)!;
+    for (const { record: ext } of lens.extensions) {
+      const targetId = ext.extends.startsWith("@") ? ext.extends.slice(1) : ext.extends;
+      fact("extension", escStr(lensId), escStr(targetId));
+    }
+  }
 
   // Emit statements using stmt_id = "<entity_id>#<predicate_id>#<index>" as primary key.
   // Relations emitted:
@@ -353,6 +367,9 @@ const VIOLATION_RELATIONS = new Set([
   "qualifier_dangling_ref",
   "deprecated_no_end_time",
   "end_without_start",
+  "predicate_lens_mismatch",
+  "dangling_extension",
+  "own_entity_extension",
 ]);
 
 /** Run the Datalog program with emitted facts, parse violations from stdout. */
@@ -413,6 +430,9 @@ const RULE_SEVERITY: Record<string, Severity> = {
   qualifier_dangling_ref: "error",
   deprecated_no_end_time: "warning",
   end_without_start: "warning",
+  predicate_lens_mismatch: "error",
+  dangling_extension: "error",
+  own_entity_extension: "error",
 };
 
 /** Build a human-readable violation message from a raw Datalog violation. */
@@ -473,6 +493,15 @@ function formatViolationMessage(raw: RawViolation): { entityId: string; predicat
     case "end_without_start":
       return { entityId: a0, predicateId: a1, lens: "?",
         message: `statement on predicate '${a1}' has end_time qualifier but no start_time` };
+    case "predicate_lens_mismatch":
+      return { entityId: "?", predicateId: a0, lens: a1,
+        message: `predicate.lens is '${a2}' but file is in lens '${a1}'` };
+    case "dangling_extension":
+      return { entityId: a1, predicateId: "?", lens: a0,
+        message: `extension record targets '${a1}' which does not exist in any loaded lens` };
+    case "own_entity_extension":
+      return { entityId: a1, predicateId: "?", lens: a0,
+        message: `lens '${a0}' owns entity '${a1}' — use the definition record instead of an extension` };
     default:
       return { entityId: a0 ?? "?", predicateId: a1 ?? "?", lens: "?", message: raw.args.join(", ") };
   }

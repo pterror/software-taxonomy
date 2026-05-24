@@ -37,6 +37,12 @@ relation predicate_def(String, String, i32, i32, String, String);
 relation predicate_domain(String, String);
 relation predicate_range(String, String);
 relation predicate_alias(String, String);
+// predicate_file_lens(pred_id, file_lens_id): lens whose directory contains this predicate file
+relation predicate_file_lens(String, String);
+// predicate_claimed_lens(pred_id, claimed_lens_id): lens declared inside the predicate record
+relation predicate_claimed_lens(String, String);
+// extension(lens_id, target_entity_id): extension records from each lens
+relation extension(String, String);
 relation source_def(String, String);
 relation lens(String, String, String);
 relation entity_owner(String, String, String);
@@ -442,3 +448,28 @@ effective_predicate_domain(p, d) <-- canonical_predicate(p, c), predicate_domain
 // effective_predicate_range(pred_id, class_id): range from the canonical predicate
 relation effective_predicate_range(String, String);
 effective_predicate_range(p, r) <-- canonical_predicate(p, c), predicate_range(c, r);
+
+// ── Violation: predicate_lens_mismatch ───────────────────────────────────────
+// The predicate record's "lens" field disagrees with the lens directory it lives in.
+
+relation predicate_lens_mismatch(String, String, String);
+predicate_lens_mismatch(p, file_lens, claimed) <--
+  predicate_file_lens(p, file_lens),
+  predicate_claimed_lens(p, claimed),
+  if file_lens != claimed;
+
+// ── Violation: dangling_extension ────────────────────────────────────────────
+// Extension record targets an entity that doesn't exist.
+
+relation dangling_extension(String, String);
+dangling_extension(lens_id, target) <--
+  extension(lens_id, target),
+  !entity(target, _);
+
+// ── Violation: own_entity_extension ──────────────────────────────────────────
+// Lens uses an extension record for an entity it owns — should use the definition record.
+
+relation own_entity_extension(String, String);
+own_entity_extension(lens_id, target) <--
+  extension(lens_id, target),
+  entity(target, lens_id);

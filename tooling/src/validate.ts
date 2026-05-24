@@ -126,9 +126,10 @@ if (schemaErrors > 0) {
 const targetLens = lensFilter ? new Set(lensFilter) : undefined;
 const tsResult = validate(fullLensSet, targetLens);
 
-// TS handles: lens-dependency-cycle, duplicate-predicate-id, predicate-lens-mismatch,
-// dangling-extension, own-entity-extension, unknown-predicate, deprecated-predicate,
-// alias-chain-too-long, alias-usage, value-type, qualifier-value-type
+// TS handles: lens-dependency-cycle, duplicate-predicate-id, unknown-predicate,
+// deprecated-predicate, alias-chain-too-long, value-type, qualifier-value-type
+// Datalog handles: predicate-lens-mismatch, dangling-extension, own-entity-extension
+//   (plus all graph-invariant checks)
 
 // ---- Graph-invariant validation (Datalog) ----
 

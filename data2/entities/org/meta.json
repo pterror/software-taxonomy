@@ -1,0 +1,42 @@
+{
+  "id": "@org:meta",
+  "labels": {
+    "en": "Meta Platforms"
+  },
+  "description": "American multinational technology corporation operating social media and communication platforms including Facebook, Instagram, and WhatsApp.",
+  "statements": [
+    {
+      "id": "s:3z64kwj",
+      "predicate": "@core:instance_of",
+      "value": "@class:organization",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:meta_platforms@1354210256"
+        }
+      ]
+    },
+    {
+      "id": "s:1fb1q36",
+      "predicate": "@core:wikipedia",
+      "value": "Meta_Platforms",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:meta_platforms@1354210256"
+        }
+      ]
+    },
+    {
+      "id": "s:kqimh62",
+      "predicate": "@core:founded",
+      "value": "2004-02-04",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:meta_platforms@1354210256"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,152 @@
+{
+  "id": "@software:mongodb",
+  "labels": {
+    "en": "MongoDB"
+  },
+  "description": "A source-available, cross-platform, document-oriented database program that uses JSON-like documents with optional schemas, developed by MongoDB, Inc. and first released in 2009; relicensed from AGPL to SSPL in 2018.",
+  "statements": [
+    {
+      "id": "s:q3mqvda",
+      "predicate": "@core:instance_of",
+      "value": "@class:database",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mongodb@1352908140"
+        }
+      ]
+    },
+    {
+      "id": "s:q6tagfo",
+      "predicate": "@core:developed_by",
+      "value": "@org:mongodb-inc",
+      "lens": "core",
+      "rank": "preferred",
+      "sources": [
+        {
+          "id": "wp:mongodb@1352908140"
+        }
+      ]
+    },
+    {
+      "id": "s:prms1tg",
+      "predicate": "@core:first_released",
+      "value": "2009-02-11",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mongodb@1352908140"
+        }
+      ]
+    },
+    {
+      "id": "s:gxhomk7",
+      "predicate": "@core:licensed_under",
+      "value": "@license:agpl-v3",
+      "lens": "core",
+      "rank": "deprecated",
+      "qualifiers": {
+        "@core:start_time": "2009",
+        "@core:end_time": "2018"
+      },
+      "sources": [
+        {
+          "id": "wp:mongodb@1352908140"
+        }
+      ]
+    },
+    {
+      "id": "s:pwse03f",
+      "predicate": "@core:licensed_under",
+      "value": "@license:sspl",
+      "lens": "core",
+      "rank": "preferred",
+      "qualifiers": {
+        "@core:start_time": "2018"
+      },
+      "sources": [
+        {
+          "id": "wp:mongodb@1352908140"
+        }
+      ]
+    },
+    {
+      "id": "s:rtbqbmr",
+      "predicate": "@core:licensed_under",
+      "value": "@license:proprietary",
+      "lens": "core",
+      "rank": "normal",
+      "sources": [
+        {
+          "id": "wp:mongodb@1352908140"
+        }
+      ]
+    },
+    {
+      "id": "s:uwp5gso",
+      "predicate": "@core:written_in",
+      "value": "@language:cpp",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mongodb@1352908140"
+        }
+      ]
+    },
+    {
+      "id": "s:jxww1fd",
+      "predicate": "@core:written_in",
+      "value": "@language:javascript",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mongodb@1352908140"
+        }
+      ]
+    },
+    {
+      "id": "s:7dtxgn6",
+      "predicate": "@core:written_in",
+      "value": "@language:python",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mongodb@1352908140"
+        }
+      ]
+    },
+    {
+      "id": "s:u9h8vts",
+      "predicate": "@core:written_in",
+      "value": "@language:c",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mongodb@1352908140"
+        }
+      ]
+    },
+    {
+      "id": "s:4ly508m",
+      "predicate": "@core:wikipedia",
+      "value": "MongoDB",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mongodb@1352908140"
+        }
+      ]
+    },
+    {
+      "id": "s:i5jv3m5",
+      "predicate": "@core:official_url",
+      "value": "https://www.mongodb.com/",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mongodb@1352908140"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "@class:specification",
+  "labels": {
+    "en": "Specification"
+  },
+  "description": "Class of technical specifications defining standards and interfaces.",
+  "statements": [
+    {
+      "id": "s:kvu8c31",
+      "predicate": "@core:instance_of",
+      "value": "@meta:class",
+      "lens": "core"
+    },
+    {
+      "id": "s:o4mc55o",
+      "predicate": "@core:subclass_of",
+      "value": "@class:technical-artifact",
+      "lens": "core"
+    }
+  ]
+}

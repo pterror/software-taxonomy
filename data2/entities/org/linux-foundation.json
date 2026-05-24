@@ -1,0 +1,42 @@
+{
+  "id": "@org:linux-foundation",
+  "labels": {
+    "en": "Linux Foundation"
+  },
+  "description": "American non-profit technology consortium founded to support the development of the Linux kernel and other open-source software.",
+  "statements": [
+    {
+      "id": "s:7u6nqgh",
+      "predicate": "@core:instance_of",
+      "value": "@class:organization",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:linux_foundation@1354788319"
+        }
+      ]
+    },
+    {
+      "id": "s:tf9yplk",
+      "predicate": "@core:wikipedia",
+      "value": "Linux_Foundation",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:linux_foundation@1354788319"
+        }
+      ]
+    },
+    {
+      "id": "s:jdeig2q",
+      "predicate": "@core:founded",
+      "value": "2000",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:linux_foundation@1354788319"
+        }
+      ]
+    }
+  ]
+}

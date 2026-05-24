@@ -1,0 +1,31 @@
+{
+  "id": "@person:eric-allman",
+  "labels": {
+    "en": "Eric Allman"
+  },
+  "description": "American computer scientist who wrote the Sendmail mail transfer agent at UC Berkeley in the early 1980s.",
+  "statements": [
+    {
+      "id": "s:1558c8g",
+      "predicate": "@core:instance_of",
+      "value": "@class:person",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:eric_allman@1337161483"
+        }
+      ]
+    },
+    {
+      "id": "s:aewjmpw",
+      "predicate": "@core:wikipedia",
+      "value": "Eric_Allman",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:eric_allman@1337161483"
+        }
+      ]
+    }
+  ]
+}

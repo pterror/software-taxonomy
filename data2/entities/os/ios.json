@@ -1,0 +1,53 @@
+{
+  "id": "@os:ios",
+  "labels": {
+    "en": "iOS"
+  },
+  "description": "A mobile operating system developed and marketed by Apple Inc., first released in 2007 for the iPhone.",
+  "statements": [
+    {
+      "id": "s:cp5ylly",
+      "predicate": "@core:instance_of",
+      "value": "@class:operating-system",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:ios@1354948883"
+        }
+      ]
+    },
+    {
+      "id": "s:yga4245",
+      "predicate": "@core:wikipedia",
+      "value": "IOS",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:ios@1354948883"
+        }
+      ]
+    },
+    {
+      "id": "s:2labedy",
+      "predicate": "@core:first_released",
+      "value": "2007",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:ios@1354948883"
+        }
+      ]
+    },
+    {
+      "id": "s:v1lqmmm",
+      "predicate": "@core:developed_by",
+      "value": "@org:apple",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:ios@1354948883"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,131 @@
+{
+  "id": "@software:vim",
+  "labels": {
+    "en": "Vim"
+  },
+  "aliases": [
+    "Vi IMproved"
+  ],
+  "description": "A free, open-source, highly configurable text editor built to make creating and changing text efficient, created by Bram Moolenaar in 1991 as an extended version of the vi editor; Moolenaar died on 2023-08-03, and development continues under Christian Brabandt.",
+  "statements": [
+    {
+      "id": "s:yloeypz",
+      "predicate": "@core:instance_of",
+      "value": "@class:code-editor",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:vim_text_editor@1353631538"
+        }
+      ]
+    },
+    {
+      "id": "s:9xcffy2",
+      "predicate": "@core:developed_by",
+      "value": "@person:bram-moolenaar",
+      "lens": "core",
+      "rank": "deprecated",
+      "qualifiers": {
+        "@core:start_time": "1991",
+        "@core:end_time": "2023-08"
+      },
+      "sources": [
+        {
+          "id": "wp:vim_text_editor@1353631538"
+        }
+      ]
+    },
+    {
+      "id": "s:w99pgda",
+      "predicate": "@core:developed_by",
+      "value": "@person:christian-brabandt",
+      "lens": "core",
+      "rank": "preferred",
+      "qualifiers": {
+        "@core:start_time": "2023-08"
+      },
+      "sources": [
+        {
+          "id": "wp:bram_moolenaar@1328026881"
+        }
+      ]
+    },
+    {
+      "id": "s:3t932si",
+      "predicate": "@core:principal_author",
+      "value": "@person:bram-moolenaar",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:vim_text_editor@1353631538"
+        }
+      ]
+    },
+    {
+      "id": "s:heew3me",
+      "predicate": "@core:first_released",
+      "value": "1991-11-02",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:vim_text_editor@1353631538"
+        }
+      ]
+    },
+    {
+      "id": "s:g51dca3",
+      "predicate": "@core:written_in",
+      "value": "@language:c",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:vim_text_editor@1353631538"
+        }
+      ]
+    },
+    {
+      "id": "s:ygtebyv",
+      "predicate": "@core:written_in",
+      "value": "@language:vim-script",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:vim_text_editor@1353631538"
+        }
+      ]
+    },
+    {
+      "id": "s:pfj5ac2",
+      "predicate": "@core:licensed_under",
+      "value": "@license:vim",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:vim_text_editor@1353631538"
+        }
+      ]
+    },
+    {
+      "id": "s:9wg20ci",
+      "predicate": "@core:wikipedia",
+      "value": "Vim_(text_editor)",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:vim_text_editor@1353631538"
+        }
+      ]
+    },
+    {
+      "id": "s:flclqlq",
+      "predicate": "@core:official_url",
+      "value": "https://www.vim.org/",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:vim_text_editor@1353631538"
+        }
+      ]
+    }
+  ]
+}

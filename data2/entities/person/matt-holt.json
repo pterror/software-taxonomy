@@ -1,0 +1,20 @@
+{
+  "id": "@person:matt-holt",
+  "labels": {
+    "en": "Matt Holt"
+  },
+  "description": "American software engineer who created the Caddy web server, known for its automatic HTTPS via Let's Encrypt.",
+  "statements": [
+    {
+      "id": "s:htioe65",
+      "predicate": "@core:instance_of",
+      "value": "@class:person",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:caddy_web_server@1345344964"
+        }
+      ]
+    }
+  ]
+}

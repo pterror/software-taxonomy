@@ -1,0 +1,31 @@
+{
+  "id": "@format:xml",
+  "labels": {
+    "en": "XML"
+  },
+  "description": "A markup language that defines a set of rules for encoding documents in a format that is both human-readable and machine-readable, standardized by the W3C in 1998.",
+  "statements": [
+    {
+      "id": "s:5yc1o0t",
+      "predicate": "@core:instance_of",
+      "value": "@class:file-format",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:xml@1353838376"
+        }
+      ]
+    },
+    {
+      "id": "s:3gfq3aw",
+      "predicate": "@core:wikipedia",
+      "value": "XML",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:xml@1353838376"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "id": "@core:principal_author",
+  "label": "principal author",
+  "description": "Individual(s) who made the decisive intellectual or creative contribution to this entity. Distinct from developed_by (which points to organizations). Use qualifiers for role.",
+  "lens": "core",
+  "value_type": "entity",
+  "domain": [
+    "@class:technical-artifact"
+  ],
+  "range": [
+    "@class:agent"
+  ],
+  "cardinality": "0..*",
+  "inverse": "@core:principal_author_of",
+  "expect_preferred": false
+}

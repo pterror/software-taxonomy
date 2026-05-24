@@ -1,0 +1,15 @@
+{
+  "id": "@folklore:popularized_by",
+  "label": "popularized by",
+  "description": "The person, post, or publication that brought wide attention to this idea. May differ from the originator.",
+  "lens": "folklore",
+  "value_type": "entity",
+  "domain": [
+    "@folklore-artifact"
+  ],
+  "range": [
+    "@class:person",
+    "@publication"
+  ],
+  "cardinality": "0..*"
+}

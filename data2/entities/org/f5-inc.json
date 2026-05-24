@@ -1,0 +1,42 @@
+{
+  "id": "@org:f5-inc",
+  "labels": {
+    "en": "F5, Inc."
+  },
+  "description": "American technology company specializing in application delivery networking and security; acquired nginx Inc. in 2019 and became steward of the nginx web server.",
+  "statements": [
+    {
+      "id": "s:t0qxlfm",
+      "predicate": "@core:instance_of",
+      "value": "@class:organization",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:f5_networks@1055916783"
+        }
+      ]
+    },
+    {
+      "id": "s:njt534t",
+      "predicate": "@core:wikipedia",
+      "value": "F5_Networks",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:f5_networks@1055916783"
+        }
+      ]
+    },
+    {
+      "id": "s:u6fa6zx",
+      "predicate": "@core:founded",
+      "value": "1996",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:f5_networks@1055916783"
+        }
+      ]
+    }
+  ]
+}

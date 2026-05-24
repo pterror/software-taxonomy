@@ -1,0 +1,34 @@
+{
+  "id": "@person:olivia-mackall",
+  "labels": {
+    "en": "Olivia Mackall"
+  },
+  "aliases": [
+    "Matt Mackall"
+  ],
+  "description": "Software engineer who created Mercurial, a distributed version control system, as an alternative to BitKeeper for Linux kernel development in 2005. Formerly known as Matt Mackall.",
+  "statements": [
+    {
+      "id": "s:x7x2irw",
+      "predicate": "@core:instance_of",
+      "value": "@class:person",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mercurial@1352838775"
+        }
+      ]
+    },
+    {
+      "id": "s:e4kfm00",
+      "predicate": "@core:wikipedia",
+      "value": "Mercurial",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mercurial@1352838775"
+        }
+      ]
+    }
+  ]
+}

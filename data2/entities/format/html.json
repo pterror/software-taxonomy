@@ -1,0 +1,31 @@
+{
+  "id": "@format:html",
+  "labels": {
+    "en": "HTML"
+  },
+  "description": "The standard markup language for documents designed to be displayed in a web browser, first publicly described by Tim Berners-Lee in 1991.",
+  "statements": [
+    {
+      "id": "s:7rjcdia",
+      "predicate": "@core:instance_of",
+      "value": "@class:file-format",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:html@1352080893"
+        }
+      ]
+    },
+    {
+      "id": "s:3xo1qjj",
+      "predicate": "@core:wikipedia",
+      "value": "HTML",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:html@1352080893"
+        }
+      ]
+    }
+  ]
+}

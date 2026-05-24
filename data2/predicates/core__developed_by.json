@@ -1,0 +1,15 @@
+{
+  "id": "@core:developed_by",
+  "label": "developed by",
+  "description": "Organization or person primarily responsible for the development of this entity. Use for the team or company that owns and drives the project, not individual contributors.",
+  "lens": "core",
+  "value_type": "entity",
+  "domain": [
+    "@class:technical-artifact"
+  ],
+  "range": [
+    "@class:agent"
+  ],
+  "cardinality": "0..*",
+  "inverse": "@core:develops"
+}

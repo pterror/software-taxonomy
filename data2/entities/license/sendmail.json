@@ -1,0 +1,20 @@
+{
+  "id": "@license:sendmail",
+  "labels": {
+    "en": "Sendmail License"
+  },
+  "description": "The custom open-source license used by the Sendmail mail transfer agent.",
+  "statements": [
+    {
+      "id": "s:43c20kt",
+      "predicate": "@core:instance_of",
+      "value": "@class:license",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:sendmail@1333950230"
+        }
+      ]
+    }
+  ]
+}

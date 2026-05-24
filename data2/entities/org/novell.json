@@ -1,0 +1,31 @@
+{
+  "id": "@org:novell",
+  "labels": {
+    "en": "Novell"
+  },
+  "description": "An American software and services company that acquired WordPerfect Corporation in 1994 and sold it to Corel in 1996; known for NetWare and later acquired by Micro Focus.",
+  "statements": [
+    {
+      "id": "s:t82rcod",
+      "predicate": "@core:instance_of",
+      "value": "@class:organization",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:novell@1354214509"
+        }
+      ]
+    },
+    {
+      "id": "s:kifzku8",
+      "predicate": "@core:wikipedia",
+      "value": "Novell",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:novell@1354214509"
+        }
+      ]
+    }
+  ]
+}

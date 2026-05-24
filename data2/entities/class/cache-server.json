@@ -1,0 +1,21 @@
+{
+  "id": "@class:cache-server",
+  "labels": {
+    "en": "Cache Server"
+  },
+  "description": "Software that stores frequently accessed data in memory to reduce latency.",
+  "statements": [
+    {
+      "id": "s:qab4cv4",
+      "predicate": "@core:instance_of",
+      "value": "@meta:class",
+      "lens": "core"
+    },
+    {
+      "id": "s:jzezd17",
+      "predicate": "@core:subclass_of",
+      "value": "@class:software",
+      "lens": "core"
+    }
+  ]
+}

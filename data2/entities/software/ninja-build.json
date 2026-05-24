@@ -1,0 +1,111 @@
+{
+  "id": "@software:ninja-build",
+  "labels": {
+    "en": "Ninja"
+  },
+  "aliases": [
+    "ninja"
+  ],
+  "description": "A small, speed-focused build system designed to run builds as fast as possible, created by Evan Martin at Google in 2012 and commonly used as a backend for CMake.",
+  "statements": [
+    {
+      "id": "s:u5579l1",
+      "predicate": "@core:instance_of",
+      "value": "@class:build-system",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:ninja_build_system@1327454812"
+        }
+      ]
+    },
+    {
+      "id": "s:stfwebj",
+      "predicate": "@core:first_released",
+      "value": "2012",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:ninja_build_system@1327454812"
+        }
+      ]
+    },
+    {
+      "id": "s:3xs0e2z",
+      "predicate": "@core:runs_on",
+      "value": "@os:linux",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:ninja_build_system@1327454812"
+        }
+      ]
+    },
+    {
+      "id": "s:3d58pdp",
+      "predicate": "@core:runs_on",
+      "value": "@os:macos",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:ninja_build_system@1327454812"
+        }
+      ]
+    },
+    {
+      "id": "s:ltrc53m",
+      "predicate": "@core:runs_on",
+      "value": "@os:windows",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:ninja_build_system@1327454812"
+        }
+      ]
+    },
+    {
+      "id": "s:3gltkxi",
+      "predicate": "@core:written_in",
+      "value": "@language:cpp",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:ninja_build_system@1327454812"
+        }
+      ]
+    },
+    {
+      "id": "s:ohqe9eh",
+      "predicate": "@core:licensed_under",
+      "value": "@license:apache-2",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:ninja_build_system@1327454812"
+        }
+      ]
+    },
+    {
+      "id": "s:s7qslgv",
+      "predicate": "@core:wikipedia",
+      "value": "Ninja_(build_system)",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:ninja_build_system@1327454812"
+        }
+      ]
+    },
+    {
+      "id": "s:c1o1y1r",
+      "predicate": "@core:official_url",
+      "value": "https://ninja-build.org",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:ninja_build_system@1327454812"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "id": "@person:bill-hoffman",
+  "labels": {
+    "en": "Bill Hoffman"
+  },
+  "description": "Software developer at Kitware who co-created CMake in 2000 with Ken Martin.",
+  "statements": [
+    {
+      "id": "s:49tedvv",
+      "predicate": "@core:instance_of",
+      "value": "@class:person",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:cmake@1354705095"
+        }
+      ]
+    }
+  ]
+}

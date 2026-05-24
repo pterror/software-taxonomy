@@ -1,0 +1,15 @@
+{
+  "id": "@class:publication",
+  "labels": {
+    "en": "Publication"
+  },
+  "description": "A blog post, article, talk, book, or other published work. Used as range for originated_in and popularized_by predicates in the folklore lens.",
+  "statements": [
+    {
+      "id": "s:x3jo8kt",
+      "predicate": "@core:instance_of",
+      "value": "@meta:class",
+      "lens": "folklore"
+    }
+  ]
+}

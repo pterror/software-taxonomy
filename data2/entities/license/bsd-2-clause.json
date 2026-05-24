@@ -1,0 +1,31 @@
+{
+  "id": "@license:bsd-2-clause",
+  "labels": {
+    "en": "BSD 2-Clause License"
+  },
+  "description": "A permissive free software license requiring only preservation of the copyright notice and disclaimer in redistributions, without the non-endorsement clause of the BSD 3-Clause.",
+  "statements": [
+    {
+      "id": "s:b2ct28i",
+      "predicate": "@core:instance_of",
+      "value": "@class:license",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:bsd_licenses@1332014827"
+        }
+      ]
+    },
+    {
+      "id": "s:ko4dv0y",
+      "predicate": "@core:wikipedia",
+      "value": "BSD_licenses",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:bsd_licenses@1332014827"
+        }
+      ]
+    }
+  ]
+}

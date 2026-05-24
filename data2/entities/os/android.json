@@ -1,0 +1,53 @@
+{
+  "id": "@os:android",
+  "labels": {
+    "en": "Android"
+  },
+  "description": "A mobile operating system based on a modified version of the Linux kernel, developed by Google and the Open Handset Alliance, first released in 2008.",
+  "statements": [
+    {
+      "id": "s:eqm7eve",
+      "predicate": "@core:instance_of",
+      "value": "@class:operating-system",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:android_operating_system@1355427715"
+        }
+      ]
+    },
+    {
+      "id": "s:kfo0s9v",
+      "predicate": "@core:wikipedia",
+      "value": "Android_(operating_system)",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:android_operating_system@1355427715"
+        }
+      ]
+    },
+    {
+      "id": "s:ann40lg",
+      "predicate": "@core:first_released",
+      "value": "2008",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:android_operating_system@1355427715"
+        }
+      ]
+    },
+    {
+      "id": "s:qeqa2r3",
+      "predicate": "@core:developed_by",
+      "value": "@org:google",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:android_operating_system@1355427715"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "@class:cron",
+  "labels": {
+    "en": "Cron (family)"
+  },
+  "description": "Family of cron-compatible job schedulers originating at Bell Labs in 1975 and standardized by the Vixie cron implementation in 1987.",
+  "statements": [
+    {
+      "id": "s:pmwhpwc",
+      "predicate": "@core:instance_of",
+      "value": "@meta:class",
+      "lens": "core"
+    },
+    {
+      "id": "s:r8aiygg",
+      "predicate": "@core:subclass_of",
+      "value": "@class:cron-scheduler",
+      "lens": "core"
+    }
+  ]
+}

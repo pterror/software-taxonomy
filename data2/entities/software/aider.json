@@ -1,0 +1,108 @@
+{
+  "id": "@software:aider",
+  "labels": {
+    "en": "Aider"
+  },
+  "description": "An open-source AI pair-programming tool that runs in the terminal and connects to LLMs such as GPT-4 and Claude to assist with coding tasks directly in a local git repository, created by Paul Gauthier.",
+  "statements": [
+    {
+      "id": "s:nv0itvl",
+      "predicate": "@core:instance_of",
+      "value": "@class:code-assistant",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "official:aider@2026-05-23"
+        }
+      ]
+    },
+    {
+      "id": "s:jmo2h1i",
+      "predicate": "@core:principal_author",
+      "value": "@person:paul-gauthier",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "official:aider@2026-05-23"
+        }
+      ]
+    },
+    {
+      "id": "s:5cbgw7u",
+      "predicate": "@core:first_released",
+      "value": "2023",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "official:aider@2026-05-23"
+        }
+      ]
+    },
+    {
+      "id": "s:v13whpi",
+      "predicate": "@core:runs_on",
+      "value": "@os:linux",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "official:aider@2026-05-23"
+        }
+      ]
+    },
+    {
+      "id": "s:lkhy7u3",
+      "predicate": "@core:runs_on",
+      "value": "@os:macos",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "official:aider@2026-05-23"
+        }
+      ]
+    },
+    {
+      "id": "s:6e6k3ai",
+      "predicate": "@core:runs_on",
+      "value": "@os:windows",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "official:aider@2026-05-23"
+        }
+      ]
+    },
+    {
+      "id": "s:ly3njb4",
+      "predicate": "@core:written_in",
+      "value": "@language:python",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "official:aider@2026-05-23"
+        }
+      ]
+    },
+    {
+      "id": "s:mhra8nk",
+      "predicate": "@core:licensed_under",
+      "value": "@license:apache-2",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "official:aider@2026-05-23"
+        }
+      ]
+    },
+    {
+      "id": "s:nefsbks",
+      "predicate": "@core:official_url",
+      "value": "https://aider.chat",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "official:aider@2026-05-23"
+        }
+      ]
+    }
+  ]
+}

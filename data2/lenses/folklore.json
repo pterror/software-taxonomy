@@ -1,0 +1,12 @@
+{
+  "id": "folklore",
+  "label": "Software folklore",
+  "description": "Real stories, laws, parables, and myths of the software world. The Mythical Man-Month, Worse Is Better, Zawinski's Law, founder myths, war stories. Folkloric register: sourced when possible, but the claim is cultural rather than encyclopedic.",
+  "register": "folkloric",
+  "family": "culture",
+  "depends_on": [
+    "core"
+  ],
+  "source_required": true,
+  "author": "pterror"
+}

@@ -1,0 +1,51 @@
+{
+  "id": "@class:automata",
+  "labels": {
+    "en": "Automata"
+  },
+  "description": "Programs that metabolize events and excrete side effects, operating without a user session.",
+  "statements": [
+    {
+      "id": "s:fcusfnv",
+      "predicate": "@core:instance_of",
+      "value": "@meta:class",
+      "lens": "biology"
+    },
+    {
+      "id": "s:a27hmc5",
+      "predicate": "@core:subclass_of",
+      "value": "@class:software",
+      "lens": "biology"
+    },
+    {
+      "id": "s:lp6vy9i",
+      "predicate": "@biology:synapomorphy",
+      "value": "event-triggered",
+      "lens": "biology"
+    },
+    {
+      "id": "s:8s55axv",
+      "predicate": "@biology:synapomorphy",
+      "value": "no-user-session",
+      "lens": "biology"
+    },
+    {
+      "id": "s:fqd8v4n",
+      "predicate": "@biology:synapomorphy",
+      "value": "reflex-arc",
+      "lens": "biology"
+    },
+    {
+      "id": "s:bxqu2wv",
+      "predicate": "@biology:etymology",
+      "value": "Greek automatos, 'self-acting'.",
+      "lens": "biology"
+    },
+    {
+      "id": "s:k5abcz2",
+      "predicate": "@biology:rank_hint",
+      "value": "kingdom",
+      "lens": "biology"
+    }
+  ]
+}

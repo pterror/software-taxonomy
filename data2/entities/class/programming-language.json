@@ -1,0 +1,21 @@
+{
+  "id": "@class:programming-language",
+  "labels": {
+    "en": "Programming Language"
+  },
+  "description": "A formal language used to specify instructions for a computer.",
+  "statements": [
+    {
+      "id": "s:ycf5tio",
+      "predicate": "@core:instance_of",
+      "value": "@meta:class",
+      "lens": "core"
+    },
+    {
+      "id": "s:n3h1n7k",
+      "predicate": "@core:subclass_of",
+      "value": "@class:software",
+      "lens": "core"
+    }
+  ]
+}

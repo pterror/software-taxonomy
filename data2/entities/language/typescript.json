@@ -1,0 +1,53 @@
+{
+  "id": "@language:typescript",
+  "labels": {
+    "en": "TypeScript"
+  },
+  "description": "A strongly typed programming language that builds on JavaScript, developed and maintained by Microsoft, first released in 2012.",
+  "statements": [
+    {
+      "id": "s:3xuo86z",
+      "predicate": "@core:instance_of",
+      "value": "@class:programming-language",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:typescript@1345135805"
+        }
+      ]
+    },
+    {
+      "id": "s:35ae0lu",
+      "predicate": "@core:wikipedia",
+      "value": "TypeScript",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:typescript@1345135805"
+        }
+      ]
+    },
+    {
+      "id": "s:0v32y1g",
+      "predicate": "@core:first_released",
+      "value": "2012",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:typescript@1345135805"
+        }
+      ]
+    },
+    {
+      "id": "s:eoc0kj7",
+      "predicate": "@core:developed_by",
+      "value": "@org:microsoft",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:typescript@1345135805"
+        }
+      ]
+    }
+  ]
+}

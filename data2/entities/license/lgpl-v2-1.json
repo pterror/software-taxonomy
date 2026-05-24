@@ -1,0 +1,31 @@
+{
+  "id": "@license:lgpl-v2-1",
+  "labels": {
+    "en": "GNU Lesser General Public License v2.1"
+  },
+  "description": "Version 2.1 of the GNU Lesser General Public License, a permissive copyleft free software license allowing linking from proprietary software, published by the FSF in 1999.",
+  "statements": [
+    {
+      "id": "s:7jxi32f",
+      "predicate": "@core:instance_of",
+      "value": "@class:license",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:gnu_lesser_general_public_license@1352867764"
+        }
+      ]
+    },
+    {
+      "id": "s:v4xr199",
+      "predicate": "@core:wikipedia",
+      "value": "GNU_Lesser_General_Public_License",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:gnu_lesser_general_public_license@1352867764"
+        }
+      ]
+    }
+  ]
+}

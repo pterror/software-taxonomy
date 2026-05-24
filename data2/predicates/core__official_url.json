@@ -1,0 +1,10 @@
+{
+  "id": "@core:official_url",
+  "label": "official URL",
+  "description": "The canonical homepage or product URL for this entity. Prefer the most stable URL (not a version-specific page).",
+  "lens": "core",
+  "value_type": "url",
+  "domain": null,
+  "range": null,
+  "cardinality": "0..1"
+}

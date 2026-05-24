@@ -1,0 +1,21 @@
+{
+  "id": "@class:formatter",
+  "labels": {
+    "en": "Formatter"
+  },
+  "description": "A tool that automatically reformats source code to conform to a style standard.",
+  "statements": [
+    {
+      "id": "s:31ccbbj",
+      "predicate": "@core:instance_of",
+      "value": "@meta:class",
+      "lens": "core"
+    },
+    {
+      "id": "s:9nlnl7j",
+      "predicate": "@core:subclass_of",
+      "value": "@class:software",
+      "lens": "core"
+    }
+  ]
+}

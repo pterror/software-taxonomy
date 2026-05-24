@@ -1,0 +1,15 @@
+{
+  "id": "@meta:class",
+  "labels": {
+    "en": "Class"
+  },
+  "description": "The meta-class: the class of all classes. Every entity that is a type or category is instance_of @class.",
+  "statements": [
+    {
+      "id": "s:fywkfuu",
+      "predicate": "@core:instance_of",
+      "value": "@meta:class",
+      "lens": "core"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "@class:organization",
+  "labels": {
+    "en": "Organization"
+  },
+  "description": "Class of organizations and companies involved in software development.",
+  "statements": [
+    {
+      "id": "s:mkj5jtg",
+      "predicate": "@core:instance_of",
+      "value": "@meta:class",
+      "lens": "core"
+    },
+    {
+      "id": "s:ckq2ziz",
+      "predicate": "@core:subclass_of",
+      "value": "@class:agent",
+      "lens": "core"
+    }
+  ]
+}

@@ -1,0 +1,97 @@
+{
+  "id": "@software:caddy",
+  "labels": {
+    "en": "Caddy"
+  },
+  "description": "An open-source web server written in Go, notable for automatic HTTPS provisioning via Let's Encrypt by default, created by Matt Holt and first released on 2015-04-28.",
+  "statements": [
+    {
+      "id": "s:5lyq91j",
+      "predicate": "@core:instance_of",
+      "value": "@class:web-server",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:caddy_web_server@1345344964"
+        }
+      ]
+    },
+    {
+      "id": "s:jvsfsh4",
+      "predicate": "@core:developed_by",
+      "value": "@person:matt-holt",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:caddy_web_server@1345344964"
+        }
+      ]
+    },
+    {
+      "id": "s:mnxzrew",
+      "predicate": "@core:principal_author",
+      "value": "@person:matt-holt",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:caddy_web_server@1345344964"
+        }
+      ]
+    },
+    {
+      "id": "s:6zas9gb",
+      "predicate": "@core:first_released",
+      "value": "2015-04-28",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:caddy_web_server@1345344964"
+        }
+      ]
+    },
+    {
+      "id": "s:mit16oc",
+      "predicate": "@core:licensed_under",
+      "value": "@license:apache-2",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:caddy_web_server@1345344964"
+        }
+      ]
+    },
+    {
+      "id": "s:nmbce3v",
+      "predicate": "@core:written_in",
+      "value": "@language:go",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:caddy_web_server@1345344964"
+        }
+      ]
+    },
+    {
+      "id": "s:8oq8k3w",
+      "predicate": "@core:wikipedia",
+      "value": "Caddy_(web_server)",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:caddy_web_server@1345344964"
+        }
+      ]
+    },
+    {
+      "id": "s:lhwvxnq",
+      "predicate": "@core:official_url",
+      "value": "https://caddyserver.com/",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:caddy_web_server@1345344964"
+        }
+      ]
+    }
+  ]
+}

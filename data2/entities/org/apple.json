@@ -1,0 +1,42 @@
+{
+  "id": "@org:apple",
+  "labels": {
+    "en": "Apple Inc."
+  },
+  "description": "American multinational technology corporation headquartered in Cupertino, California, designing consumer electronics, software, and online services.",
+  "statements": [
+    {
+      "id": "s:jyjalr5",
+      "predicate": "@core:instance_of",
+      "value": "@class:organization",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:apple_inc.@1355014516"
+        }
+      ]
+    },
+    {
+      "id": "s:w8mofe8",
+      "predicate": "@core:wikipedia",
+      "value": "Apple_Inc.",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:apple_inc.@1355014516"
+        }
+      ]
+    },
+    {
+      "id": "s:6i6gk4q",
+      "predicate": "@core:founded",
+      "value": "1976-04-01",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:apple_inc.@1355014516"
+        }
+      ]
+    }
+  ]
+}

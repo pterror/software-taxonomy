@@ -1,0 +1,67 @@
+{
+  "id": "@software:libreoffice-writer",
+  "labels": {
+    "en": "LibreOffice Writer"
+  },
+  "aliases": [
+    "Writer"
+  ],
+  "description": "A free and open-source word processor included in the LibreOffice office suite, derived from OpenOffice.org Writer and first released in 2011.",
+  "statements": [
+    {
+      "id": "s:yurpwc5",
+      "predicate": "@core:instance_of",
+      "value": "@class:word-processor",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:libreoffice_writer@1351705787"
+        }
+      ]
+    },
+    {
+      "id": "s:wiix42a",
+      "predicate": "@core:first_released",
+      "value": "2011-01-25",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:libreoffice_writer@1351705787"
+        }
+      ]
+    },
+    {
+      "id": "s:t8qa0no",
+      "predicate": "@core:written_in",
+      "value": "@language:cpp",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:libreoffice_writer@1351705787"
+        }
+      ]
+    },
+    {
+      "id": "s:6z99d6q",
+      "predicate": "@core:wikipedia",
+      "value": "LibreOffice_Writer",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:libreoffice_writer@1351705787"
+        }
+      ]
+    },
+    {
+      "id": "s:qryh7ez",
+      "predicate": "@core:official_url",
+      "value": "https://www.libreoffice.org/discover/writer/",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:libreoffice_writer@1351705787"
+        }
+      ]
+    }
+  ]
+}

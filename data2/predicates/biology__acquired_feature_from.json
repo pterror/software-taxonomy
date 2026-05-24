@@ -1,0 +1,14 @@
+{
+  "id": "@biology:acquired_feature_from",
+  "label": "acquired feature from",
+  "description": "An entity from which this one adopted or ported a specific feature. Use in conjunction with has_feature to explain the feature's origin. Add a qualifier naming the feature entity.",
+  "lens": "biology",
+  "value_type": "entity",
+  "domain": [
+    "@class:software"
+  ],
+  "range": [
+    "@class:software"
+  ],
+  "cardinality": "0..*"
+}

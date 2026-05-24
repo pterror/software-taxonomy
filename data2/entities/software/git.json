@@ -1,0 +1,161 @@
+{
+  "id": "@software:git",
+  "labels": {
+    "en": "Git"
+  },
+  "description": "A free and open-source distributed version control system designed to handle everything from small to very large projects with speed and efficiency, created by Linus Torvalds in 2005; maintained by Junio Hamano since July 2005.",
+  "statements": [
+    {
+      "id": "s:c68lcpl",
+      "predicate": "@core:instance_of",
+      "value": "@class:version-control-system",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:git@1353176980"
+        }
+      ]
+    },
+    {
+      "id": "s:hqmiu5u",
+      "predicate": "@core:developed_by",
+      "value": "@person:linus-torvalds",
+      "lens": "core",
+      "rank": "deprecated",
+      "qualifiers": {
+        "@core:start_time": "2005-04",
+        "@core:end_time": "2005-07"
+      },
+      "sources": [
+        {
+          "id": "wp:git@1353176980"
+        }
+      ]
+    },
+    {
+      "id": "s:tayo6ta",
+      "predicate": "@core:developed_by",
+      "value": "@person:junio-hamano",
+      "lens": "core",
+      "rank": "preferred",
+      "qualifiers": {
+        "@core:start_time": "2005-07"
+      },
+      "sources": [
+        {
+          "id": "wp:git@1353176980"
+        }
+      ]
+    },
+    {
+      "id": "s:cc42yye",
+      "predicate": "@core:principal_author",
+      "value": "@person:linus-torvalds",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:git@1353176980"
+        }
+      ]
+    },
+    {
+      "id": "s:iwikarm",
+      "predicate": "@core:first_released",
+      "value": "2005-04-07",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:git@1353176980"
+        }
+      ]
+    },
+    {
+      "id": "s:bh8s3q2",
+      "predicate": "@core:licensed_under",
+      "value": "@license:gpl-v2",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:git@1353176980"
+        }
+      ]
+    },
+    {
+      "id": "s:99fj9ba",
+      "predicate": "@core:written_in",
+      "value": "@language:c",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:git@1353176980"
+        }
+      ]
+    },
+    {
+      "id": "s:k4acjaq",
+      "predicate": "@core:written_in",
+      "value": "@language:shell",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:git@1353176980"
+        }
+      ]
+    },
+    {
+      "id": "s:7ws9czn",
+      "predicate": "@core:written_in",
+      "value": "@language:perl",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:git@1353176980"
+        }
+      ]
+    },
+    {
+      "id": "s:99qz5z9",
+      "predicate": "@core:written_in",
+      "value": "@language:python",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:git@1353176980"
+        }
+      ]
+    },
+    {
+      "id": "s:vy2v7zy",
+      "predicate": "@core:written_in",
+      "value": "@language:tcl",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:git@1353176980"
+        }
+      ]
+    },
+    {
+      "id": "s:xyqogpu",
+      "predicate": "@core:wikipedia",
+      "value": "Git",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:git@1353176980"
+        }
+      ]
+    },
+    {
+      "id": "s:kawr8jr",
+      "predicate": "@core:official_url",
+      "value": "https://git-scm.com/",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:git@1353176980"
+        }
+      ]
+    }
+  ]
+}

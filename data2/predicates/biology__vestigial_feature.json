@@ -1,0 +1,14 @@
+{
+  "id": "@biology:vestigial_feature",
+  "label": "vestigial feature",
+  "description": "A feature this entity retains from an ancestor but which is no longer central to its function or identity. Analogous to biological vestigial organs. Add qualifiers for historical context.",
+  "lens": "biology",
+  "value_type": "entity",
+  "domain": [
+    "@class:software"
+  ],
+  "range": [
+    "@class:feature"
+  ],
+  "cardinality": "0..*"
+}

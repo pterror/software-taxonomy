@@ -1,0 +1,10 @@
+{
+  "id": "@core:wikipedia",
+  "label": "Wikipedia article",
+  "description": "The title slug of the English Wikipedia article for this entity (e.g. 'Microsoft_Word'). Used by check-links to verify article existence.",
+  "lens": "core",
+  "value_type": "string",
+  "domain": null,
+  "range": null,
+  "cardinality": "0..1"
+}

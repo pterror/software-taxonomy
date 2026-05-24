@@ -1,0 +1,53 @@
+{
+  "id": "@language:cpp",
+  "labels": {
+    "en": "C++"
+  },
+  "description": "A general-purpose programming language created by Bjarne Stroustrup as an extension of C with object-oriented and generic programming features.",
+  "statements": [
+    {
+      "id": "s:k1zpcjw",
+      "predicate": "@core:instance_of",
+      "value": "@class:programming-language",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:cpp@1353808967"
+        }
+      ]
+    },
+    {
+      "id": "s:jvirfyo",
+      "predicate": "@core:wikipedia",
+      "value": "C%2B%2B",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:cpp@1353808967"
+        }
+      ]
+    },
+    {
+      "id": "s:jgdy0ll",
+      "predicate": "@core:first_released",
+      "value": "1985",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:cpp@1353808967"
+        }
+      ]
+    },
+    {
+      "id": "s:h8z3ssx",
+      "predicate": "@core:principal_author",
+      "value": "@person:bjarne-stroustrup",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:cpp@1353808967"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,112 @@
+{
+  "id": "@software:travis-ci",
+  "labels": {
+    "en": "Travis CI"
+  },
+  "description": "A hosted continuous integration service used to build and test software projects hosted on GitHub and other version control systems, launched in 2011; acquired by Idera, Inc. in 2019.",
+  "statements": [
+    {
+      "id": "s:82v79s4",
+      "predicate": "@core:instance_of",
+      "value": "@class:ci-system",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:travis_ci@1347549530"
+        }
+      ]
+    },
+    {
+      "id": "s:j6xifab",
+      "predicate": "@core:developed_by",
+      "value": "@org:idera",
+      "lens": "core",
+      "rank": "preferred",
+      "qualifiers": {
+        "@core:start_time": "2019"
+      },
+      "sources": [
+        {
+          "id": "wp:travis_ci@1347549530"
+        }
+      ]
+    },
+    {
+      "id": "s:1u1vnsr",
+      "predicate": "@core:first_released",
+      "value": "2011",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:travis_ci@1347549530"
+        }
+      ]
+    },
+    {
+      "id": "s:2h2tnke",
+      "predicate": "@core:runs_on",
+      "value": "@os:linux",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:travis_ci@1347549530"
+        }
+      ]
+    },
+    {
+      "id": "s:n36rmjc",
+      "predicate": "@core:runs_on",
+      "value": "@os:macos",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:travis_ci@1347549530"
+        }
+      ]
+    },
+    {
+      "id": "s:s3wwwhk",
+      "predicate": "@core:written_in",
+      "value": "@language:ruby",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:travis_ci@1347549530"
+        }
+      ]
+    },
+    {
+      "id": "s:i97divl",
+      "predicate": "@core:licensed_under",
+      "value": "@license:proprietary",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:travis_ci@1347549530"
+        }
+      ]
+    },
+    {
+      "id": "s:uzjr2tk",
+      "predicate": "@core:wikipedia",
+      "value": "Travis_CI",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:travis_ci@1347549530"
+        }
+      ]
+    },
+    {
+      "id": "s:8jmd84x",
+      "predicate": "@core:official_url",
+      "value": "https://www.travis-ci.com",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:travis_ci@1347549530"
+        }
+      ]
+    }
+  ]
+}

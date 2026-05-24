@@ -1,0 +1,20 @@
+{
+  "id": "@person:toran-bruce-richards",
+  "labels": {
+    "en": "Toran Bruce Richards"
+  },
+  "description": "British software developer who created the Auto-GPT autonomous AI agent in 2023.",
+  "statements": [
+    {
+      "id": "s:21furc1",
+      "predicate": "@core:instance_of",
+      "value": "@class:person",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:autogpt@1247136685"
+        }
+      ]
+    }
+  ]
+}

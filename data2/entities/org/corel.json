@@ -1,0 +1,42 @@
+{
+  "id": "@org:corel",
+  "labels": {
+    "en": "Corel"
+  },
+  "description": "A Canadian software company known for CorelDRAW, WordPerfect, and other productivity and graphics software; acquired WordPerfect from Novell in 1996.",
+  "statements": [
+    {
+      "id": "s:g1fwcgx",
+      "predicate": "@core:instance_of",
+      "value": "@class:organization",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:corel@1354029890"
+        }
+      ]
+    },
+    {
+      "id": "s:ug9v8y3",
+      "predicate": "@core:wikipedia",
+      "value": "Corel",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:corel@1354029890"
+        }
+      ]
+    },
+    {
+      "id": "s:n0s8sap",
+      "predicate": "@core:official_url",
+      "value": "https://www.corel.com/",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:corel@1354029890"
+        }
+      ]
+    }
+  ]
+}

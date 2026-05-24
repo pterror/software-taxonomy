@@ -1,0 +1,42 @@
+{
+  "id": "@language:rust",
+  "labels": {
+    "en": "Rust"
+  },
+  "description": "A systems programming language focused on memory safety and performance without a garbage collector, first publicly released in 2012.",
+  "statements": [
+    {
+      "id": "s:q7cegwl",
+      "predicate": "@core:instance_of",
+      "value": "@class:programming-language",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:rust_programming_language@1354761323"
+        }
+      ]
+    },
+    {
+      "id": "s:jwj101s",
+      "predicate": "@core:wikipedia",
+      "value": "Rust_(programming_language)",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:rust_programming_language@1354761323"
+        }
+      ]
+    },
+    {
+      "id": "s:v3pgvij",
+      "predicate": "@core:first_released",
+      "value": "2012",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:rust_programming_language@1354761323"
+        }
+      ]
+    }
+  ]
+}

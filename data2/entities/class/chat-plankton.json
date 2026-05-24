@@ -1,0 +1,45 @@
+{
+  "id": "@class:chat-plankton",
+  "labels": {
+    "en": "Chat Plankton"
+  },
+  "description": "Single-cell Oracula: one model behind one API endpoint, no tool use, no persistent state beyond a buffered context window. Most deployed LLM endpoints are Chat Plankton. The ecosystem is built on them.",
+  "statements": [
+    {
+      "id": "s:drhyzr9",
+      "predicate": "@core:instance_of",
+      "value": "@meta:class",
+      "lens": "biology"
+    },
+    {
+      "id": "s:qdvoark",
+      "predicate": "@core:subclass_of",
+      "value": "@class:oracula",
+      "lens": "biology"
+    },
+    {
+      "id": "s:n9a8pwb",
+      "predicate": "@biology:synapomorphy",
+      "value": "stateless-completions",
+      "lens": "biology"
+    },
+    {
+      "id": "s:flgtqus",
+      "predicate": "@biology:synapomorphy",
+      "value": "single-turn-or-buffered-history",
+      "lens": "biology"
+    },
+    {
+      "id": "s:3etydm6",
+      "predicate": "@biology:etymology",
+      "value": "Plankton: organisms that drift with the current, abundant, foundational to the food chain.",
+      "lens": "biology"
+    },
+    {
+      "id": "s:eu19suw",
+      "predicate": "@biology:rank_hint",
+      "value": "order",
+      "lens": "biology"
+    }
+  ]
+}

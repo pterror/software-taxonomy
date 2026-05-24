@@ -1,0 +1,15 @@
+{
+  "id": "@core:licensed_under",
+  "label": "licensed under",
+  "description": "The license(s) under which this entity is distributed. Use @-prefixed entity ids for well-known licenses (e.g. @license:mit, @license:gpl-v3, @license:proprietary).",
+  "lens": "core",
+  "value_type": "entity",
+  "domain": [
+    "@class:technical-artifact"
+  ],
+  "range": [
+    "@class:license"
+  ],
+  "cardinality": "0..*",
+  "expect_preferred": false
+}

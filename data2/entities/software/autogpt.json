@@ -1,0 +1,145 @@
+{
+  "id": "@software:autogpt",
+  "labels": {
+    "en": "Auto-GPT"
+  },
+  "aliases": [
+    "AutoGPT"
+  ],
+  "description": "An open-source autonomous AI agent built on GPT-4, developed by Toran Bruce Richards and released in March 2023, one of the earliest examples of an LLM-based autonomous agent; now maintained by Significant Gravitas Ltd.",
+  "statements": [
+    {
+      "id": "s:ket919l",
+      "predicate": "@core:instance_of",
+      "value": "@class:agent-framework",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:autogpt@1247136685"
+        }
+      ]
+    },
+    {
+      "id": "s:i0tee4f",
+      "predicate": "@core:developed_by",
+      "value": "@org:significant-gravitas",
+      "lens": "core",
+      "rank": "preferred",
+      "sources": [
+        {
+          "id": "wp:autogpt@1247136685"
+        }
+      ]
+    },
+    {
+      "id": "s:3ckjl47",
+      "predicate": "@core:principal_author",
+      "value": "@person:toran-bruce-richards",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:autogpt@1247136685"
+        }
+      ]
+    },
+    {
+      "id": "s:d4djixy",
+      "predicate": "@core:first_released",
+      "value": "2023-03-30",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:autogpt@1247136685"
+        }
+      ]
+    },
+    {
+      "id": "s:3y4e93o",
+      "predicate": "@core:runs_on",
+      "value": "@os:linux",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:autogpt@1247136685"
+        }
+      ]
+    },
+    {
+      "id": "s:9fh3v61",
+      "predicate": "@core:runs_on",
+      "value": "@os:macos",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:autogpt@1247136685"
+        }
+      ]
+    },
+    {
+      "id": "s:51jjyta",
+      "predicate": "@core:runs_on",
+      "value": "@os:windows",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:autogpt@1247136685"
+        }
+      ]
+    },
+    {
+      "id": "s:yie0iuw",
+      "predicate": "@core:written_in",
+      "value": "@language:python",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:autogpt@1247136685"
+        }
+      ]
+    },
+    {
+      "id": "s:vxhllya",
+      "predicate": "@core:written_in",
+      "value": "@language:typescript",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:autogpt@1247136685"
+        }
+      ]
+    },
+    {
+      "id": "s:7ndk05c",
+      "predicate": "@core:licensed_under",
+      "value": "@license:mit",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:autogpt@1247136685"
+        }
+      ]
+    },
+    {
+      "id": "s:ur0h8x9",
+      "predicate": "@core:wikipedia",
+      "value": "Auto-GPT",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:autogpt@1247136685"
+        }
+      ]
+    },
+    {
+      "id": "s:qsa1cgi",
+      "predicate": "@core:official_url",
+      "value": "https://agpt.co",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:autogpt@1247136685"
+        }
+      ]
+    }
+  ]
+}

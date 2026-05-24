@@ -1,0 +1,21 @@
+{
+  "id": "@class:postgres",
+  "labels": {
+    "en": "Postgres (family)"
+  },
+  "description": "Family of PostgreSQL-lineage database systems originating from the Berkeley POSTGRES project led by Michael Stonebraker in 1986.",
+  "statements": [
+    {
+      "id": "s:w9jozga",
+      "predicate": "@core:instance_of",
+      "value": "@meta:class",
+      "lens": "core"
+    },
+    {
+      "id": "s:mlh6noz",
+      "predicate": "@core:subclass_of",
+      "value": "@class:database",
+      "lens": "core"
+    }
+  ]
+}

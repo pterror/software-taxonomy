@@ -1,0 +1,51 @@
+{
+  "id": "@class:oracula",
+  "labels": {
+    "en": "Oracula"
+  },
+  "description": "Programs that metabolize tokens and excrete tokens; probabilistic, corpus-trained, prompt-driven. The newest kingdom. Boundaries with Servitora are porous — most Oracula are also Servitora at the network layer.",
+  "statements": [
+    {
+      "id": "s:g1t7or9",
+      "predicate": "@core:instance_of",
+      "value": "@meta:class",
+      "lens": "biology"
+    },
+    {
+      "id": "s:dvcdufv",
+      "predicate": "@core:subclass_of",
+      "value": "@class:software",
+      "lens": "biology"
+    },
+    {
+      "id": "s:aly3rn6",
+      "predicate": "@biology:synapomorphy",
+      "value": "probabilistic-output",
+      "lens": "biology"
+    },
+    {
+      "id": "s:g8ej5rq",
+      "predicate": "@biology:synapomorphy",
+      "value": "learned-from-corpus",
+      "lens": "biology"
+    },
+    {
+      "id": "s:5a4qdxh",
+      "predicate": "@biology:synapomorphy",
+      "value": "prompt-driven",
+      "lens": "biology"
+    },
+    {
+      "id": "s:2kg0i68",
+      "predicate": "@biology:etymology",
+      "value": "Latin oraculum, 'oracle, divine utterance'.",
+      "lens": "biology"
+    },
+    {
+      "id": "s:k25ui6d",
+      "predicate": "@biology:rank_hint",
+      "value": "kingdom",
+      "lens": "biology"
+    }
+  ]
+}

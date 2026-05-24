@@ -1,0 +1,136 @@
+{
+  "id": "@software:wordperfect",
+  "labels": {
+    "en": "WordPerfect"
+  },
+  "aliases": [
+    "WP"
+  ],
+  "description": "A word-processing application originally created by Alan Ashton and Bruce Bastian, dominant in the word-processor market during the 1980s; sold to Novell in 1994, then Corel in 1996.",
+  "statements": [
+    {
+      "id": "s:0qh2inw",
+      "predicate": "@core:instance_of",
+      "value": "@class:word-processor",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:wordperfect@1353600989"
+        }
+      ]
+    },
+    {
+      "id": "s:4yilp7s",
+      "predicate": "@core:developed_by",
+      "value": "@org:wordperfect-corporation",
+      "lens": "core",
+      "rank": "deprecated",
+      "qualifiers": {
+        "@core:start_time": "1980",
+        "@core:end_time": "1994"
+      },
+      "sources": [
+        {
+          "id": "wp:wordperfect@1353600989"
+        }
+      ]
+    },
+    {
+      "id": "s:hv4g0jq",
+      "predicate": "@core:developed_by",
+      "value": "@org:novell",
+      "lens": "core",
+      "rank": "deprecated",
+      "qualifiers": {
+        "@core:start_time": "1994",
+        "@core:end_time": "1996"
+      },
+      "sources": [
+        {
+          "id": "wp:wordperfect@1353600989"
+        }
+      ]
+    },
+    {
+      "id": "s:macvdte",
+      "predicate": "@core:developed_by",
+      "value": "@org:corel",
+      "lens": "core",
+      "rank": "preferred",
+      "qualifiers": {
+        "@core:start_time": "1996"
+      },
+      "sources": [
+        {
+          "id": "wp:wordperfect@1353600989"
+        }
+      ]
+    },
+    {
+      "id": "s:id9n1cf",
+      "predicate": "@core:principal_author",
+      "value": "@person:alan-ashton",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:wordperfect@1353600989"
+        }
+      ]
+    },
+    {
+      "id": "s:o2fw21b",
+      "predicate": "@core:principal_author",
+      "value": "@person:bruce-bastian",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:wordperfect@1353600989"
+        }
+      ]
+    },
+    {
+      "id": "s:7rkvj8g",
+      "predicate": "@core:first_released",
+      "value": "1980-03",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:wordperfect@1353600989"
+        }
+      ]
+    },
+    {
+      "id": "s:zmichjx",
+      "predicate": "@core:licensed_under",
+      "value": "@license:proprietary",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:wordperfect@1353600989"
+        }
+      ]
+    },
+    {
+      "id": "s:r4bqbfu",
+      "predicate": "@core:wikipedia",
+      "value": "WordPerfect",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:wordperfect@1353600989"
+        }
+      ]
+    },
+    {
+      "id": "s:p7aehvc",
+      "predicate": "@core:official_url",
+      "value": "https://www.wordperfect.com/",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:wordperfect@1353600989"
+        }
+      ]
+    }
+  ]
+}

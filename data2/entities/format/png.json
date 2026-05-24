@@ -1,0 +1,31 @@
+{
+  "id": "@format:png",
+  "labels": {
+    "en": "PNG"
+  },
+  "description": "A raster graphics file format that supports lossless data compression, standardized by the W3C in 1996.",
+  "statements": [
+    {
+      "id": "s:a4c29t8",
+      "predicate": "@core:instance_of",
+      "value": "@class:file-format",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:png@1354270860"
+        }
+      ]
+    },
+    {
+      "id": "s:ablwob0",
+      "predicate": "@core:wikipedia",
+      "value": "PNG",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:png@1354270860"
+        }
+      ]
+    }
+  ]
+}

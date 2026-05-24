@@ -1,0 +1,15 @@
+{
+  "id": "@biology:metabolism",
+  "label": "metabolism",
+  "description": "The primary resource this organism class metabolizes as part of its core function. Entity-valued — references a biology-defined metabolism-type class.",
+  "lens": "biology",
+  "value_type": "entity",
+  "domain": [
+    "@class:software",
+    "@meta:class"
+  ],
+  "range": [
+    "@class:metabolism-type"
+  ],
+  "cardinality": "0..1"
+}

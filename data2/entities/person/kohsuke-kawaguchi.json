@@ -1,0 +1,31 @@
+{
+  "id": "@person:kohsuke-kawaguchi",
+  "labels": {
+    "en": "Kohsuke Kawaguchi"
+  },
+  "description": "Japanese software developer who created the Hudson CI server (later renamed Jenkins) while working at Sun Microsystems.",
+  "statements": [
+    {
+      "id": "s:qeuhg1a",
+      "predicate": "@core:instance_of",
+      "value": "@class:person",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:kohsuke_kawaguchi@1323962340"
+        }
+      ]
+    },
+    {
+      "id": "s:o5sonwu",
+      "predicate": "@core:wikipedia",
+      "value": "Kohsuke_Kawaguchi",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:kohsuke_kawaguchi@1323962340"
+        }
+      ]
+    }
+  ]
+}

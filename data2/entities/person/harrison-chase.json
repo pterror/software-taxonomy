@@ -1,0 +1,20 @@
+{
+  "id": "@person:harrison-chase",
+  "labels": {
+    "en": "Harrison Chase"
+  },
+  "description": "Co-founder and CEO of LangChain Inc., who created the LangChain framework for building LLM-powered applications.",
+  "statements": [
+    {
+      "id": "s:ciwjhhr",
+      "predicate": "@core:instance_of",
+      "value": "@class:person",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:langchain@1342539249"
+        }
+      ]
+    }
+  ]
+}

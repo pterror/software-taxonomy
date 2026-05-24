@@ -1,0 +1,20 @@
+{
+  "id": "@collective:openrc-developers",
+  "labels": {
+    "en": "OpenRC Developers"
+  },
+  "description": "The distributed community of developers who maintain and extend the OpenRC init system, originally started by Roy Marples for Gentoo Linux.",
+  "statements": [
+    {
+      "id": "s:3grjbvu",
+      "predicate": "@core:instance_of",
+      "value": "@class:collective",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:openrc@1337532832"
+        }
+      ]
+    }
+  ]
+}

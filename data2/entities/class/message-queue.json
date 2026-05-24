@@ -1,0 +1,21 @@
+{
+  "id": "@class:message-queue",
+  "labels": {
+    "en": "Message Queue"
+  },
+  "description": "Software that enables asynchronous communication between services via queued messages.",
+  "statements": [
+    {
+      "id": "s:a3pmcmv",
+      "predicate": "@core:instance_of",
+      "value": "@meta:class",
+      "lens": "core"
+    },
+    {
+      "id": "s:8afab7q",
+      "predicate": "@core:subclass_of",
+      "value": "@class:software",
+      "lens": "core"
+    }
+  ]
+}

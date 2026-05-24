@@ -1,0 +1,42 @@
+{
+  "id": "@org:gnu-project",
+  "labels": {
+    "en": "GNU Project"
+  },
+  "description": "Free software mass collaboration project announced by Richard Stallman in 1983, producing a complete Unix-compatible software system.",
+  "statements": [
+    {
+      "id": "s:ztyoskb",
+      "predicate": "@core:instance_of",
+      "value": "@class:organization",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:gnu_project@1355015206"
+        }
+      ]
+    },
+    {
+      "id": "s:wgeroe0",
+      "predicate": "@core:wikipedia",
+      "value": "GNU_Project",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:gnu_project@1355015206"
+        }
+      ]
+    },
+    {
+      "id": "s:rkn00uo",
+      "predicate": "@core:founded",
+      "value": "1983-09-27",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:gnu_project@1355015206"
+        }
+      ]
+    }
+  ]
+}

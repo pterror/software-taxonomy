@@ -1,0 +1,42 @@
+{
+  "id": "@org:openai",
+  "labels": {
+    "en": "OpenAI"
+  },
+  "description": "American artificial intelligence research organization that develops large language models and AI systems including GPT and ChatGPT.",
+  "statements": [
+    {
+      "id": "s:9d940hd",
+      "predicate": "@core:instance_of",
+      "value": "@class:organization",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:openai@1355637181"
+        }
+      ]
+    },
+    {
+      "id": "s:bfbms1j",
+      "predicate": "@core:wikipedia",
+      "value": "OpenAI",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:openai@1355637181"
+        }
+      ]
+    },
+    {
+      "id": "s:0o8sne5",
+      "predicate": "@core:founded",
+      "value": "2015-12-08",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:openai@1355637181"
+        }
+      ]
+    }
+  ]
+}

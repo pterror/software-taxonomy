@@ -1,0 +1,21 @@
+{
+  "id": "@class:database",
+  "labels": {
+    "en": "Database"
+  },
+  "description": "Software for organized storage, retrieval, and management of structured data.",
+  "statements": [
+    {
+      "id": "s:z8o38qn",
+      "predicate": "@core:instance_of",
+      "value": "@meta:class",
+      "lens": "core"
+    },
+    {
+      "id": "s:mztba57",
+      "predicate": "@core:subclass_of",
+      "value": "@class:software",
+      "lens": "core"
+    }
+  ]
+}

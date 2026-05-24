@@ -1,0 +1,13 @@
+{
+  "id": "@core:discontinued",
+  "label": "discontinued",
+  "description": "ISO date when active development or distribution of this entity ceased. Omit if still active. Use rank=deprecated on later superseded_by statements to mark migration paths.",
+  "lens": "core",
+  "value_type": "date",
+  "value_pattern": "^\\d{4}(-\\d{2}(-\\d{2})?)?$",
+  "domain": [
+    "@class:software"
+  ],
+  "range": null,
+  "cardinality": "0..1"
+}

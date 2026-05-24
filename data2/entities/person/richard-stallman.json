@@ -1,0 +1,31 @@
+{
+  "id": "@person:richard-stallman",
+  "labels": {
+    "en": "Richard Stallman"
+  },
+  "description": "American free software activist and programmer who launched the GNU Project and founded the Free Software Foundation.",
+  "statements": [
+    {
+      "id": "s:1ou1j5a",
+      "predicate": "@core:instance_of",
+      "value": "@class:person",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:richard_stallman@1354256755"
+        }
+      ]
+    },
+    {
+      "id": "s:xliev1r",
+      "predicate": "@core:wikipedia",
+      "value": "Richard_Stallman",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:richard_stallman@1354256755"
+        }
+      ]
+    }
+  ]
+}

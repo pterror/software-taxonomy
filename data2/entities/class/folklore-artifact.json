@@ -1,0 +1,15 @@
+{
+  "id": "@class:folklore-artifact",
+  "labels": {
+    "en": "Folklore Artifact"
+  },
+  "description": "A law, aphorism, parable, or cultural artifact about software — something that circulates in the community as conventional wisdom, often attributed to a specific person or event.",
+  "statements": [
+    {
+      "id": "s:egcktef",
+      "predicate": "@core:instance_of",
+      "value": "@meta:class",
+      "lens": "folklore"
+    }
+  ]
+}

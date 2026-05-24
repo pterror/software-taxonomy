@@ -1,0 +1,35 @@
+{
+  "id": "@license:agpl-v3",
+  "labels": {
+    "en": "GNU Affero General Public License v3"
+  },
+  "aliases": [
+    "AGPL-3.0",
+    "AGPLv3"
+  ],
+  "description": "A copyleft free software license published by the Free Software Foundation that additionally requires distribution of source code when running modified software over a network.",
+  "statements": [
+    {
+      "id": "s:tbxai4b",
+      "predicate": "@core:instance_of",
+      "value": "@class:license",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:gnu_affero_general_public_license@1328920900"
+        }
+      ]
+    },
+    {
+      "id": "s:poihk6j",
+      "predicate": "@core:wikipedia",
+      "value": "GNU_Affero_General_Public_License",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:gnu_affero_general_public_license@1328920900"
+        }
+      ]
+    }
+  ]
+}

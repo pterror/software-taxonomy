@@ -1,0 +1,100 @@
+{
+  "id": "@software:microsoft-excel",
+  "labels": {
+    "en": "Microsoft Excel"
+  },
+  "aliases": [
+    "Excel"
+  ],
+  "description": "A spreadsheet application developed by Microsoft, first released in 1985 for the Macintosh, featuring grid-based calculation, graphing tools, and a macro programming language.",
+  "statements": [
+    {
+      "id": "s:zpi1rc4",
+      "predicate": "@core:instance_of",
+      "value": "@class:spreadsheet",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:microsoft_excel@1353886091"
+        }
+      ]
+    },
+    {
+      "id": "s:38bd3pi",
+      "predicate": "@core:developed_by",
+      "value": "@org:microsoft",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:microsoft_excel@1353886091"
+        }
+      ]
+    },
+    {
+      "id": "s:d42p8f5",
+      "predicate": "@core:principal_author",
+      "value": "@person:charles-simonyi",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:microsoft_excel@1353886091"
+        }
+      ]
+    },
+    {
+      "id": "s:d45uytq",
+      "predicate": "@core:first_released",
+      "value": "1985",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:microsoft_excel@1353886091"
+        }
+      ]
+    },
+    {
+      "id": "s:jkjm72n",
+      "predicate": "@core:written_in",
+      "value": "@language:c",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:microsoft_excel@1353886091"
+        }
+      ]
+    },
+    {
+      "id": "s:dmbxyfx",
+      "predicate": "@core:licensed_under",
+      "value": "@license:proprietary",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:microsoft_excel@1353886091"
+        }
+      ]
+    },
+    {
+      "id": "s:dsifnhw",
+      "predicate": "@core:wikipedia",
+      "value": "Microsoft_Excel",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:microsoft_excel@1353886091"
+        }
+      ]
+    },
+    {
+      "id": "s:vhj2fbi",
+      "predicate": "@core:official_url",
+      "value": "https://www.microsoft.com/en-us/microsoft-365/excel",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:microsoft_excel@1353886091"
+        }
+      ]
+    }
+  ]
+}

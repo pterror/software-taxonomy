@@ -1,0 +1,31 @@
+{
+  "id": "@person:kay-sievers",
+  "labels": {
+    "en": "Kay Sievers"
+  },
+  "description": "German software developer who co-created systemd with Lennart Poettering at Red Hat in 2010.",
+  "statements": [
+    {
+      "id": "s:85a47xl",
+      "predicate": "@core:instance_of",
+      "value": "@class:person",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:kay_sievers@1341097408"
+        }
+      ]
+    },
+    {
+      "id": "s:z54rjxw",
+      "predicate": "@core:wikipedia",
+      "value": "Kay_Sievers",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:kay_sievers@1341097408"
+        }
+      ]
+    }
+  ]
+}

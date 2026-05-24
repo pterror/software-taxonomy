@@ -1,0 +1,31 @@
+{
+  "id": "@language:objective-c",
+  "labels": {
+    "en": "Objective-C"
+  },
+  "description": "A general-purpose, object-oriented programming language that adds Smalltalk-style messaging to C, primarily used for Apple macOS and iOS development.",
+  "statements": [
+    {
+      "id": "s:26on94v",
+      "predicate": "@core:instance_of",
+      "value": "@class:programming-language",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:objective-c@1353282567"
+        }
+      ]
+    },
+    {
+      "id": "s:ztmehh0",
+      "predicate": "@core:wikipedia",
+      "value": "Objective-C",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:objective-c@1353282567"
+        }
+      ]
+    }
+  ]
+}

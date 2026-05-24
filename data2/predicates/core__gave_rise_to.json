@@ -1,0 +1,17 @@
+{
+  "id": "@core:gave_rise_to",
+  "label": "gave rise to",
+  "description": "Inverse of descended_from. This entity directly gave rise to another.",
+  "lens": "core",
+  "value_type": "entity",
+  "domain": [
+    "@class:technical-artifact",
+    "@meta:class"
+  ],
+  "range": [
+    "@class:technical-artifact",
+    "@meta:class"
+  ],
+  "cardinality": "0..*",
+  "inverse": "@core:descended_from"
+}

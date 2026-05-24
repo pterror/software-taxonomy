@@ -1,0 +1,108 @@
+{
+  "id": "@software:github-actions",
+  "labels": {
+    "en": "GitHub Actions"
+  },
+  "description": "A cloud-based CI/CD service integrated into GitHub, allowing developers to automate workflows triggered by repository events using YAML-defined action files, launched in 2019.",
+  "statements": [
+    {
+      "id": "s:0osjemx",
+      "predicate": "@core:instance_of",
+      "value": "@class:ci-system",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:github_actions@1343663060"
+        }
+      ]
+    },
+    {
+      "id": "s:v14xh5a",
+      "predicate": "@core:developed_by",
+      "value": "@org:github",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:github_actions@1343663060"
+        }
+      ]
+    },
+    {
+      "id": "s:ewe9jtj",
+      "predicate": "@core:first_released",
+      "value": "2019-11-11",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:github_actions@1343663060"
+        }
+      ]
+    },
+    {
+      "id": "s:ktg97do",
+      "predicate": "@core:runs_on",
+      "value": "@os:linux",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:github_actions@1343663060"
+        }
+      ]
+    },
+    {
+      "id": "s:5oa7p8y",
+      "predicate": "@core:runs_on",
+      "value": "@os:windows",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:github_actions@1343663060"
+        }
+      ]
+    },
+    {
+      "id": "s:3bah931",
+      "predicate": "@core:runs_on",
+      "value": "@os:macos",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:github_actions@1343663060"
+        }
+      ]
+    },
+    {
+      "id": "s:cl54509",
+      "predicate": "@core:licensed_under",
+      "value": "@license:proprietary",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:github_actions@1343663060"
+        }
+      ]
+    },
+    {
+      "id": "s:bh38olf",
+      "predicate": "@core:wikipedia",
+      "value": "GitHub_Actions",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:github_actions@1343663060"
+        }
+      ]
+    },
+    {
+      "id": "s:k6dtrbs",
+      "predicate": "@core:official_url",
+      "value": "https://github.com/features/actions",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:github_actions@1343663060"
+        }
+      ]
+    }
+  ]
+}

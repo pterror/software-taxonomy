@@ -1,0 +1,51 @@
+{
+  "id": "@class:wordprocessoria",
+  "labels": {
+    "en": "Wordprocessoria"
+  },
+  "description": "Documenta specialized for prose composition; paragraph-oriented, typically WYSIWYG; the document is a sequence of styled paragraphs. Every member eventually grows a spell-checker organ and, given enough time, an email organ (Zawinski's Law).",
+  "statements": [
+    {
+      "id": "s:dettpjw",
+      "predicate": "@core:instance_of",
+      "value": "@meta:class",
+      "lens": "biology"
+    },
+    {
+      "id": "s:1rldopx",
+      "predicate": "@core:subclass_of",
+      "value": "@class:documenta",
+      "lens": "biology"
+    },
+    {
+      "id": "s:cafaqu9",
+      "predicate": "@biology:synapomorphy",
+      "value": "paragraph-flow-layout",
+      "lens": "biology"
+    },
+    {
+      "id": "s:5by2oxq",
+      "predicate": "@biology:synapomorphy",
+      "value": "character-formatting",
+      "lens": "biology"
+    },
+    {
+      "id": "s:53yie0k",
+      "predicate": "@biology:synapomorphy",
+      "value": "save-as-document",
+      "lens": "biology"
+    },
+    {
+      "id": "s:knn0754",
+      "predicate": "@biology:etymology",
+      "value": "'Word processor' + Linnaean -ia suffix.",
+      "lens": "biology"
+    },
+    {
+      "id": "s:hyzamns",
+      "predicate": "@biology:rank_hint",
+      "value": "order",
+      "lens": "biology"
+    }
+  ]
+}

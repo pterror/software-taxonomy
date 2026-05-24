@@ -1,0 +1,13 @@
+{
+  "id": "@core:first_released",
+  "label": "first released",
+  "description": "ISO date (YYYY, YYYY-MM, or YYYY-MM-DD) of the first public release or announcement of this entity. For programs, this is the first public version, not internal development start.",
+  "lens": "core",
+  "value_type": "date",
+  "value_pattern": "^\\d{4}(-\\d{2}(-\\d{2})?)?$",
+  "domain": [
+    "@class:technical-artifact"
+  ],
+  "range": null,
+  "cardinality": "1..1"
+}

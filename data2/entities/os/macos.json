@@ -1,0 +1,53 @@
+{
+  "id": "@os:macos",
+  "labels": {
+    "en": "macOS"
+  },
+  "description": "A Unix-based graphical operating system developed and marketed by Apple Inc., first released in 2001 as Mac OS X.",
+  "statements": [
+    {
+      "id": "s:afohomw",
+      "predicate": "@core:instance_of",
+      "value": "@class:operating-system",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:macos@1353882208"
+        }
+      ]
+    },
+    {
+      "id": "s:3wj68av",
+      "predicate": "@core:wikipedia",
+      "value": "MacOS",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:macos@1353882208"
+        }
+      ]
+    },
+    {
+      "id": "s:e3y1z3z",
+      "predicate": "@core:first_released",
+      "value": "2001",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:macos@1353882208"
+        }
+      ]
+    },
+    {
+      "id": "s:bs84u5q",
+      "predicate": "@core:developed_by",
+      "value": "@org:apple",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:macos@1353882208"
+        }
+      ]
+    }
+  ]
+}

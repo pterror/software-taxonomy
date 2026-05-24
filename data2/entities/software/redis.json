@@ -1,0 +1,151 @@
+{
+  "id": "@software:redis",
+  "labels": {
+    "en": "Redis"
+  },
+  "aliases": [
+    "Redis"
+  ],
+  "description": "An in-memory data structure store used as a database, cache, message broker, and streaming engine, created by Salvatore Sanfilippo and first released in 2009; relicensed from BSD-3 to RSALv2+SSPL in 2024.",
+  "statements": [
+    {
+      "id": "s:s0mmxis",
+      "predicate": "@core:instance_of",
+      "value": "@class:database",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:redis@1351092330"
+        }
+      ]
+    },
+    {
+      "id": "s:rvx59le",
+      "predicate": "@core:developed_by",
+      "value": "@org:redis-inc",
+      "lens": "core",
+      "rank": "preferred",
+      "sources": [
+        {
+          "id": "wp:redis_company@1353142415"
+        }
+      ]
+    },
+    {
+      "id": "s:7i1dmwu",
+      "predicate": "@core:principal_author",
+      "value": "@person:salvatore-sanfilippo",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:redis@1351092330"
+        }
+      ]
+    },
+    {
+      "id": "s:rhl7m8b",
+      "predicate": "@core:first_released",
+      "value": "2009-02-26",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:redis@1351092330"
+        }
+      ]
+    },
+    {
+      "id": "s:x7bgy54",
+      "predicate": "@core:licensed_under",
+      "value": "@license:bsd-3-clause",
+      "lens": "core",
+      "rank": "deprecated",
+      "qualifiers": {
+        "@core:start_time": "2009",
+        "@core:end_time": "2024"
+      },
+      "sources": [
+        {
+          "id": "wp:redis@1351092330"
+        }
+      ]
+    },
+    {
+      "id": "s:wz2sma8",
+      "predicate": "@core:licensed_under",
+      "value": "@license:rsalv2",
+      "lens": "core",
+      "rank": "preferred",
+      "qualifiers": {
+        "@core:start_time": "2024"
+      },
+      "sources": [
+        {
+          "id": "wp:redis@1351092330"
+        }
+      ]
+    },
+    {
+      "id": "s:e0uzg6s",
+      "predicate": "@core:licensed_under",
+      "value": "@license:sspl",
+      "lens": "core",
+      "rank": "normal",
+      "qualifiers": {
+        "@core:start_time": "2024"
+      },
+      "sources": [
+        {
+          "id": "wp:redis@1351092330"
+        }
+      ]
+    },
+    {
+      "id": "s:mb4vm98",
+      "predicate": "@core:licensed_under",
+      "value": "@license:agpl-v3",
+      "lens": "core",
+      "rank": "normal",
+      "qualifiers": {
+        "@core:start_time": "2025"
+      },
+      "sources": [
+        {
+          "id": "wp:redis@1351092330"
+        }
+      ]
+    },
+    {
+      "id": "s:5mbc4xj",
+      "predicate": "@core:written_in",
+      "value": "@language:c",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:redis@1351092330"
+        }
+      ]
+    },
+    {
+      "id": "s:cah01aq",
+      "predicate": "@core:wikipedia",
+      "value": "Redis",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:redis@1351092330"
+        }
+      ]
+    },
+    {
+      "id": "s:0vtbtxi",
+      "predicate": "@core:official_url",
+      "value": "https://redis.io/",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:redis@1351092330"
+        }
+      ]
+    }
+  ]
+}

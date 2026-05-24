@@ -1,0 +1,14 @@
+{
+  "id": "@biology:has_feature",
+  "label": "has feature",
+  "description": "A feature or capability this entity possesses. Use @-prefixed feature entities. Add qualifiers for start_time (when the feature was added) and end_time (if later removed).",
+  "lens": "biology",
+  "value_type": "entity",
+  "domain": [
+    "@class:software"
+  ],
+  "range": [
+    "@class:feature"
+  ],
+  "cardinality": "0..*"
+}

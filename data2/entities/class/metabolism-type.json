@@ -1,0 +1,15 @@
+{
+  "id": "@class:metabolism-type",
+  "labels": {
+    "en": "Metabolism Type"
+  },
+  "description": "A category of primary resource that a software organism class metabolizes as part of its core function. Used as the range for the metabolism predicate.",
+  "statements": [
+    {
+      "id": "s:xllbl7g",
+      "predicate": "@core:instance_of",
+      "value": "@meta:class",
+      "lens": "biology"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "id": "@core:founded",
+  "label": "founded",
+  "description": "ISO date (YYYY, YYYY-MM, or YYYY-MM-DD) when the organization was established or incorporated.",
+  "lens": "core",
+  "value_type": "date",
+  "value_pattern": "^\\d{4}(-\\d{2}(-\\d{2})?)?$",
+  "domain": [
+    "@class:organization"
+  ],
+  "range": null,
+  "cardinality": "0..1"
+}

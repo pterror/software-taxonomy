@@ -1,0 +1,21 @@
+{
+  "id": "@class:build-system",
+  "labels": {
+    "en": "Build System"
+  },
+  "description": "Software that automates the compilation and assembly of source code into executable artifacts.",
+  "statements": [
+    {
+      "id": "s:6aaxm7s",
+      "predicate": "@core:instance_of",
+      "value": "@meta:class",
+      "lens": "core"
+    },
+    {
+      "id": "s:3y9bcat",
+      "predicate": "@core:subclass_of",
+      "value": "@class:software",
+      "lens": "core"
+    }
+  ]
+}

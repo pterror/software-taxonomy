@@ -1,0 +1,97 @@
+{
+  "id": "@software:cursor",
+  "labels": {
+    "en": "Cursor"
+  },
+  "description": "An AI-powered code editor built on Visual Studio Code's codebase, developed by Anysphere, featuring deep LLM integration for code generation, editing, and chat.",
+  "statements": [
+    {
+      "id": "s:syvid15",
+      "predicate": "@core:instance_of",
+      "value": "@class:code-assistant",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "official:anysphere@2026-05-23"
+        }
+      ]
+    },
+    {
+      "id": "s:98gc3t7",
+      "predicate": "@core:developed_by",
+      "value": "@org:anysphere",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "official:anysphere@2026-05-23"
+        }
+      ]
+    },
+    {
+      "id": "s:rfysmo0",
+      "predicate": "@core:first_released",
+      "value": "2023",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "official:anysphere@2026-05-23"
+        }
+      ]
+    },
+    {
+      "id": "s:fx18opc",
+      "predicate": "@core:runs_on",
+      "value": "@os:linux",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "official:anysphere@2026-05-23"
+        }
+      ]
+    },
+    {
+      "id": "s:y72xtqv",
+      "predicate": "@core:runs_on",
+      "value": "@os:macos",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "official:anysphere@2026-05-23"
+        }
+      ]
+    },
+    {
+      "id": "s:eabbpv5",
+      "predicate": "@core:runs_on",
+      "value": "@os:windows",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "official:anysphere@2026-05-23"
+        }
+      ]
+    },
+    {
+      "id": "s:le8wn36",
+      "predicate": "@core:licensed_under",
+      "value": "@license:proprietary",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "official:anysphere@2026-05-23"
+        }
+      ]
+    },
+    {
+      "id": "s:zconkxl",
+      "predicate": "@core:official_url",
+      "value": "https://cursor.com",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "official:anysphere@2026-05-23"
+        }
+      ]
+    }
+  ]
+}

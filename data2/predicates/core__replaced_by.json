@@ -1,0 +1,15 @@
+{
+  "id": "@core:replaced_by",
+  "label": "replaced by",
+  "description": "Inverse of replaces. This entity was replaced by the given entity.",
+  "lens": "core",
+  "value_type": "entity",
+  "domain": [
+    "@class:technical-artifact"
+  ],
+  "range": [
+    "@class:technical-artifact"
+  ],
+  "cardinality": "0..*",
+  "inverse": "@core:replaces"
+}

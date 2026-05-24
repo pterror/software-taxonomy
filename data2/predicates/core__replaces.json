@@ -1,0 +1,15 @@
+{
+  "id": "@core:replaces",
+  "label": "replaces",
+  "description": "This entity is the intended replacement or successor for the given entity in the same functional niche, from the same developer or organization. More specific than supersedes.",
+  "lens": "core",
+  "value_type": "entity",
+  "domain": [
+    "@class:technical-artifact"
+  ],
+  "range": [
+    "@class:technical-artifact"
+  ],
+  "cardinality": "0..*",
+  "inverse": "@core:replaced_by"
+}

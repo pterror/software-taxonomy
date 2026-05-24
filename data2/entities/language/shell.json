@@ -1,0 +1,31 @@
+{
+  "id": "@language:shell",
+  "labels": {
+    "en": "Shell"
+  },
+  "description": "A scripting language and command-line interpreter for Unix-like operating systems, including POSIX shell, Bash, and compatible variants.",
+  "statements": [
+    {
+      "id": "s:em658rx",
+      "predicate": "@core:instance_of",
+      "value": "@class:programming-language",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:shell_script@1352934465"
+        }
+      ]
+    },
+    {
+      "id": "s:wwxn2ji",
+      "predicate": "@core:wikipedia",
+      "value": "Shell_script",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:shell_script@1352934465"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "@class:agent-framework",
+  "labels": {
+    "en": "Agent Framework"
+  },
+  "description": "A software framework for composing and orchestrating autonomous AI agents.",
+  "statements": [
+    {
+      "id": "s:i9j0ucd",
+      "predicate": "@core:instance_of",
+      "value": "@meta:class",
+      "lens": "core"
+    },
+    {
+      "id": "s:vese9at",
+      "predicate": "@core:subclass_of",
+      "value": "@class:software",
+      "lens": "core"
+    }
+  ]
+}

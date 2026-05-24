@@ -1,0 +1,13 @@
+{
+  "id": "@mythology-demo:invoked_by",
+  "label": "invoked by",
+  "description": "The ritual, incantation, or invocation pattern used to summon this daimon. String-valued (e.g. a shell command).",
+  "lens": "mythology-demo",
+  "value_type": "string",
+  "domain": [
+    "@class:daimon",
+    "@class:revenant"
+  ],
+  "range": null,
+  "cardinality": "0..*"
+}

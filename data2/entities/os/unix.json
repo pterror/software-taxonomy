@@ -1,0 +1,53 @@
+{
+  "id": "@os:unix",
+  "labels": {
+    "en": "Unix"
+  },
+  "description": "A family of multitasking, multiuser operating systems that derive from the original Unix system developed at Bell Labs beginning in 1969.",
+  "statements": [
+    {
+      "id": "s:9mrzrp8",
+      "predicate": "@core:instance_of",
+      "value": "@class:operating-system",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:unix@1354384541"
+        }
+      ]
+    },
+    {
+      "id": "s:4cezmdu",
+      "predicate": "@core:wikipedia",
+      "value": "Unix",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:unix@1354384541"
+        }
+      ]
+    },
+    {
+      "id": "s:x5uldyl",
+      "predicate": "@core:first_released",
+      "value": "1969",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:unix@1354384541"
+        }
+      ]
+    },
+    {
+      "id": "s:q008q5b",
+      "predicate": "@core:principal_author",
+      "value": "@person:ken-thompson",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:unix@1354384541"
+        }
+      ]
+    }
+  ]
+}

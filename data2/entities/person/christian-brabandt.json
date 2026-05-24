@@ -1,0 +1,20 @@
+{
+  "id": "@person:christian-brabandt",
+  "labels": {
+    "en": "Christian Brabandt"
+  },
+  "description": "German software developer who took over maintenance of the Vim text editor after the death of Bram Moolenaar in August 2023.",
+  "statements": [
+    {
+      "id": "s:42nqra0",
+      "predicate": "@core:instance_of",
+      "value": "@class:person",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:bram_moolenaar@1328026881"
+        }
+      ]
+    }
+  ]
+}

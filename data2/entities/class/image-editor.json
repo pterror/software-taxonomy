@@ -1,0 +1,21 @@
+{
+  "id": "@class:image-editor",
+  "labels": {
+    "en": "Image Editor"
+  },
+  "description": "A software application for creating and manipulating raster images.",
+  "statements": [
+    {
+      "id": "s:jxi9r9d",
+      "predicate": "@core:instance_of",
+      "value": "@meta:class",
+      "lens": "core"
+    },
+    {
+      "id": "s:55ds0r4",
+      "predicate": "@core:subclass_of",
+      "value": "@class:software",
+      "lens": "core"
+    }
+  ]
+}

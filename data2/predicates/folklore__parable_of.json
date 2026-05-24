@@ -1,0 +1,13 @@
+{
+  "id": "@folklore:parable_of",
+  "label": "parable of",
+  "description": "A broader principle or concept that this entity illustrates or is commonly used to explain. String-valued slug.",
+  "lens": "folklore",
+  "value_type": "string",
+  "domain": [
+    "@folklore-artifact",
+    "@class:software"
+  ],
+  "range": null,
+  "cardinality": "0..*"
+}

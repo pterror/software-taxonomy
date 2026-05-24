@@ -1,0 +1,108 @@
+{
+  "id": "@software:launchd",
+  "labels": {
+    "en": "launchd"
+  },
+  "description": "An init system and service management framework for macOS and other Apple operating systems, developed by Apple and replacing older Unix-style init and cron systems starting with Mac OS X Tiger in 2005.",
+  "statements": [
+    {
+      "id": "s:mamjit2",
+      "predicate": "@core:instance_of",
+      "value": "@class:init-system",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:launchd@1353506981"
+        }
+      ]
+    },
+    {
+      "id": "s:wfumeeb",
+      "predicate": "@core:instance_of",
+      "value": "@class:cron-scheduler",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:launchd@1353506981"
+        }
+      ]
+    },
+    {
+      "id": "s:ne755xd",
+      "predicate": "@core:developed_by",
+      "value": "@org:apple",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:launchd@1353506981"
+        }
+      ]
+    },
+    {
+      "id": "s:b56wmqb",
+      "predicate": "@core:first_released",
+      "value": "2005",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:launchd@1353506981"
+        }
+      ]
+    },
+    {
+      "id": "s:22dg3gv",
+      "predicate": "@core:runs_on",
+      "value": "@os:macos",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:launchd@1353506981"
+        }
+      ]
+    },
+    {
+      "id": "s:hvymjbt",
+      "predicate": "@core:runs_on",
+      "value": "@os:ios",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:launchd@1353506981"
+        }
+      ]
+    },
+    {
+      "id": "s:ygahhn0",
+      "predicate": "@core:written_in",
+      "value": "@language:c",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:launchd@1353506981"
+        }
+      ]
+    },
+    {
+      "id": "s:3d6604c",
+      "predicate": "@core:licensed_under",
+      "value": "@license:apache-2",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:launchd@1353506981"
+        }
+      ]
+    },
+    {
+      "id": "s:ujo928y",
+      "predicate": "@core:wikipedia",
+      "value": "Launchd",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:launchd@1353506981"
+        }
+      ]
+    }
+  ]
+}

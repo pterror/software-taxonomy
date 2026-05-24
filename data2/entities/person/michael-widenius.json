@@ -1,0 +1,31 @@
+{
+  "id": "@person:michael-widenius",
+  "labels": {
+    "en": "Michael Widenius"
+  },
+  "description": "Finnish software engineer who created MySQL and later MariaDB; the latter named after his daughter, as MySQL was named after his daughter My.",
+  "statements": [
+    {
+      "id": "s:4lp09bp",
+      "predicate": "@core:instance_of",
+      "value": "@class:person",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:michael_widenius@1348855072"
+        }
+      ]
+    },
+    {
+      "id": "s:9zf7rwa",
+      "predicate": "@core:wikipedia",
+      "value": "Michael_Widenius",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:michael_widenius@1348855072"
+        }
+      ]
+    }
+  ]
+}

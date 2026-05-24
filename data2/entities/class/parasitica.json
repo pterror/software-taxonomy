@@ -1,0 +1,45 @@
+{
+  "id": "@class:parasitica",
+  "labels": {
+    "en": "Parasitica"
+  },
+  "description": "Programs that live on host cycles and return value to a remote operator rather than the local user. Includes adware, spyware, cryptominers, and telemetry-heavy freeware. The ethical charge is structural, not moral: the metabolism is misaligned with the host.",
+  "statements": [
+    {
+      "id": "s:bn69whg",
+      "predicate": "@core:instance_of",
+      "value": "@meta:class",
+      "lens": "biology"
+    },
+    {
+      "id": "s:rwb0b8e",
+      "predicate": "@core:subclass_of",
+      "value": "@class:software",
+      "lens": "biology"
+    },
+    {
+      "id": "s:19kqu4w",
+      "predicate": "@biology:synapomorphy",
+      "value": "hidden-from-user",
+      "lens": "biology"
+    },
+    {
+      "id": "s:afp5jqh",
+      "predicate": "@biology:synapomorphy",
+      "value": "exfiltrates-to-third-party",
+      "lens": "biology"
+    },
+    {
+      "id": "s:ez8rn4a",
+      "predicate": "@biology:etymology",
+      "value": "Latin parasiticus, 'one who eats at another's table'.",
+      "lens": "biology"
+    },
+    {
+      "id": "s:7341cil",
+      "predicate": "@biology:rank_hint",
+      "value": "kingdom",
+      "lens": "biology"
+    }
+  ]
+}

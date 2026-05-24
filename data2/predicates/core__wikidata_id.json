@@ -1,0 +1,11 @@
+{
+  "id": "@core:wikidata_id",
+  "label": "Wikidata ID",
+  "description": "The Wikidata item ID (e.g. 'Q11268') for this entity. Enables cross-referencing with Wikidata during bulk ingest and link enrichment.",
+  "lens": "core",
+  "value_type": "string",
+  "value_pattern": "^Q[0-9]+$",
+  "domain": null,
+  "range": null,
+  "cardinality": "0..1"
+}

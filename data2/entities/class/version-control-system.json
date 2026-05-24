@@ -1,0 +1,21 @@
+{
+  "id": "@class:version-control-system",
+  "labels": {
+    "en": "Version Control System"
+  },
+  "description": "Software for tracking changes to files and coordinating work among multiple contributors.",
+  "statements": [
+    {
+      "id": "s:38ql15t",
+      "predicate": "@core:instance_of",
+      "value": "@meta:class",
+      "lens": "core"
+    },
+    {
+      "id": "s:gidpd67",
+      "predicate": "@core:subclass_of",
+      "value": "@class:software",
+      "lens": "core"
+    }
+  ]
+}

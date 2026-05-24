@@ -1,0 +1,31 @@
+{
+  "id": "@language:vim-script",
+  "labels": {
+    "en": "Vim script"
+  },
+  "description": "The scripting language built into the Vim text editor, used for plugins and configuration.",
+  "statements": [
+    {
+      "id": "s:6mji2g8",
+      "predicate": "@core:instance_of",
+      "value": "@class:programming-language",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:vim_script@1343030428"
+        }
+      ]
+    },
+    {
+      "id": "s:uq9n84j",
+      "predicate": "@core:wikipedia",
+      "value": "Vim_script",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:vim_script@1343030428"
+        }
+      ]
+    }
+  ]
+}

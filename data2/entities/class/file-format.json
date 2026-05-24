@@ -1,0 +1,21 @@
+{
+  "id": "@class:file-format",
+  "labels": {
+    "en": "File Format"
+  },
+  "description": "Class of data file formats used for storing and exchanging information.",
+  "statements": [
+    {
+      "id": "s:0uc9i2w",
+      "predicate": "@core:instance_of",
+      "value": "@meta:class",
+      "lens": "core"
+    },
+    {
+      "id": "s:7motqrj",
+      "predicate": "@core:subclass_of",
+      "value": "@class:technical-artifact",
+      "lens": "core"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "@class:daimon",
+  "labels": {
+    "en": "Daimon"
+  },
+  "description": "Mythological class: the animating spirits bound to Unix daemons. In the Greco-Norse cosmology of this lens, every long-running process has a daimon — a numinous attendant spirit that embodies the daemon's function.",
+  "statements": [
+    {
+      "id": "s:3d2qe6c",
+      "predicate": "@core:instance_of",
+      "value": "@meta:class",
+      "lens": "mythology-demo"
+    },
+    {
+      "id": "s:529h9f5",
+      "predicate": "@core:subclass_of",
+      "value": "@class:software",
+      "lens": "mythology-demo"
+    }
+  ]
+}

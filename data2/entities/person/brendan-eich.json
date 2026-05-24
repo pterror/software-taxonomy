@@ -1,0 +1,31 @@
+{
+  "id": "@person:brendan-eich",
+  "labels": {
+    "en": "Brendan Eich"
+  },
+  "description": "American computer programmer who created the JavaScript programming language while at Netscape in 1995.",
+  "statements": [
+    {
+      "id": "s:lg4yrvz",
+      "predicate": "@core:instance_of",
+      "value": "@class:person",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:brendan_eich@1354007187"
+        }
+      ]
+    },
+    {
+      "id": "s:y7y2g3c",
+      "predicate": "@core:wikipedia",
+      "value": "Brendan_Eich",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:brendan_eich@1354007187"
+        }
+      ]
+    }
+  ]
+}

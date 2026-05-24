@@ -1,0 +1,75 @@
+{
+  "id": "@software:claude",
+  "labels": {
+    "en": "Claude"
+  },
+  "description": "A family of large language models developed by Anthropic, first released in March 2023, designed for safety-focused conversational AI and complex reasoning tasks.",
+  "statements": [
+    {
+      "id": "s:mhm1e9s",
+      "predicate": "@core:instance_of",
+      "value": "@class:chat-model",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:claude_language_model@1355599048"
+        }
+      ]
+    },
+    {
+      "id": "s:zgu6hou",
+      "predicate": "@core:developed_by",
+      "value": "@org:anthropic",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:claude_language_model@1355599048"
+        }
+      ]
+    },
+    {
+      "id": "s:yyqp5hn",
+      "predicate": "@core:first_released",
+      "value": "2023-03",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:claude_language_model@1355599048"
+        }
+      ]
+    },
+    {
+      "id": "s:d8rkxhc",
+      "predicate": "@core:licensed_under",
+      "value": "@license:proprietary",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:claude_language_model@1355599048"
+        }
+      ]
+    },
+    {
+      "id": "s:ezepw9r",
+      "predicate": "@core:wikipedia",
+      "value": "Claude_(language_model)",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:claude_language_model@1355599048"
+        }
+      ]
+    },
+    {
+      "id": "s:e7yohlg",
+      "predicate": "@core:official_url",
+      "value": "https://claude.ai",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:claude_language_model@1355599048"
+        }
+      ]
+    }
+  ]
+}

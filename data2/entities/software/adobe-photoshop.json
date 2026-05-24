@@ -1,0 +1,113 @@
+{
+  "id": "@software:adobe-photoshop",
+  "labels": {
+    "en": "Adobe Photoshop"
+  },
+  "aliases": [
+    "Photoshop",
+    "PS"
+  ],
+  "description": "A raster graphics editor developed by Adobe, originally created by Thomas and John Knoll in 1988 and first commercially released in 1990, widely used in professional image editing.",
+  "statements": [
+    {
+      "id": "s:jk5x5jf",
+      "predicate": "@core:instance_of",
+      "value": "@class:image-editor",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:adobe_photoshop@1353020527"
+        }
+      ]
+    },
+    {
+      "id": "s:yi22jgz",
+      "predicate": "@core:developed_by",
+      "value": "@org:adobe",
+      "lens": "core",
+      "rank": "preferred",
+      "sources": [
+        {
+          "id": "wp:adobe_photoshop@1353020527"
+        }
+      ]
+    },
+    {
+      "id": "s:wjmdemv",
+      "predicate": "@core:principal_author",
+      "value": "@person:thomas-knoll",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:adobe_photoshop@1353020527"
+        }
+      ]
+    },
+    {
+      "id": "s:e991izo",
+      "predicate": "@core:first_released",
+      "value": "1990-02-19",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:adobe_photoshop@1353020527"
+        }
+      ]
+    },
+    {
+      "id": "s:da0lctw",
+      "predicate": "@core:written_in",
+      "value": "@language:c",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:adobe_photoshop@1353020527"
+        }
+      ]
+    },
+    {
+      "id": "s:qb7yu2e",
+      "predicate": "@core:written_in",
+      "value": "@language:cpp",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:adobe_photoshop@1353020527"
+        }
+      ]
+    },
+    {
+      "id": "s:a3u38an",
+      "predicate": "@core:licensed_under",
+      "value": "@license:proprietary",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:adobe_photoshop@1353020527"
+        }
+      ]
+    },
+    {
+      "id": "s:5a6xj3a",
+      "predicate": "@core:wikipedia",
+      "value": "Adobe_Photoshop",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:adobe_photoshop@1353020527"
+        }
+      ]
+    },
+    {
+      "id": "s:iew0vtj",
+      "predicate": "@core:official_url",
+      "value": "https://www.adobe.com/products/photoshop.html",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:adobe_photoshop@1353020527"
+        }
+      ]
+    }
+  ]
+}

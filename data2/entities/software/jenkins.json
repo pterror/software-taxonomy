@@ -1,0 +1,153 @@
+{
+  "id": "@software:jenkins",
+  "labels": {
+    "en": "Jenkins"
+  },
+  "aliases": [
+    "Hudson"
+  ],
+  "description": "An open-source automation server used for continuous integration and continuous delivery, created by Kohsuke Kawaguchi as Hudson at Sun Microsystems; renamed Jenkins in 2011 after Oracle's trademark dispute.",
+  "statements": [
+    {
+      "id": "s:s6skr63",
+      "predicate": "@core:instance_of",
+      "value": "@class:ci-system",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:jenkins_software@1355684649"
+        }
+      ]
+    },
+    {
+      "id": "s:i3rqpxf",
+      "predicate": "@core:developed_by",
+      "value": "@person:kohsuke-kawaguchi",
+      "lens": "core",
+      "rank": "deprecated",
+      "qualifiers": {
+        "@core:start_time": "2004",
+        "@core:end_time": "2011"
+      },
+      "sources": [
+        {
+          "id": "wp:jenkins_software@1355684649"
+        }
+      ]
+    },
+    {
+      "id": "s:no84t1p",
+      "predicate": "@core:developed_by",
+      "value": "@collective:jenkins-community",
+      "lens": "core",
+      "rank": "preferred",
+      "qualifiers": {
+        "@core:start_time": "2011"
+      },
+      "sources": [
+        {
+          "id": "wp:jenkins_software@1355684649"
+        }
+      ]
+    },
+    {
+      "id": "s:emfllnt",
+      "predicate": "@core:principal_author",
+      "value": "@person:kohsuke-kawaguchi",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:jenkins_software@1355684649"
+        }
+      ]
+    },
+    {
+      "id": "s:u0fwrpu",
+      "predicate": "@core:first_released",
+      "value": "2004",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:jenkins_software@1355684649"
+        }
+      ]
+    },
+    {
+      "id": "s:g5utkpl",
+      "predicate": "@core:runs_on",
+      "value": "@os:linux",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:jenkins_software@1355684649"
+        }
+      ]
+    },
+    {
+      "id": "s:d8t7ekl",
+      "predicate": "@core:runs_on",
+      "value": "@os:windows",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:jenkins_software@1355684649"
+        }
+      ]
+    },
+    {
+      "id": "s:fvsk8jw",
+      "predicate": "@core:runs_on",
+      "value": "@os:macos",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:jenkins_software@1355684649"
+        }
+      ]
+    },
+    {
+      "id": "s:uuvrlrm",
+      "predicate": "@core:written_in",
+      "value": "@language:java",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:jenkins_software@1355684649"
+        }
+      ]
+    },
+    {
+      "id": "s:e12o91f",
+      "predicate": "@core:licensed_under",
+      "value": "@license:mit",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:jenkins_software@1355684649"
+        }
+      ]
+    },
+    {
+      "id": "s:eq9ueac",
+      "predicate": "@core:wikipedia",
+      "value": "Jenkins_(software)",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:jenkins_software@1355684649"
+        }
+      ]
+    },
+    {
+      "id": "s:kz64b1c",
+      "predicate": "@core:official_url",
+      "value": "https://www.jenkins.io",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:jenkins_software@1355684649"
+        }
+      ]
+    }
+  ]
+}

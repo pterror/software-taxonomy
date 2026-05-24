@@ -1,0 +1,53 @@
+{
+  "id": "@language:go",
+  "labels": {
+    "en": "Go"
+  },
+  "description": "A statically typed, compiled programming language designed at Google by Robert Griesemer, Rob Pike, and Ken Thompson, first released in 2009.",
+  "statements": [
+    {
+      "id": "s:qcz5cux",
+      "predicate": "@core:instance_of",
+      "value": "@class:programming-language",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:go_programming_language@1352387577"
+        }
+      ]
+    },
+    {
+      "id": "s:6fhlwb2",
+      "predicate": "@core:wikipedia",
+      "value": "Go_(programming_language)",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:go_programming_language@1352387577"
+        }
+      ]
+    },
+    {
+      "id": "s:8ipeoji",
+      "predicate": "@core:first_released",
+      "value": "2009",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:go_programming_language@1352387577"
+        }
+      ]
+    },
+    {
+      "id": "s:gpttit7",
+      "predicate": "@core:developed_by",
+      "value": "@org:google",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:go_programming_language@1352387577"
+        }
+      ]
+    }
+  ]
+}

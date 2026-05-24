@@ -1,0 +1,15 @@
+{
+  "id": "@folklore:originated_in",
+  "label": "originated in",
+  "description": "The publication, talk, project, or event where this entity was first described or debated.",
+  "lens": "folklore",
+  "value_type": "entity",
+  "domain": [
+    "@folklore-artifact"
+  ],
+  "range": [
+    "@publication",
+    "@class:software"
+  ],
+  "cardinality": "0..1"
+}

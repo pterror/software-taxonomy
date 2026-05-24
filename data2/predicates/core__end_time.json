@@ -1,0 +1,11 @@
+{
+  "id": "@core:end_time",
+  "label": "end time",
+  "description": "Used as a qualifier on statements to indicate when the asserted relationship ended. ISO date. E.g. runs_on end_time=2020 for a platform that was dropped.",
+  "lens": "core",
+  "value_type": "date",
+  "value_pattern": "^\\d{4}(-\\d{2}(-\\d{2})?)?$",
+  "domain": null,
+  "range": null,
+  "cardinality": "0..1"
+}

@@ -1,0 +1,42 @@
+{
+  "id": "@org:adobe",
+  "labels": {
+    "en": "Adobe Inc."
+  },
+  "description": "American multinational software company specializing in creative software, document management, and digital marketing; developer of Photoshop, Illustrator, Acrobat, and other tools.",
+  "statements": [
+    {
+      "id": "s:o2mr39i",
+      "predicate": "@core:instance_of",
+      "value": "@class:organization",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:adobe_inc.@1354171297"
+        }
+      ]
+    },
+    {
+      "id": "s:4hcm2dq",
+      "predicate": "@core:wikipedia",
+      "value": "Adobe_Inc.",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:adobe_inc.@1354171297"
+        }
+      ]
+    },
+    {
+      "id": "s:5lpkjfr",
+      "predicate": "@core:founded",
+      "value": "1982-12-14",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:adobe_inc.@1354171297"
+        }
+      ]
+    }
+  ]
+}

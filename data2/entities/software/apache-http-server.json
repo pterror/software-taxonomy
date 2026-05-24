@@ -1,0 +1,90 @@
+{
+  "id": "@software:apache-http-server",
+  "labels": {
+    "en": "Apache HTTP Server"
+  },
+  "aliases": [
+    "Apache",
+    "httpd"
+  ],
+  "description": "A free and open-source cross-platform web server software developed and maintained by the Apache Software Foundation; the most widely used web server in the world from 1996 to the mid-2010s.",
+  "statements": [
+    {
+      "id": "s:nm22vfr",
+      "predicate": "@core:instance_of",
+      "value": "@class:web-server",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:apache_http_server@1353473589"
+        }
+      ]
+    },
+    {
+      "id": "s:hzkf2cr",
+      "predicate": "@core:developed_by",
+      "value": "@org:apache-software-foundation",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:apache_http_server@1353473589"
+        }
+      ]
+    },
+    {
+      "id": "s:6mvx01m",
+      "predicate": "@core:first_released",
+      "value": "1995-04-01",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:apache_http_server@1353473589"
+        }
+      ]
+    },
+    {
+      "id": "s:54o10qa",
+      "predicate": "@core:licensed_under",
+      "value": "@license:apache-2",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:apache_http_server@1353473589"
+        }
+      ]
+    },
+    {
+      "id": "s:kteyjtc",
+      "predicate": "@core:written_in",
+      "value": "@language:c",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:apache_http_server@1353473589"
+        }
+      ]
+    },
+    {
+      "id": "s:62noj1f",
+      "predicate": "@core:wikipedia",
+      "value": "Apache_HTTP_Server",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:apache_http_server@1353473589"
+        }
+      ]
+    },
+    {
+      "id": "s:hs4x0e8",
+      "predicate": "@core:official_url",
+      "value": "https://httpd.apache.org/",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:apache_http_server@1353473589"
+        }
+      ]
+    }
+  ]
+}

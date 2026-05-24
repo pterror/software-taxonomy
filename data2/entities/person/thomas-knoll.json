@@ -1,0 +1,31 @@
+{
+  "id": "@person:thomas-knoll",
+  "labels": {
+    "en": "Thomas Knoll"
+  },
+  "description": "American software engineer who, along with his brother John Knoll, created Adobe Photoshop in 1987–1988.",
+  "statements": [
+    {
+      "id": "s:7psswtx",
+      "predicate": "@core:instance_of",
+      "value": "@class:person",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:thomas_knoll@1354687190"
+        }
+      ]
+    },
+    {
+      "id": "s:k15sryw",
+      "predicate": "@core:wikipedia",
+      "value": "Thomas_Knoll",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:thomas_knoll@1354687190"
+        }
+      ]
+    }
+  ]
+}

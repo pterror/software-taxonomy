@@ -1,0 +1,13 @@
+{
+  "id": "@core:member_of",
+  "label": "member of",
+  "description": "Asserts the entity belongs to a group, organization, consortium, or collection that is not a strict class-instance relationship. Use for org membership, standards bodies, or informal groupings.",
+  "lens": "core",
+  "value_type": "entity",
+  "domain": null,
+  "range": [
+    "@class:organization",
+    "@meta:class"
+  ],
+  "cardinality": "0..*"
+}

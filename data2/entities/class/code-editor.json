@@ -1,0 +1,21 @@
+{
+  "id": "@class:code-editor",
+  "labels": {
+    "en": "Code Editor"
+  },
+  "description": "A software application for writing and editing source code.",
+  "statements": [
+    {
+      "id": "s:quqye0g",
+      "predicate": "@core:instance_of",
+      "value": "@meta:class",
+      "lens": "core"
+    },
+    {
+      "id": "s:geto4kj",
+      "predicate": "@core:subclass_of",
+      "value": "@class:software",
+      "lens": "core"
+    }
+  ]
+}

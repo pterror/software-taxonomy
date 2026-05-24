@@ -1,0 +1,144 @@
+{
+  "id": "@software:cmake",
+  "labels": {
+    "en": "CMake"
+  },
+  "aliases": [
+    "cmake"
+  ],
+  "description": "A cross-platform build system generator that produces native build files for a target environment from a high-level description in CMakeLists.txt files, first released in 2000, created by Bill Hoffman and Ken Martin at Kitware.",
+  "statements": [
+    {
+      "id": "s:0eai4w3",
+      "predicate": "@core:instance_of",
+      "value": "@class:build-system",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:cmake@1354705095"
+        }
+      ]
+    },
+    {
+      "id": "s:o7z0my7",
+      "predicate": "@core:developed_by",
+      "value": "@org:kitware",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:cmake@1354705095"
+        }
+      ]
+    },
+    {
+      "id": "s:le2id0m",
+      "predicate": "@core:principal_author",
+      "value": "@person:bill-hoffman",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:cmake@1354705095"
+        }
+      ]
+    },
+    {
+      "id": "s:6dkgb9v",
+      "predicate": "@core:principal_author",
+      "value": "@person:ken-martin",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:cmake@1354705095"
+        }
+      ]
+    },
+    {
+      "id": "s:vui3fu9",
+      "predicate": "@core:first_released",
+      "value": "2000",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:cmake@1354705095"
+        }
+      ]
+    },
+    {
+      "id": "s:qy9w4or",
+      "predicate": "@core:runs_on",
+      "value": "@os:linux",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:cmake@1354705095"
+        }
+      ]
+    },
+    {
+      "id": "s:cb3l8cg",
+      "predicate": "@core:runs_on",
+      "value": "@os:macos",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:cmake@1354705095"
+        }
+      ]
+    },
+    {
+      "id": "s:w7deayw",
+      "predicate": "@core:runs_on",
+      "value": "@os:windows",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:cmake@1354705095"
+        }
+      ]
+    },
+    {
+      "id": "s:jbyq3ws",
+      "predicate": "@core:written_in",
+      "value": "@language:cpp",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:cmake@1354705095"
+        }
+      ]
+    },
+    {
+      "id": "s:wtqfuf2",
+      "predicate": "@core:licensed_under",
+      "value": "@license:bsd-3-clause",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:cmake@1354705095"
+        }
+      ]
+    },
+    {
+      "id": "s:tsfw8ve",
+      "predicate": "@core:wikipedia",
+      "value": "CMake",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:cmake@1354705095"
+        }
+      ]
+    },
+    {
+      "id": "s:awplzu1",
+      "predicate": "@core:official_url",
+      "value": "https://cmake.org",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:cmake@1354705095"
+        }
+      ]
+    }
+  ]
+}

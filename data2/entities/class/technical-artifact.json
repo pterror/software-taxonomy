@@ -1,0 +1,15 @@
+{
+  "id": "@class:technical-artifact",
+  "labels": {
+    "en": "Technical Artifact"
+  },
+  "description": "Anything in the digital realm that can be released, versioned, licensed, and authored: software, file formats, protocols, specifications.",
+  "statements": [
+    {
+      "id": "s:sckgfb3",
+      "predicate": "@core:instance_of",
+      "value": "@meta:class",
+      "lens": "core"
+    }
+  ]
+}

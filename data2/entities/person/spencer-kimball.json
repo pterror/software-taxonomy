@@ -1,0 +1,31 @@
+{
+  "id": "@person:spencer-kimball",
+  "labels": {
+    "en": "Spencer Kimball"
+  },
+  "description": "American software developer who co-created GIMP with Peter Mattis while at the University of California, Berkeley.",
+  "statements": [
+    {
+      "id": "s:footbwl",
+      "predicate": "@core:instance_of",
+      "value": "@class:person",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:spencer_kimball_computer_programmer@1351341820"
+        }
+      ]
+    },
+    {
+      "id": "s:k8dh357",
+      "predicate": "@core:wikipedia",
+      "value": "Spencer_Kimball_(computer_programmer)",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:spencer_kimball_computer_programmer@1351341820"
+        }
+      ]
+    }
+  ]
+}

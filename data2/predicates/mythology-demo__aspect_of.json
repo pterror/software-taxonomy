@@ -1,0 +1,14 @@
+{
+  "id": "@mythology-demo:aspect_of",
+  "label": "aspect of",
+  "description": "A broader divine or mythological concept this daimon embodies. String-valued (e.g. 'routing', 'time', 'memory').",
+  "lens": "mythology-demo",
+  "value_type": "string",
+  "domain": [
+    "@class:daimon",
+    "@class:revenant"
+  ],
+  "range": null,
+  "cardinality": "0..*",
+  "expect_preferred": false
+}

@@ -1,0 +1,20 @@
+{
+  "id": "@person:paul-gauthier",
+  "labels": {
+    "en": "Paul Gauthier"
+  },
+  "description": "Software engineer and creator of the Aider AI pair-programming tool.",
+  "statements": [
+    {
+      "id": "s:4c69bod",
+      "predicate": "@core:instance_of",
+      "value": "@class:person",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "official:aider@2026-05-23"
+        }
+      ]
+    }
+  ]
+}

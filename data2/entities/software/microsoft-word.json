@@ -1,0 +1,124 @@
+{
+  "id": "@software:microsoft-word",
+  "labels": {
+    "en": "Microsoft Word"
+  },
+  "aliases": [
+    "Word",
+    "MS Word",
+    "WinWord"
+  ],
+  "description": "A word-processing application developed by Microsoft, first released in 1983 and one of the most widely used document-creation programs in the world.",
+  "statements": [
+    {
+      "id": "s:asc9i5y",
+      "predicate": "@core:instance_of",
+      "value": "@class:word-processor",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:microsoft_word@1355398360"
+        }
+      ]
+    },
+    {
+      "id": "s:fep36b0",
+      "predicate": "@core:developed_by",
+      "value": "@org:microsoft",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:microsoft_word@1355398360"
+        }
+      ]
+    },
+    {
+      "id": "s:4gdvkzh",
+      "predicate": "@core:principal_author",
+      "value": "@person:charles-simonyi",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:microsoft_word@1355398360"
+        }
+      ]
+    },
+    {
+      "id": "s:tqczrb3",
+      "predicate": "@core:first_released",
+      "value": "1983-10-25",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:microsoft_word@1355398360"
+        }
+      ]
+    },
+    {
+      "id": "s:7lh10g0",
+      "predicate": "@core:written_in",
+      "value": "@language:cpp",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:microsoft_word@1355398360"
+        }
+      ]
+    },
+    {
+      "id": "s:r44k9ly",
+      "predicate": "@core:written_in",
+      "value": "@language:objective-c",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:microsoft_word@1355398360"
+        }
+      ]
+    },
+    {
+      "id": "s:qdybzfk",
+      "predicate": "@core:licensed_under",
+      "value": "@license:proprietary",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:microsoft_word@1355398360"
+        }
+      ]
+    },
+    {
+      "id": "s:41jhr7d",
+      "predicate": "@core:wikipedia",
+      "value": "Microsoft_Word",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:microsoft_word@1355398360"
+        }
+      ]
+    },
+    {
+      "id": "s:r6u7obd",
+      "predicate": "@core:official_url",
+      "value": "https://www.microsoft.com/en-us/microsoft-365/word",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:microsoft_word@1355398360"
+        }
+      ]
+    },
+    {
+      "id": "s:1irjj6c",
+      "predicate": "@biology:influenced_by",
+      "value": "@software:wordperfect",
+      "lens": "biology",
+      "sources": [
+        {
+          "id": "interpretive:biology-lens-author@2026-05-23"
+        }
+      ]
+    }
+  ]
+}

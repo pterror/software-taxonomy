@@ -1,0 +1,15 @@
+{
+  "id": "@core:implements",
+  "label": "implements",
+  "description": "A specification, protocol, or standard that this entity conforms to or implements. Use for standards compliance claims.",
+  "lens": "core",
+  "value_type": "entity",
+  "domain": [
+    "@class:software"
+  ],
+  "range": [
+    "@class:specification",
+    "@class:protocol"
+  ],
+  "cardinality": "0..*"
+}

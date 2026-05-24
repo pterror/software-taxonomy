@@ -1,0 +1,75 @@
+{
+  "id": "@software:google-docs",
+  "labels": {
+    "en": "Google Docs"
+  },
+  "description": "A web-based word processor offered by Google as part of Google Workspace, launched publicly in 2006.",
+  "statements": [
+    {
+      "id": "s:7g2c5qn",
+      "predicate": "@core:instance_of",
+      "value": "@class:word-processor",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:google_docs@1355514605"
+        }
+      ]
+    },
+    {
+      "id": "s:6np49an",
+      "predicate": "@core:developed_by",
+      "value": "@org:google",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:google_docs@1355514605"
+        }
+      ]
+    },
+    {
+      "id": "s:ouckz12",
+      "predicate": "@core:first_released",
+      "value": "2006",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:google_docs@1355514605"
+        }
+      ]
+    },
+    {
+      "id": "s:a216rb8",
+      "predicate": "@core:licensed_under",
+      "value": "@license:proprietary",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:google_docs@1355514605"
+        }
+      ]
+    },
+    {
+      "id": "s:fbcpz90",
+      "predicate": "@core:wikipedia",
+      "value": "Google_Docs",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:google_docs@1355514605"
+        }
+      ]
+    },
+    {
+      "id": "s:coe3gxr",
+      "predicate": "@core:official_url",
+      "value": "https://docs.google.com/",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:google_docs@1355514605"
+        }
+      ]
+    }
+  ]
+}

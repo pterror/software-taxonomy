@@ -1,0 +1,31 @@
+{
+  "id": "@language:ruby",
+  "labels": {
+    "en": "Ruby"
+  },
+  "description": "A dynamic, interpreted, object-oriented programming language created by Yukihiro Matsumoto.",
+  "statements": [
+    {
+      "id": "s:jlw6juf",
+      "predicate": "@core:instance_of",
+      "value": "@class:programming-language",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:ruby_programming_language@1355365730"
+        }
+      ]
+    },
+    {
+      "id": "s:7cnpuen",
+      "predicate": "@core:wikipedia",
+      "value": "Ruby_(programming_language)",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:ruby_programming_language@1355365730"
+        }
+      ]
+    }
+  ]
+}

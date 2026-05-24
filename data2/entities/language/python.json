@@ -1,0 +1,53 @@
+{
+  "id": "@language:python",
+  "labels": {
+    "en": "Python"
+  },
+  "description": "A high-level, dynamically typed, general-purpose programming language emphasizing code readability, created by Guido van Rossum in 1991.",
+  "statements": [
+    {
+      "id": "s:eos6z1k",
+      "predicate": "@core:instance_of",
+      "value": "@class:programming-language",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:python_programming_language@1355638498"
+        }
+      ]
+    },
+    {
+      "id": "s:pm90wac",
+      "predicate": "@core:wikipedia",
+      "value": "Python_(programming_language)",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:python_programming_language@1355638498"
+        }
+      ]
+    },
+    {
+      "id": "s:swkf48y",
+      "predicate": "@core:first_released",
+      "value": "1991",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:python_programming_language@1355638498"
+        }
+      ]
+    },
+    {
+      "id": "s:ww8f4o5",
+      "predicate": "@core:principal_author",
+      "value": "@person:guido-van-rossum",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:python_programming_language@1355638498"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "id": "@org:mozilla",
+  "labels": {
+    "en": "Mozilla Foundation"
+  },
+  "description": "American non-profit organization that supports the development of the Firefox browser and other open-source internet tools.",
+  "statements": [
+    {
+      "id": "s:in5yx3v",
+      "predicate": "@core:instance_of",
+      "value": "@class:organization",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mozilla_foundation@1352364871"
+        }
+      ]
+    },
+    {
+      "id": "s:y5g69l6",
+      "predicate": "@core:wikipedia",
+      "value": "Mozilla_Foundation",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mozilla_foundation@1352364871"
+        }
+      ]
+    },
+    {
+      "id": "s:7l9jxfp",
+      "predicate": "@core:founded",
+      "value": "2003-07-15",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mozilla_foundation@1352364871"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "id": "@class:documenta",
+  "labels": {
+    "en": "Documenta"
+  },
+  "description": "Programs that metabolize human attention and keystrokes, excreting persistent files as their primary output. The Zawinski organ (email integration) appears convergently across much of this kingdom.",
+  "statements": [
+    {
+      "id": "s:7v3gppk",
+      "predicate": "@core:instance_of",
+      "value": "@meta:class",
+      "lens": "biology"
+    },
+    {
+      "id": "s:wd93wjz",
+      "predicate": "@core:subclass_of",
+      "value": "@class:software",
+      "lens": "biology"
+    },
+    {
+      "id": "s:kfi20k4",
+      "predicate": "@biology:synapomorphy",
+      "value": "session-bound",
+      "lens": "biology"
+    },
+    {
+      "id": "s:44yn6c0",
+      "predicate": "@biology:synapomorphy",
+      "value": "human-facing-ui",
+      "lens": "biology"
+    },
+    {
+      "id": "s:t005n1e",
+      "predicate": "@biology:synapomorphy",
+      "value": "document-as-primary-artifact",
+      "lens": "biology"
+    },
+    {
+      "id": "s:kl33o8l",
+      "predicate": "@biology:synapomorphy",
+      "value": "file-save-cycle",
+      "lens": "biology"
+    },
+    {
+      "id": "s:0ffvf6v",
+      "predicate": "@biology:etymology",
+      "value": "Latin documenta, 'records, proofs'.",
+      "lens": "biology"
+    },
+    {
+      "id": "s:s269iq0",
+      "predicate": "@biology:rank_hint",
+      "value": "kingdom",
+      "lens": "biology"
+    }
+  ]
+}

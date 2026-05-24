@@ -1,0 +1,20 @@
+{
+  "id": "@org:langchain-inc",
+  "labels": {
+    "en": "LangChain, Inc."
+  },
+  "description": "The company behind the LangChain framework for building LLM-powered applications, founded by Harrison Chase and Ankush Gola.",
+  "statements": [
+    {
+      "id": "s:mnijgll",
+      "predicate": "@core:instance_of",
+      "value": "@class:organization",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:langchain@1342539249"
+        }
+      ]
+    }
+  ]
+}

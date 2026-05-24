@@ -1,0 +1,51 @@
+{
+  "id": "@daimon:of-sendmail",
+  "labels": {
+    "en": "The Daimon of Sendmail"
+  },
+  "description": "The chthonic spirit of Sendmail — labyrinthine, ancient, impossibly complex, yet still faithfully routing mail across the underworld of legacy infrastructure. It does not speak plainly; its config files are its oracles.",
+  "statements": [
+    {
+      "id": "s:5qr1sbv",
+      "predicate": "@core:instance_of",
+      "value": "@class:daimon",
+      "lens": "mythology-demo"
+    },
+    {
+      "id": "s:is17zj3",
+      "predicate": "@mythology-demo:haunts",
+      "value": "@software:sendmail",
+      "lens": "mythology-demo"
+    },
+    {
+      "id": "s:v03bjt5",
+      "predicate": "@mythology-demo:invoked_by",
+      "value": "sendmail -bd -q1h",
+      "lens": "mythology-demo"
+    },
+    {
+      "id": "s:vwy9gt4",
+      "predicate": "@mythology-demo:aspect_of",
+      "value": "routing",
+      "lens": "mythology-demo"
+    },
+    {
+      "id": "s:e2u56q6",
+      "predicate": "@mythology-demo:aspect_of",
+      "value": "labyrinthine-address-resolution",
+      "lens": "mythology-demo"
+    },
+    {
+      "id": "s:0al0mur",
+      "predicate": "@mythology-demo:aspect_of",
+      "value": "chthonic-persistence",
+      "lens": "mythology-demo"
+    },
+    {
+      "id": "s:v0fq6ft",
+      "predicate": "@mythology-demo:realm",
+      "value": "routing-labyrinth",
+      "lens": "mythology-demo"
+    }
+  ]
+}

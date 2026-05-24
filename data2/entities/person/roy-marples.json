@@ -1,0 +1,20 @@
+{
+  "id": "@person:roy-marples",
+  "labels": {
+    "en": "Roy Marples"
+  },
+  "description": "Software developer who created the OpenRC init system for Gentoo Linux in 2007.",
+  "statements": [
+    {
+      "id": "s:snva34v",
+      "predicate": "@core:instance_of",
+      "value": "@class:person",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:openrc@1337532832"
+        }
+      ]
+    }
+  ]
+}

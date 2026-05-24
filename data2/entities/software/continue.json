@@ -1,0 +1,108 @@
+{
+  "id": "@software:continue",
+  "labels": {
+    "en": "Continue"
+  },
+  "description": "An open-source AI code assistant that integrates with VS Code and JetBrains IDEs, allowing developers to connect their own LLMs for code completion, editing, and chat within the IDE.",
+  "statements": [
+    {
+      "id": "s:a8oahsk",
+      "predicate": "@core:instance_of",
+      "value": "@class:code-assistant",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "official:continue-dev@2026-05-23"
+        }
+      ]
+    },
+    {
+      "id": "s:samt1yn",
+      "predicate": "@core:developed_by",
+      "value": "@org:continue-dev",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "official:continue-dev@2026-05-23"
+        }
+      ]
+    },
+    {
+      "id": "s:4vfig8f",
+      "predicate": "@core:first_released",
+      "value": "2023",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "official:continue-dev@2026-05-23"
+        }
+      ]
+    },
+    {
+      "id": "s:71k9z7k",
+      "predicate": "@core:runs_on",
+      "value": "@os:linux",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "official:continue-dev@2026-05-23"
+        }
+      ]
+    },
+    {
+      "id": "s:mq1qlon",
+      "predicate": "@core:runs_on",
+      "value": "@os:macos",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "official:continue-dev@2026-05-23"
+        }
+      ]
+    },
+    {
+      "id": "s:4hyefo8",
+      "predicate": "@core:runs_on",
+      "value": "@os:windows",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "official:continue-dev@2026-05-23"
+        }
+      ]
+    },
+    {
+      "id": "s:vmmeb8q",
+      "predicate": "@core:written_in",
+      "value": "@language:typescript",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "official:continue-dev@2026-05-23"
+        }
+      ]
+    },
+    {
+      "id": "s:7mpcpxj",
+      "predicate": "@core:licensed_under",
+      "value": "@license:apache-2",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "official:continue-dev@2026-05-23"
+        }
+      ]
+    },
+    {
+      "id": "s:1qfyq04",
+      "predicate": "@core:official_url",
+      "value": "https://www.continue.dev",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "official:continue-dev@2026-05-23"
+        }
+      ]
+    }
+  ]
+}

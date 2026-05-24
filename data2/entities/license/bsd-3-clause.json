@@ -1,0 +1,31 @@
+{
+  "id": "@license:bsd-3-clause",
+  "labels": {
+    "en": "BSD 3-Clause License"
+  },
+  "description": "A permissive free software license derived from the original BSD license, requiring preservation of copyright notice, conditions, and disclaimer in redistributions.",
+  "statements": [
+    {
+      "id": "s:oe4necm",
+      "predicate": "@core:instance_of",
+      "value": "@class:license",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:bsd_licenses@1332014827"
+        }
+      ]
+    },
+    {
+      "id": "s:t6247c7",
+      "predicate": "@core:wikipedia",
+      "value": "BSD_licenses",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:bsd_licenses@1332014827"
+        }
+      ]
+    }
+  ]
+}

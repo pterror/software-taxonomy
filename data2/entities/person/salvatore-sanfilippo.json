@@ -1,0 +1,31 @@
+{
+  "id": "@person:salvatore-sanfilippo",
+  "labels": {
+    "en": "Salvatore Sanfilippo"
+  },
+  "description": "Italian software engineer known for creating Redis, the in-memory data structure store, while working at a startup in Sicily in 2009.",
+  "statements": [
+    {
+      "id": "s:8rpe5tx",
+      "predicate": "@core:instance_of",
+      "value": "@class:person",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:salvatore_sanfilippo@1339056813"
+        }
+      ]
+    },
+    {
+      "id": "s:bh9lcgi",
+      "predicate": "@core:wikipedia",
+      "value": "Salvatore_Sanfilippo",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:salvatore_sanfilippo@1339056813"
+        }
+      ]
+    }
+  ]
+}

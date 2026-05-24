@@ -1,0 +1,42 @@
+{
+  "id": "@org:elastic",
+  "labels": {
+    "en": "Elastic N.V."
+  },
+  "description": "Dutch-American enterprise software company that develops the Elasticsearch search engine and the Elastic Stack (ELK Stack) suite.",
+  "statements": [
+    {
+      "id": "s:ytk0dru",
+      "predicate": "@core:instance_of",
+      "value": "@class:organization",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:elastic_nv@1354811293"
+        }
+      ]
+    },
+    {
+      "id": "s:v5s5sxe",
+      "predicate": "@core:wikipedia",
+      "value": "Elastic_NV",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:elastic_nv@1354811293"
+        }
+      ]
+    },
+    {
+      "id": "s:etz1yps",
+      "predicate": "@core:founded",
+      "value": "2012",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:elastic_nv@1354811293"
+        }
+      ]
+    }
+  ]
+}

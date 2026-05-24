@@ -1,0 +1,42 @@
+{
+  "id": "@org:bell-labs",
+  "labels": {
+    "en": "Bell Labs"
+  },
+  "description": "Research and development laboratory of AT&T (later Nokia Bell Labs), responsible for numerous computing innovations including Unix, C, C++, Plan 9, and fundamental information theory.",
+  "statements": [
+    {
+      "id": "s:dzel9ve",
+      "predicate": "@core:instance_of",
+      "value": "@class:organization",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:bell_labs@1353848509"
+        }
+      ]
+    },
+    {
+      "id": "s:nicn4vu",
+      "predicate": "@core:wikipedia",
+      "value": "Bell_Labs",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:bell_labs@1353848509"
+        }
+      ]
+    },
+    {
+      "id": "s:96vd0m1",
+      "predicate": "@core:founded",
+      "value": "1925-01-01",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:bell_labs@1353848509"
+        }
+      ]
+    }
+  ]
+}

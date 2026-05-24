@@ -1,0 +1,42 @@
+{
+  "id": "@org:redis-inc",
+  "labels": {
+    "en": "Redis"
+  },
+  "description": "The company behind the Redis in-memory data structure store, formerly Redis Labs; develops and maintains Redis and related commercial products.",
+  "statements": [
+    {
+      "id": "s:zlq6da7",
+      "predicate": "@core:instance_of",
+      "value": "@class:organization",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:redis_company@1353142415"
+        }
+      ]
+    },
+    {
+      "id": "s:1mcq2d5",
+      "predicate": "@core:wikipedia",
+      "value": "Redis_(company)",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:redis_company@1353142415"
+        }
+      ]
+    },
+    {
+      "id": "s:v5wil36",
+      "predicate": "@core:official_url",
+      "value": "https://redis.io/",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:redis_company@1353142415"
+        }
+      ]
+    }
+  ]
+}

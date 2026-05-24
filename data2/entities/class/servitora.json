@@ -1,0 +1,57 @@
+{
+  "id": "@class:servitora",
+  "labels": {
+    "en": "Servitora"
+  },
+  "description": "Programs that metabolize requests and excrete responses; long-running, network-facing, colonially replicable.",
+  "statements": [
+    {
+      "id": "s:i4egvlh",
+      "predicate": "@core:instance_of",
+      "value": "@meta:class",
+      "lens": "biology"
+    },
+    {
+      "id": "s:4md6dv4",
+      "predicate": "@core:subclass_of",
+      "value": "@class:software",
+      "lens": "biology"
+    },
+    {
+      "id": "s:fzk2pwx",
+      "predicate": "@biology:synapomorphy",
+      "value": "long-running-process",
+      "lens": "biology"
+    },
+    {
+      "id": "s:4hnmkct",
+      "predicate": "@biology:synapomorphy",
+      "value": "network-listener",
+      "lens": "biology"
+    },
+    {
+      "id": "s:ryyj13k",
+      "predicate": "@biology:synapomorphy",
+      "value": "request-response-loop",
+      "lens": "biology"
+    },
+    {
+      "id": "s:oye8e1m",
+      "predicate": "@biology:synapomorphy",
+      "value": "colonial",
+      "lens": "biology"
+    },
+    {
+      "id": "s:u130iix",
+      "predicate": "@biology:etymology",
+      "value": "Latin servitor, 'one who serves'.",
+      "lens": "biology"
+    },
+    {
+      "id": "s:nbsk3my",
+      "predicate": "@biology:rank_hint",
+      "value": "kingdom",
+      "lens": "biology"
+    }
+  ]
+}

@@ -1,0 +1,128 @@
+{
+  "id": "@software:sublime-text",
+  "labels": {
+    "en": "Sublime Text"
+  },
+  "description": "A proprietary cross-platform text editor for code, markup, and prose, created by Jon Skinner and first released in 2008; Sublime HQ was founded in 2014 to continue development.",
+  "statements": [
+    {
+      "id": "s:jp2scgg",
+      "predicate": "@core:instance_of",
+      "value": "@class:code-editor",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:sublime_text@1338427771"
+        }
+      ]
+    },
+    {
+      "id": "s:t3huvy0",
+      "predicate": "@core:developed_by",
+      "value": "@person:jon-skinner",
+      "lens": "core",
+      "rank": "deprecated",
+      "qualifiers": {
+        "@core:start_time": "2008",
+        "@core:end_time": "2014"
+      },
+      "sources": [
+        {
+          "id": "wp:sublime_text@1338427771"
+        }
+      ]
+    },
+    {
+      "id": "s:ahbi8u4",
+      "predicate": "@core:developed_by",
+      "value": "@org:sublime-hq",
+      "lens": "core",
+      "rank": "preferred",
+      "qualifiers": {
+        "@core:start_time": "2014"
+      },
+      "sources": [
+        {
+          "id": "wp:sublime_text@1338427771"
+        }
+      ]
+    },
+    {
+      "id": "s:ke7b22w",
+      "predicate": "@core:principal_author",
+      "value": "@person:jon-skinner",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:sublime_text@1338427771"
+        }
+      ]
+    },
+    {
+      "id": "s:52wk3fn",
+      "predicate": "@core:first_released",
+      "value": "2008-01-18",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:sublime_text@1338427771"
+        }
+      ]
+    },
+    {
+      "id": "s:1uqj61q",
+      "predicate": "@core:written_in",
+      "value": "@language:cpp",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:sublime_text@1338427771"
+        }
+      ]
+    },
+    {
+      "id": "s:cp9jn1j",
+      "predicate": "@core:written_in",
+      "value": "@language:python",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:sublime_text@1338427771"
+        }
+      ]
+    },
+    {
+      "id": "s:ioa9wsn",
+      "predicate": "@core:licensed_under",
+      "value": "@license:shareware",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:sublime_text@1338427771"
+        }
+      ]
+    },
+    {
+      "id": "s:lj2ok61",
+      "predicate": "@core:wikipedia",
+      "value": "Sublime_Text",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:sublime_text@1338427771"
+        }
+      ]
+    },
+    {
+      "id": "s:mpz0yjf",
+      "predicate": "@core:official_url",
+      "value": "https://www.sublimetext.com/",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:sublime_text@1338427771"
+        }
+      ]
+    }
+  ]
+}

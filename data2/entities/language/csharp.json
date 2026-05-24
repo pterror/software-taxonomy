@@ -1,0 +1,53 @@
+{
+  "id": "@language:csharp",
+  "labels": {
+    "en": "C#"
+  },
+  "description": "A general-purpose, object-oriented programming language developed by Microsoft, first released in 2000 as part of the .NET platform.",
+  "statements": [
+    {
+      "id": "s:a2tfly2",
+      "predicate": "@core:instance_of",
+      "value": "@class:programming-language",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:c_sharp_programming_language@1354897232"
+        }
+      ]
+    },
+    {
+      "id": "s:uqay1ks",
+      "predicate": "@core:wikipedia",
+      "value": "C_Sharp_(programming_language)",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:c_sharp_programming_language@1354897232"
+        }
+      ]
+    },
+    {
+      "id": "s:1h68bvn",
+      "predicate": "@core:first_released",
+      "value": "2000",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:c_sharp_programming_language@1354897232"
+        }
+      ]
+    },
+    {
+      "id": "s:qqpnv4t",
+      "predicate": "@core:developed_by",
+      "value": "@org:microsoft",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:c_sharp_programming_language@1354897232"
+        }
+      ]
+    }
+  ]
+}

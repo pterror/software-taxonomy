@@ -1,0 +1,31 @@
+{
+  "id": "@person:ken-thompson",
+  "labels": {
+    "en": "Ken Thompson"
+  },
+  "description": "American computer scientist who designed and implemented the original Unix operating system and co-created the C and Go programming languages.",
+  "statements": [
+    {
+      "id": "s:vcs9il5",
+      "predicate": "@core:instance_of",
+      "value": "@class:person",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:ken_thompson@1355271990"
+        }
+      ]
+    },
+    {
+      "id": "s:wl03k29",
+      "predicate": "@core:wikipedia",
+      "value": "Ken_Thompson",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:ken_thompson@1355271990"
+        }
+      ]
+    }
+  ]
+}

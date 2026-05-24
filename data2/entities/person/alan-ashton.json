@@ -1,0 +1,31 @@
+{
+  "id": "@person:alan-ashton",
+  "labels": {
+    "en": "Alan Ashton"
+  },
+  "description": "American computer scientist who co-founded WordPerfect Corporation and co-created the WordPerfect word processor.",
+  "statements": [
+    {
+      "id": "s:eqwhwzn",
+      "predicate": "@core:instance_of",
+      "value": "@class:person",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:alan_ashton@1121723798"
+        }
+      ]
+    },
+    {
+      "id": "s:cnmsnqu",
+      "predicate": "@core:wikipedia",
+      "value": "Alan_Ashton",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:alan_ashton@1121723798"
+        }
+      ]
+    }
+  ]
+}

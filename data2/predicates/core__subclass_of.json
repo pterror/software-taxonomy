@@ -1,0 +1,15 @@
+{
+  "id": "@core:subclass_of",
+  "label": "subclass of",
+  "description": "Asserts that all instances of the subject are also instances of the object. Use for class hierarchy: word-processor subclass_of documenta. Transitive — querying subclasses of @software returns all software classes.",
+  "lens": "core",
+  "value_type": "entity",
+  "domain": [
+    "@meta:class"
+  ],
+  "range": [
+    "@meta:class"
+  ],
+  "cardinality": "0..*",
+  "transitive": true
+}

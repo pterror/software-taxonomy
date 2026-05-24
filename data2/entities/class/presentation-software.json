@@ -1,0 +1,21 @@
+{
+  "id": "@class:presentation-software",
+  "labels": {
+    "en": "Presentation Software"
+  },
+  "description": "A software application for creating and displaying slide-based presentations.",
+  "statements": [
+    {
+      "id": "s:gtmu27s",
+      "predicate": "@core:instance_of",
+      "value": "@meta:class",
+      "lens": "core"
+    },
+    {
+      "id": "s:zuhyodx",
+      "predicate": "@core:subclass_of",
+      "value": "@class:software",
+      "lens": "core"
+    }
+  ]
+}

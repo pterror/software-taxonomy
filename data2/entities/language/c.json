@@ -1,0 +1,53 @@
+{
+  "id": "@language:c",
+  "labels": {
+    "en": "C"
+  },
+  "description": "A general-purpose procedural programming language developed at Bell Labs by Dennis Ritchie between 1972 and 1973.",
+  "statements": [
+    {
+      "id": "s:6tpihsm",
+      "predicate": "@core:instance_of",
+      "value": "@class:programming-language",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:c_programming_language@1354494400"
+        }
+      ]
+    },
+    {
+      "id": "s:cxk7z11",
+      "predicate": "@core:wikipedia",
+      "value": "C_(programming_language)",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:c_programming_language@1354494400"
+        }
+      ]
+    },
+    {
+      "id": "s:2uj17uv",
+      "predicate": "@core:first_released",
+      "value": "1972",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:c_programming_language@1354494400"
+        }
+      ]
+    },
+    {
+      "id": "s:2zk1e3m",
+      "predicate": "@core:principal_author",
+      "value": "@person:dennis-ritchie",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:c_programming_language@1354494400"
+        }
+      ]
+    }
+  ]
+}

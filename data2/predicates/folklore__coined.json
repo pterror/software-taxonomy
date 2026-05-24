@@ -1,0 +1,15 @@
+{
+  "id": "@folklore:coined",
+  "label": "coined",
+  "description": "A term, law, or phrase this person or organization coined or first articulated. Value is a @folklore-artifact.",
+  "lens": "folklore",
+  "value_type": "entity",
+  "domain": [
+    "@class:person",
+    "@class:organization"
+  ],
+  "range": [
+    "@folklore-artifact"
+  ],
+  "cardinality": "0..*"
+}

@@ -1,0 +1,21 @@
+{
+  "id": "@class:ci-system",
+  "labels": {
+    "en": "CI System"
+  },
+  "description": "Software that automates building, testing, and integrating code changes in a continuous integration workflow.",
+  "statements": [
+    {
+      "id": "s:hmkq79n",
+      "predicate": "@core:instance_of",
+      "value": "@meta:class",
+      "lens": "core"
+    },
+    {
+      "id": "s:x3o10h9",
+      "predicate": "@core:subclass_of",
+      "value": "@class:software",
+      "lens": "core"
+    }
+  ]
+}

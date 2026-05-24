@@ -1,0 +1,97 @@
+{
+  "id": "@software:sqlite",
+  "labels": {
+    "en": "SQLite"
+  },
+  "description": "A C-language library implementing a small, fast, self-contained, serverless, zero-configuration, transactional SQL database engine, created by D. Richard Hipp in 2000.",
+  "statements": [
+    {
+      "id": "s:rzs5rtt",
+      "predicate": "@core:instance_of",
+      "value": "@class:database",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:sqlite@1354972483"
+        }
+      ]
+    },
+    {
+      "id": "s:u916tj6",
+      "predicate": "@core:developed_by",
+      "value": "@person:d-richard-hipp",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:sqlite@1354972483"
+        }
+      ]
+    },
+    {
+      "id": "s:9i8gtmz",
+      "predicate": "@core:principal_author",
+      "value": "@person:d-richard-hipp",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:sqlite@1354972483"
+        }
+      ]
+    },
+    {
+      "id": "s:4r3uw1n",
+      "predicate": "@core:first_released",
+      "value": "2000-08-17",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:sqlite@1354972483"
+        }
+      ]
+    },
+    {
+      "id": "s:24gvnxl",
+      "predicate": "@core:licensed_under",
+      "value": "@license:public-domain",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:sqlite@1354972483"
+        }
+      ]
+    },
+    {
+      "id": "s:bhsdg3p",
+      "predicate": "@core:written_in",
+      "value": "@language:c",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:sqlite@1354972483"
+        }
+      ]
+    },
+    {
+      "id": "s:304ep4b",
+      "predicate": "@core:wikipedia",
+      "value": "SQLite",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:sqlite@1354972483"
+        }
+      ]
+    },
+    {
+      "id": "s:i6ynffc",
+      "predicate": "@core:official_url",
+      "value": "https://www.sqlite.org/",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:sqlite@1354972483"
+        }
+      ]
+    }
+  ]
+}

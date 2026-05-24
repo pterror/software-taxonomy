@@ -1,0 +1,31 @@
+{
+  "id": "@license:apache-2",
+  "labels": {
+    "en": "Apache License 2.0"
+  },
+  "description": "Version 2.0 of the Apache License, a permissive free software license published by the Apache Software Foundation in 2004.",
+  "statements": [
+    {
+      "id": "s:ne6400c",
+      "predicate": "@core:instance_of",
+      "value": "@class:license",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:apache_license@1354374564"
+        }
+      ]
+    },
+    {
+      "id": "s:eg1eo9w",
+      "predicate": "@core:wikipedia",
+      "value": "Apache_License",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:apache_license@1354374564"
+        }
+      ]
+    }
+  ]
+}

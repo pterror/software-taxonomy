@@ -1,0 +1,13 @@
+{
+  "id": "@folklore:quoted_as",
+  "label": "quoted as",
+  "description": "A direct quotation attributed to this entity. String-valued. Attach source for attribution.",
+  "lens": "folklore",
+  "value_type": "string",
+  "domain": [
+    "@class:person",
+    "@class:organization"
+  ],
+  "range": null,
+  "cardinality": "0..*"
+}

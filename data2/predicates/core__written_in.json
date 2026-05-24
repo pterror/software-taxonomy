@@ -1,0 +1,15 @@
+{
+  "id": "@core:written_in",
+  "label": "written in",
+  "description": "The programming language(s) in which this entity is primarily implemented. Use @-prefixed language entities.",
+  "lens": "core",
+  "value_type": "entity",
+  "domain": [
+    "@class:software"
+  ],
+  "range": [
+    "@class:programming-language"
+  ],
+  "cardinality": "0..*",
+  "expect_preferred": false
+}

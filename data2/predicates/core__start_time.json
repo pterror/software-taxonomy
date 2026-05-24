@@ -1,0 +1,11 @@
+{
+  "id": "@core:start_time",
+  "label": "start time",
+  "description": "Used as a qualifier on statements to indicate when the asserted relationship began. ISO date. E.g. has_feature start_time=2013-04 for when a feature was added.",
+  "lens": "core",
+  "value_type": "date",
+  "value_pattern": "^\\d{4}(-\\d{2}(-\\d{2})?)?$",
+  "domain": null,
+  "range": null,
+  "cardinality": "0..1"
+}

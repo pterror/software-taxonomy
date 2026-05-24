@@ -1,0 +1,15 @@
+{
+  "id": "@biology:inspired_by",
+  "label": "inspired by",
+  "description": "An entity that provided creative or conceptual inspiration. Weaker and more diffuse than influenced_by — use when the designer cited it as an influence but the structural effect is unclear.",
+  "lens": "biology",
+  "value_type": "entity",
+  "domain": [
+    "@class:software"
+  ],
+  "range": [
+    "@class:software"
+  ],
+  "cardinality": "0..*",
+  "inverse": "@biology:inspired"
+}

@@ -1,0 +1,31 @@
+{
+  "id": "@person:linus-torvalds",
+  "labels": {
+    "en": "Linus Torvalds"
+  },
+  "description": "Finnish-American software engineer who created the Linux kernel and the Git version control system.",
+  "statements": [
+    {
+      "id": "s:0pz38uf",
+      "predicate": "@core:instance_of",
+      "value": "@class:person",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:linus_torvalds@1355197816"
+        }
+      ]
+    },
+    {
+      "id": "s:iw8m43n",
+      "predicate": "@core:wikipedia",
+      "value": "Linus_Torvalds",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:linus_torvalds@1355197816"
+        }
+      ]
+    }
+  ]
+}

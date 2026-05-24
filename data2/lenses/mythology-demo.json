@@ -1,0 +1,12 @@
+{
+  "id": "mythology-demo",
+  "label": "Unix Daemons as Daimons",
+  "description": "A worldbuilding lens: Unix daemons as literal daimons in a Greco-Norse pantheon. Sendmail is a chthonic entity of labyrinthine address routing; cron is a time-keeper daimon of the underworld scheduler. Demonstrates the multi-universe architecture and cross-lens references.",
+  "register": "fictional",
+  "family": "worldbuilding",
+  "depends_on": [
+    "core"
+  ],
+  "source_required": false,
+  "author": "pterror"
+}

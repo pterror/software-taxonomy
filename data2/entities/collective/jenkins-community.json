@@ -1,0 +1,20 @@
+{
+  "id": "@collective:jenkins-community",
+  "labels": {
+    "en": "Jenkins Community"
+  },
+  "description": "The open-source community of contributors who maintain the Jenkins automation server after the 2011 fork from Hudson.",
+  "statements": [
+    {
+      "id": "s:6464j5k",
+      "predicate": "@core:instance_of",
+      "value": "@class:collective",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:jenkins_software@1355684649"
+        }
+      ]
+    }
+  ]
+}

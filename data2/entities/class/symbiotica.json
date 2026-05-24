@@ -1,0 +1,51 @@
+{
+  "id": "@class:symbiotica",
+  "labels": {
+    "en": "Symbiotica"
+  },
+  "description": "Programs that augment a host program in exchange for context; lifecycle tied to host, mutually beneficial. Plugins, extensions, language server clients, LSP servers. Distinguished from Parasitica by value flowing back to the local user.",
+  "statements": [
+    {
+      "id": "s:q183w6b",
+      "predicate": "@core:instance_of",
+      "value": "@meta:class",
+      "lens": "biology"
+    },
+    {
+      "id": "s:hyqbpe7",
+      "predicate": "@core:subclass_of",
+      "value": "@class:software",
+      "lens": "biology"
+    },
+    {
+      "id": "s:tk0m7r7",
+      "predicate": "@biology:synapomorphy",
+      "value": "host-embedded",
+      "lens": "biology"
+    },
+    {
+      "id": "s:1wsfipy",
+      "predicate": "@biology:synapomorphy",
+      "value": "lifecycle-tied-to-host",
+      "lens": "biology"
+    },
+    {
+      "id": "s:m2tzaj8",
+      "predicate": "@biology:synapomorphy",
+      "value": "mutually-beneficial",
+      "lens": "biology"
+    },
+    {
+      "id": "s:mqh15sd",
+      "predicate": "@biology:etymology",
+      "value": "Greek symbiosis, 'living together'.",
+      "lens": "biology"
+    },
+    {
+      "id": "s:2jnr0q3",
+      "predicate": "@biology:rank_hint",
+      "value": "kingdom",
+      "lens": "biology"
+    }
+  ]
+}

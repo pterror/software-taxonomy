@@ -1,0 +1,21 @@
+{
+  "id": "@class:code-assistant",
+  "labels": {
+    "en": "Code Assistant"
+  },
+  "description": "An AI-powered tool that assists developers by generating, completing, or reviewing code.",
+  "statements": [
+    {
+      "id": "s:gqv5qy4",
+      "predicate": "@core:instance_of",
+      "value": "@meta:class",
+      "lens": "core"
+    },
+    {
+      "id": "s:ef7s75h",
+      "predicate": "@core:subclass_of",
+      "value": "@class:software",
+      "lens": "core"
+    }
+  ]
+}

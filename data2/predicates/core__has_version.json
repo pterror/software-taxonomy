@@ -1,0 +1,15 @@
+{
+  "id": "@core:has_version",
+  "label": "has version",
+  "description": "Inverse of version_of. A parent entity has a specific version entity.",
+  "lens": "core",
+  "value_type": "entity",
+  "domain": [
+    "@class:technical-artifact"
+  ],
+  "range": [
+    "@class:technical-artifact"
+  ],
+  "cardinality": "0..*",
+  "inverse": "@core:version_of"
+}

@@ -1,0 +1,31 @@
+{
+  "id": "@person:stuart-feldman",
+  "labels": {
+    "en": "Stuart Feldman"
+  },
+  "description": "American computer scientist who created the Make build tool at Bell Labs in 1976.",
+  "statements": [
+    {
+      "id": "s:skjpnai",
+      "predicate": "@core:instance_of",
+      "value": "@class:person",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:stuart_feldman@1334543493"
+        }
+      ]
+    },
+    {
+      "id": "s:8ghedjx",
+      "predicate": "@core:wikipedia",
+      "value": "Stuart_Feldman",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:stuart_feldman@1334543493"
+        }
+      ]
+    }
+  ]
+}

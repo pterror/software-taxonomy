@@ -1,0 +1,97 @@
+{
+  "id": "@software:claude-code",
+  "labels": {
+    "en": "Claude Code"
+  },
+  "description": "An agentic coding tool developed by Anthropic that integrates with the terminal and assists developers with understanding and modifying codebases through a conversational interface powered by Claude.",
+  "statements": [
+    {
+      "id": "s:dyjq8qn",
+      "predicate": "@core:instance_of",
+      "value": "@class:code-assistant",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "official:claude-code@2026-05-23"
+        }
+      ]
+    },
+    {
+      "id": "s:ik57isr",
+      "predicate": "@core:developed_by",
+      "value": "@org:anthropic",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "official:claude-code@2026-05-23"
+        }
+      ]
+    },
+    {
+      "id": "s:6mri15s",
+      "predicate": "@core:first_released",
+      "value": "2025",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "official:claude-code@2026-05-23"
+        }
+      ]
+    },
+    {
+      "id": "s:kiczzqe",
+      "predicate": "@core:runs_on",
+      "value": "@os:linux",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "official:claude-code@2026-05-23"
+        }
+      ]
+    },
+    {
+      "id": "s:9vxl2gn",
+      "predicate": "@core:runs_on",
+      "value": "@os:macos",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "official:claude-code@2026-05-23"
+        }
+      ]
+    },
+    {
+      "id": "s:ic0apq0",
+      "predicate": "@core:runs_on",
+      "value": "@os:windows",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "official:claude-code@2026-05-23"
+        }
+      ]
+    },
+    {
+      "id": "s:wm266zb",
+      "predicate": "@core:licensed_under",
+      "value": "@license:proprietary",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "official:claude-code@2026-05-23"
+        }
+      ]
+    },
+    {
+      "id": "s:b4pd7cy",
+      "predicate": "@core:official_url",
+      "value": "https://docs.anthropic.com/en/docs/claude-code",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "official:claude-code@2026-05-23"
+        }
+      ]
+    }
+  ]
+}

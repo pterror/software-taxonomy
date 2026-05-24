@@ -1,0 +1,12 @@
+{
+  "id": "@core:instance_of",
+  "label": "instance of",
+  "description": "Asserts the entity is an instance (member) of a given class. Use this to say 'this program is a word processor' or 'this entity is a person'. The subject is a member, the object is the class.",
+  "lens": "core",
+  "value_type": "entity",
+  "domain": null,
+  "range": [
+    "@meta:class"
+  ],
+  "cardinality": "0..*"
+}

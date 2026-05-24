@@ -1,0 +1,15 @@
+{
+  "id": "@core:develops",
+  "label": "develops",
+  "description": "Inverse of developed_by. An organization or person develops a software entity.",
+  "lens": "core",
+  "value_type": "entity",
+  "domain": [
+    "@class:agent"
+  ],
+  "range": [
+    "@class:technical-artifact"
+  ],
+  "cardinality": "0..*",
+  "inverse": "@core:developed_by"
+}

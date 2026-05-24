@@ -1,0 +1,31 @@
+{
+  "id": "@person:bruce-bastian",
+  "labels": {
+    "en": "Bruce Bastian"
+  },
+  "description": "American software developer who co-created WordPerfect and co-founded WordPerfect Corporation with Alan Ashton.",
+  "statements": [
+    {
+      "id": "s:752ncdu",
+      "predicate": "@core:instance_of",
+      "value": "@class:person",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:bruce_bastian@1322825637"
+        }
+      ]
+    },
+    {
+      "id": "s:3lc7b8q",
+      "predicate": "@core:wikipedia",
+      "value": "Bruce_Bastian",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:bruce_bastian@1322825637"
+        }
+      ]
+    }
+  ]
+}

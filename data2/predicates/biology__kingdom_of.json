@@ -1,0 +1,14 @@
+{
+  "id": "@biology:kingdom_of",
+  "label": "kingdom of",
+  "description": "Asserts that this kingdom-level class is the biological kingdom assignment for a software entity.",
+  "lens": "biology",
+  "value_type": "entity",
+  "domain": [
+    "@meta:class"
+  ],
+  "range": [
+    "@class:software"
+  ],
+  "cardinality": "0..*"
+}

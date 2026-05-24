@@ -1,0 +1,31 @@
+{
+  "id": "@format:json",
+  "labels": {
+    "en": "JSON"
+  },
+  "description": "A lightweight, text-based data interchange format derived from JavaScript object syntax, first specified in the early 2000s.",
+  "statements": [
+    {
+      "id": "s:q3lxmd1",
+      "predicate": "@core:instance_of",
+      "value": "@class:file-format",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:json@1352323445"
+        }
+      ]
+    },
+    {
+      "id": "s:ny7dpjs",
+      "predicate": "@core:wikipedia",
+      "value": "JSON",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:json@1352323445"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "id": "@person:dennis-ritchie",
+  "labels": {
+    "en": "Dennis Ritchie"
+  },
+  "description": "American computer scientist who created the C programming language and co-developed the Unix operating system at Bell Labs.",
+  "statements": [
+    {
+      "id": "s:xbj2lpj",
+      "predicate": "@core:instance_of",
+      "value": "@class:person",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:dennis_ritchie@1345113873"
+        }
+      ]
+    },
+    {
+      "id": "s:3a5rp9v",
+      "predicate": "@core:wikipedia",
+      "value": "Dennis_Ritchie",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:dennis_ritchie@1345113873"
+        }
+      ]
+    }
+  ]
+}

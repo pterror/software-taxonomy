@@ -1,0 +1,15 @@
+{
+  "id": "@class:agent",
+  "labels": {
+    "en": "Agent"
+  },
+  "description": "Anything that can develop, author, or maintain a technical artifact: organizations, people, collectives.",
+  "statements": [
+    {
+      "id": "s:vlhrufs",
+      "predicate": "@core:instance_of",
+      "value": "@meta:class",
+      "lens": "core"
+    }
+  ]
+}

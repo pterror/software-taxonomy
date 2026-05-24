@@ -1,0 +1,16 @@
+{
+  "id": "@mythology-demo:binds_to",
+  "label": "binds to",
+  "description": "Another daimon this one is ritually paired with, forming a dyad. Symmetric.",
+  "lens": "mythology-demo",
+  "value_type": "entity",
+  "domain": [
+    "@class:daimon",
+    "@class:revenant"
+  ],
+  "range": [
+    "@class:daimon",
+    "@class:revenant"
+  ],
+  "cardinality": "0..*"
+}

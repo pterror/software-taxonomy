@@ -1,0 +1,120 @@
+{
+  "id": "@software:mariadb",
+  "labels": {
+    "en": "MariaDB"
+  },
+  "description": "A community-developed, open-source relational database management system forked from MySQL in 2009 by Michael Widenius and others; maintained by the MariaDB Foundation and MariaDB plc (acquired by K1 in 2024).",
+  "statements": [
+    {
+      "id": "s:l9dfn5y",
+      "predicate": "@core:instance_of",
+      "value": "@class:database",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mariadb@1352452660"
+        }
+      ]
+    },
+    {
+      "id": "s:gccat8u",
+      "predicate": "@core:developed_by",
+      "value": "@org:mariadb-foundation",
+      "lens": "core",
+      "rank": "preferred",
+      "sources": [
+        {
+          "id": "wp:mariadb@1352452660"
+        }
+      ]
+    },
+    {
+      "id": "s:j8wlbaz",
+      "predicate": "@core:principal_author",
+      "value": "@person:michael-widenius",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mariadb@1352452660"
+        }
+      ]
+    },
+    {
+      "id": "s:fxpib1w",
+      "predicate": "@core:first_released",
+      "value": "2009-10-29",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mariadb@1352452660"
+        }
+      ]
+    },
+    {
+      "id": "s:s82i17l",
+      "predicate": "@core:licensed_under",
+      "value": "@license:gpl-v2",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mariadb@1352452660"
+        }
+      ]
+    },
+    {
+      "id": "s:ezf07ct",
+      "predicate": "@core:written_in",
+      "value": "@language:cpp",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mariadb@1352452660"
+        }
+      ]
+    },
+    {
+      "id": "s:aa8805p",
+      "predicate": "@core:written_in",
+      "value": "@language:c",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mariadb@1352452660"
+        }
+      ]
+    },
+    {
+      "id": "s:2yhqch4",
+      "predicate": "@core:written_in",
+      "value": "@language:perl",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mariadb@1352452660"
+        }
+      ]
+    },
+    {
+      "id": "s:6qce4as",
+      "predicate": "@core:wikipedia",
+      "value": "MariaDB",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mariadb@1352452660"
+        }
+      ]
+    },
+    {
+      "id": "s:zdp39y5",
+      "predicate": "@core:official_url",
+      "value": "https://mariadb.org/",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mariadb@1352452660"
+        }
+      ]
+    }
+  ]
+}

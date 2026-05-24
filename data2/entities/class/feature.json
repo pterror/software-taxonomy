@@ -1,0 +1,15 @@
+{
+  "id": "@class:feature",
+  "labels": {
+    "en": "Feature"
+  },
+  "description": "A discrete, nameable capability or characteristic of a software entity. Used as the range for has_feature and vestigial_feature predicates.",
+  "statements": [
+    {
+      "id": "s:c90nm62",
+      "predicate": "@core:instance_of",
+      "value": "@meta:class",
+      "lens": "biology"
+    }
+  ]
+}

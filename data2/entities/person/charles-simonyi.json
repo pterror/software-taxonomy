@@ -1,0 +1,31 @@
+{
+  "id": "@person:charles-simonyi",
+  "labels": {
+    "en": "Charles Simonyi"
+  },
+  "description": "Hungarian-American software developer known for leading development of Microsoft Word and Excel and for establishing Hungarian notation.",
+  "statements": [
+    {
+      "id": "s:uku0s7n",
+      "predicate": "@core:instance_of",
+      "value": "@class:person",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:charles_simonyi@1336047434"
+        }
+      ]
+    },
+    {
+      "id": "s:9yxyh4k",
+      "predicate": "@core:wikipedia",
+      "value": "Charles_Simonyi",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:charles_simonyi@1336047434"
+        }
+      ]
+    }
+  ]
+}

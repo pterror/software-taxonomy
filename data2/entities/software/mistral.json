@@ -1,0 +1,123 @@
+{
+  "id": "@software:mistral",
+  "labels": {
+    "en": "Mistral"
+  },
+  "aliases": [
+    "Mistral AI",
+    "Mistral 7B"
+  ],
+  "description": "A family of open-weight large language models developed by Mistral AI, a French AI company, first released in September 2023.",
+  "statements": [
+    {
+      "id": "s:exppixa",
+      "predicate": "@core:instance_of",
+      "value": "@class:chat-model",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mistral_ai@1353445652"
+        }
+      ]
+    },
+    {
+      "id": "s:7adc46o",
+      "predicate": "@core:developed_by",
+      "value": "@org:mistral",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mistral_ai@1353445652"
+        }
+      ]
+    },
+    {
+      "id": "s:42erf73",
+      "predicate": "@core:first_released",
+      "value": "2023-09",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mistral_ai@1353445652"
+        }
+      ]
+    },
+    {
+      "id": "s:yibaw3b",
+      "predicate": "@core:runs_on",
+      "value": "@os:linux",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mistral_ai@1353445652"
+        }
+      ]
+    },
+    {
+      "id": "s:3u7ng57",
+      "predicate": "@core:runs_on",
+      "value": "@os:macos",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mistral_ai@1353445652"
+        }
+      ]
+    },
+    {
+      "id": "s:ra3vl25",
+      "predicate": "@core:runs_on",
+      "value": "@os:windows",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mistral_ai@1353445652"
+        }
+      ]
+    },
+    {
+      "id": "s:bgckbak",
+      "predicate": "@core:written_in",
+      "value": "@language:python",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mistral_ai@1353445652"
+        }
+      ]
+    },
+    {
+      "id": "s:1cwohga",
+      "predicate": "@core:licensed_under",
+      "value": "@license:apache-2",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mistral_ai@1353445652"
+        }
+      ]
+    },
+    {
+      "id": "s:vdlpuq1",
+      "predicate": "@core:wikipedia",
+      "value": "Mistral_AI",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mistral_ai@1353445652"
+        }
+      ]
+    },
+    {
+      "id": "s:y9t5lu3",
+      "predicate": "@core:official_url",
+      "value": "https://mistral.ai",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mistral_ai@1353445652"
+        }
+      ]
+    }
+  ]
+}

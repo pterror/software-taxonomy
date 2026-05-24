@@ -1,0 +1,42 @@
+{
+  "id": "@org:mistral",
+  "labels": {
+    "en": "Mistral AI"
+  },
+  "description": "French artificial intelligence company founded in 2023 that develops open-weight large language models.",
+  "statements": [
+    {
+      "id": "s:edzohm2",
+      "predicate": "@core:instance_of",
+      "value": "@class:organization",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mistral_ai@1353445652"
+        }
+      ]
+    },
+    {
+      "id": "s:lr7l7dq",
+      "predicate": "@core:wikipedia",
+      "value": "Mistral_AI",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mistral_ai@1353445652"
+        }
+      ]
+    },
+    {
+      "id": "s:wmfho31",
+      "predicate": "@core:founded",
+      "value": "2023",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mistral_ai@1353445652"
+        }
+      ]
+    }
+  ]
+}

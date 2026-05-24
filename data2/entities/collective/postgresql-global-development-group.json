@@ -1,0 +1,42 @@
+{
+  "id": "@collective:postgresql-global-development-group",
+  "labels": {
+    "en": "PostgreSQL Global Development Group"
+  },
+  "description": "International open-source community of developers maintaining the PostgreSQL database system.",
+  "statements": [
+    {
+      "id": "s:zz0at7y",
+      "predicate": "@core:instance_of",
+      "value": "@class:collective",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:postgresql@1354201532"
+        }
+      ]
+    },
+    {
+      "id": "s:axjrs7z",
+      "predicate": "@core:wikipedia",
+      "value": "PostgreSQL",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:postgresql@1354201532"
+        }
+      ]
+    },
+    {
+      "id": "s:wojxi28",
+      "predicate": "@core:official_url",
+      "value": "https://www.postgresql.org/community/",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:postgresql@1354201532"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "id": "@language:tcl",
+  "labels": {
+    "en": "Tcl"
+  },
+  "description": "A dynamic programming language and scripting language, originally created by John Ousterhout in 1988.",
+  "statements": [
+    {
+      "id": "s:gqvuwua",
+      "predicate": "@core:instance_of",
+      "value": "@class:programming-language",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:tcl@1333171973"
+        }
+      ]
+    },
+    {
+      "id": "s:gexu8xx",
+      "predicate": "@core:wikipedia",
+      "value": "Tcl",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:tcl@1333171973"
+        }
+      ]
+    }
+  ]
+}

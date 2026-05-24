@@ -1,0 +1,21 @@
+{
+  "id": "@class:person",
+  "labels": {
+    "en": "Person"
+  },
+  "description": "Class of human individuals relevant to software history and development.",
+  "statements": [
+    {
+      "id": "s:u409co2",
+      "predicate": "@core:instance_of",
+      "value": "@meta:class",
+      "lens": "core"
+    },
+    {
+      "id": "s:jzh54iu",
+      "predicate": "@core:subclass_of",
+      "value": "@class:agent",
+      "lens": "core"
+    }
+  ]
+}

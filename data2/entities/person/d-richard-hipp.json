@@ -1,0 +1,31 @@
+{
+  "id": "@person:d-richard-hipp",
+  "labels": {
+    "en": "D. Richard Hipp"
+  },
+  "description": "American computer scientist who designed and implemented SQLite, the most widely deployed relational database engine in the world.",
+  "statements": [
+    {
+      "id": "s:4rc23mi",
+      "predicate": "@core:instance_of",
+      "value": "@class:person",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:d._richard_hipp@1338692142"
+        }
+      ]
+    },
+    {
+      "id": "s:byu7qs1",
+      "predicate": "@core:wikipedia",
+      "value": "D._Richard_Hipp",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:d._richard_hipp@1338692142"
+        }
+      ]
+    }
+  ]
+}

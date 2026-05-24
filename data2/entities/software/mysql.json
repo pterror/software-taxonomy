@@ -1,0 +1,156 @@
+{
+  "id": "@software:mysql",
+  "labels": {
+    "en": "MySQL"
+  },
+  "description": "An open-source relational database management system widely used as a component of web applications, originally created by Michael Widenius at MySQL AB and first released in 1995; acquired by Sun Microsystems in 2008 and Oracle Corporation in 2010.",
+  "statements": [
+    {
+      "id": "s:e2zt3i6",
+      "predicate": "@core:instance_of",
+      "value": "@class:database",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mysql@1352315192"
+        }
+      ]
+    },
+    {
+      "id": "s:1rsmg6o",
+      "predicate": "@core:developed_by",
+      "value": "@org:mysql-ab",
+      "lens": "core",
+      "rank": "deprecated",
+      "qualifiers": {
+        "@core:start_time": "1995",
+        "@core:end_time": "2008"
+      },
+      "sources": [
+        {
+          "id": "wp:mysql@1352315192"
+        }
+      ]
+    },
+    {
+      "id": "s:tyxs2vv",
+      "predicate": "@core:developed_by",
+      "value": "@org:sun-microsystems",
+      "lens": "core",
+      "rank": "deprecated",
+      "qualifiers": {
+        "@core:start_time": "2008",
+        "@core:end_time": "2010"
+      },
+      "sources": [
+        {
+          "id": "wp:mysql@1352315192"
+        }
+      ]
+    },
+    {
+      "id": "s:mbbr9c7",
+      "predicate": "@core:developed_by",
+      "value": "@org:oracle",
+      "lens": "core",
+      "rank": "preferred",
+      "qualifiers": {
+        "@core:start_time": "2010"
+      },
+      "sources": [
+        {
+          "id": "wp:mysql@1352315192"
+        }
+      ]
+    },
+    {
+      "id": "s:24fcl0u",
+      "predicate": "@core:principal_author",
+      "value": "@person:michael-widenius",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mysql@1352315192"
+        }
+      ]
+    },
+    {
+      "id": "s:vieyfzt",
+      "predicate": "@core:first_released",
+      "value": "1995-05-23",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mysql@1352315192"
+        }
+      ]
+    },
+    {
+      "id": "s:ttl9asl",
+      "predicate": "@core:licensed_under",
+      "value": "@license:gpl-v2",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mysql@1352315192"
+        }
+      ]
+    },
+    {
+      "id": "s:sa94ylg",
+      "predicate": "@core:licensed_under",
+      "value": "@license:proprietary",
+      "lens": "core",
+      "rank": "normal",
+      "sources": [
+        {
+          "id": "wp:mysql@1352315192"
+        }
+      ]
+    },
+    {
+      "id": "s:yhaslaf",
+      "predicate": "@core:written_in",
+      "value": "@language:cpp",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mysql@1352315192"
+        }
+      ]
+    },
+    {
+      "id": "s:dzhh2mp",
+      "predicate": "@core:written_in",
+      "value": "@language:c",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mysql@1352315192"
+        }
+      ]
+    },
+    {
+      "id": "s:fqxdx4f",
+      "predicate": "@core:wikipedia",
+      "value": "MySQL",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mysql@1352315192"
+        }
+      ]
+    },
+    {
+      "id": "s:7alzk6a",
+      "predicate": "@core:official_url",
+      "value": "https://www.mysql.com/",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mysql@1352315192"
+        }
+      ]
+    }
+  ]
+}

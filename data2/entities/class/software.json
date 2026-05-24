@@ -1,0 +1,21 @@
+{
+  "id": "@class:software",
+  "labels": {
+    "en": "Software"
+  },
+  "description": "All software. Root of the software class hierarchy. Every program that executes on a substrate is a member of this class.",
+  "statements": [
+    {
+      "id": "s:mcmzejw",
+      "predicate": "@core:instance_of",
+      "value": "@meta:class",
+      "lens": "core"
+    },
+    {
+      "id": "s:k6vfcbz",
+      "predicate": "@core:subclass_of",
+      "value": "@class:technical-artifact",
+      "lens": "core"
+    }
+  ]
+}

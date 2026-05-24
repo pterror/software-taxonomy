@@ -1,0 +1,21 @@
+{
+  "id": "@class:make",
+  "labels": {
+    "en": "Make (family)"
+  },
+  "description": "Family of Make-compatible build tools originating at Bell Labs in 1976, using Makefiles to express build dependency graphs.",
+  "statements": [
+    {
+      "id": "s:doed0h0",
+      "predicate": "@core:instance_of",
+      "value": "@meta:class",
+      "lens": "core"
+    },
+    {
+      "id": "s:v4dz68u",
+      "predicate": "@core:subclass_of",
+      "value": "@class:build-system",
+      "lens": "core"
+    }
+  ]
+}

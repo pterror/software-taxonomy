@@ -1,0 +1,21 @@
+{
+  "id": "@class:init-system",
+  "labels": {
+    "en": "Init System"
+  },
+  "description": "Software responsible for initializing the operating system and managing system services after boot.",
+  "statements": [
+    {
+      "id": "s:o6fdbay",
+      "predicate": "@core:instance_of",
+      "value": "@meta:class",
+      "lens": "core"
+    },
+    {
+      "id": "s:5smm2s7",
+      "predicate": "@core:subclass_of",
+      "value": "@class:software",
+      "lens": "core"
+    }
+  ]
+}

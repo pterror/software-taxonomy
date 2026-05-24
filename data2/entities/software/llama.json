@@ -1,0 +1,122 @@
+{
+  "id": "@software:llama",
+  "labels": {
+    "en": "Llama"
+  },
+  "aliases": [
+    "LLaMA"
+  ],
+  "description": "A family of open-weight large language models released by Meta AI beginning in February 2023, available for research and commercial use under a source-available community license.",
+  "statements": [
+    {
+      "id": "s:m2ex7em",
+      "predicate": "@core:instance_of",
+      "value": "@class:chat-model",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:llama_language_model@1353017318"
+        }
+      ]
+    },
+    {
+      "id": "s:qrf54pn",
+      "predicate": "@core:developed_by",
+      "value": "@org:meta",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:llama_language_model@1353017318"
+        }
+      ]
+    },
+    {
+      "id": "s:fvnbbn9",
+      "predicate": "@core:first_released",
+      "value": "2023-02-24",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:llama_language_model@1353017318"
+        }
+      ]
+    },
+    {
+      "id": "s:qcs1imw",
+      "predicate": "@core:runs_on",
+      "value": "@os:linux",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:llama_language_model@1353017318"
+        }
+      ]
+    },
+    {
+      "id": "s:t5p405i",
+      "predicate": "@core:runs_on",
+      "value": "@os:macos",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:llama_language_model@1353017318"
+        }
+      ]
+    },
+    {
+      "id": "s:iipj4op",
+      "predicate": "@core:runs_on",
+      "value": "@os:windows",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:llama_language_model@1353017318"
+        }
+      ]
+    },
+    {
+      "id": "s:ibtqql9",
+      "predicate": "@core:written_in",
+      "value": "@language:python",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:llama_language_model@1353017318"
+        }
+      ]
+    },
+    {
+      "id": "s:zonunpw",
+      "predicate": "@core:licensed_under",
+      "value": "@license:llama-community",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:llama_language_model@1353017318"
+        }
+      ]
+    },
+    {
+      "id": "s:kierpls",
+      "predicate": "@core:wikipedia",
+      "value": "Llama_(language_model)",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:llama_language_model@1353017318"
+        }
+      ]
+    },
+    {
+      "id": "s:b4tr2n9",
+      "predicate": "@core:official_url",
+      "value": "https://llama.meta.com",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:llama_language_model@1353017318"
+        }
+      ]
+    }
+  ]
+}

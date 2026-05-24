@@ -1,0 +1,42 @@
+{
+  "id": "@org:mongodb-inc",
+  "labels": {
+    "en": "MongoDB, Inc."
+  },
+  "description": "American software company that develops the MongoDB document-oriented database and provides cloud database services under the Atlas brand.",
+  "statements": [
+    {
+      "id": "s:2of01uq",
+      "predicate": "@core:instance_of",
+      "value": "@class:organization",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mongodb_inc.@1351430012"
+        }
+      ]
+    },
+    {
+      "id": "s:tfyo9vw",
+      "predicate": "@core:wikipedia",
+      "value": "MongoDB_Inc.",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mongodb_inc.@1351430012"
+        }
+      ]
+    },
+    {
+      "id": "s:4cchgh8",
+      "predicate": "@core:founded",
+      "value": "2007",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mongodb_inc.@1351430012"
+        }
+      ]
+    }
+  ]
+}

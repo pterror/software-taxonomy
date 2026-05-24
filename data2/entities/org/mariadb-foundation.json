@@ -1,0 +1,42 @@
+{
+  "id": "@org:mariadb-foundation",
+  "labels": {
+    "en": "MariaDB Foundation"
+  },
+  "description": "Non-profit organization that stewards the MariaDB database project, ensuring its continuity as free and open-source software.",
+  "statements": [
+    {
+      "id": "s:gcj5sg3",
+      "predicate": "@core:instance_of",
+      "value": "@class:organization",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mariadb_foundation@1107519296"
+        }
+      ]
+    },
+    {
+      "id": "s:ia0cfud",
+      "predicate": "@core:wikipedia",
+      "value": "MariaDB_Foundation",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mariadb_foundation@1107519296"
+        }
+      ]
+    },
+    {
+      "id": "s:rokwjjt",
+      "predicate": "@core:founded",
+      "value": "2012",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mariadb_foundation@1107519296"
+        }
+      ]
+    }
+  ]
+}

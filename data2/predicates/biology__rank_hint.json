@@ -1,0 +1,12 @@
+{
+  "id": "@biology:rank_hint",
+  "label": "rank hint",
+  "description": "A biological-rank advisory for clade entities (e.g. 'kingdom', 'order'). Advisory only — the graph is rank-free. Distinct from statement-level rank (which is Wikidata statement priority).",
+  "lens": "biology",
+  "value_type": "string",
+  "domain": [
+    "@meta:class"
+  ],
+  "range": null,
+  "cardinality": "0..1"
+}

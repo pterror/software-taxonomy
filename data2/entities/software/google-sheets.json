@@ -1,0 +1,75 @@
+{
+  "id": "@software:google-sheets",
+  "labels": {
+    "en": "Google Sheets"
+  },
+  "description": "A web-based spreadsheet application offered by Google as part of Google Workspace, launched in 2006.",
+  "statements": [
+    {
+      "id": "s:jk8iu8m",
+      "predicate": "@core:instance_of",
+      "value": "@class:spreadsheet",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:google_sheets@1355076964"
+        }
+      ]
+    },
+    {
+      "id": "s:a0l41k4",
+      "predicate": "@core:developed_by",
+      "value": "@org:google",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:google_sheets@1355076964"
+        }
+      ]
+    },
+    {
+      "id": "s:hb6xrak",
+      "predicate": "@core:first_released",
+      "value": "2006",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:google_sheets@1355076964"
+        }
+      ]
+    },
+    {
+      "id": "s:onhtaty",
+      "predicate": "@core:licensed_under",
+      "value": "@license:proprietary",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:google_sheets@1355076964"
+        }
+      ]
+    },
+    {
+      "id": "s:ld9n34w",
+      "predicate": "@core:wikipedia",
+      "value": "Google_Sheets",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:google_sheets@1355076964"
+        }
+      ]
+    },
+    {
+      "id": "s:go2y0q1",
+      "predicate": "@core:official_url",
+      "value": "https://sheets.google.com/",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:google_sheets@1355076964"
+        }
+      ]
+    }
+  ]
+}

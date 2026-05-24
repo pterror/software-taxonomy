@@ -1,0 +1,31 @@
+{
+  "id": "@person:bram-moolenaar",
+  "labels": {
+    "en": "Bram Moolenaar"
+  },
+  "description": "Dutch software developer who created the Vim text editor in 1991, maintaining it until his death in 2023.",
+  "statements": [
+    {
+      "id": "s:cbx0g5n",
+      "predicate": "@core:instance_of",
+      "value": "@class:person",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:bram_moolenaar@1328026881"
+        }
+      ]
+    },
+    {
+      "id": "s:97gzisy",
+      "predicate": "@core:wikipedia",
+      "value": "Bram_Moolenaar",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:bram_moolenaar@1328026881"
+        }
+      ]
+    }
+  ]
+}

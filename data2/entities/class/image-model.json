@@ -1,0 +1,21 @@
+{
+  "id": "@class:image-model",
+  "labels": {
+    "en": "Image Model"
+  },
+  "description": "A machine learning model that generates or manipulates images from textual or visual input.",
+  "statements": [
+    {
+      "id": "s:0ed695v",
+      "predicate": "@core:instance_of",
+      "value": "@meta:class",
+      "lens": "core"
+    },
+    {
+      "id": "s:u1o8zsw",
+      "predicate": "@core:subclass_of",
+      "value": "@class:software",
+      "lens": "core"
+    }
+  ]
+}

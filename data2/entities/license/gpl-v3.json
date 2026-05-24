@@ -1,0 +1,31 @@
+{
+  "id": "@license:gpl-v3",
+  "labels": {
+    "en": "GNU General Public License v3"
+  },
+  "description": "Version 3 of the GNU General Public License, a copyleft free software license published by the Free Software Foundation in 2007.",
+  "statements": [
+    {
+      "id": "s:wb6ekim",
+      "predicate": "@core:instance_of",
+      "value": "@class:license",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:gnu_general_public_license@1354350906"
+        }
+      ]
+    },
+    {
+      "id": "s:9o8x6a1",
+      "predicate": "@core:wikipedia",
+      "value": "GNU_General_Public_License",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:gnu_general_public_license@1354350906"
+        }
+      ]
+    }
+  ]
+}

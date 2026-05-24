@@ -1,0 +1,21 @@
+{
+  "id": "@class:vector-editor",
+  "labels": {
+    "en": "Vector Editor"
+  },
+  "description": "A software application for creating and editing vector graphics.",
+  "statements": [
+    {
+      "id": "s:33hc4n6",
+      "predicate": "@core:instance_of",
+      "value": "@meta:class",
+      "lens": "core"
+    },
+    {
+      "id": "s:z6mv4a5",
+      "predicate": "@core:subclass_of",
+      "value": "@class:software",
+      "lens": "core"
+    }
+  ]
+}

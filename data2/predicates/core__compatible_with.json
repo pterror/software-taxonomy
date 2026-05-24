@@ -1,0 +1,10 @@
+{
+  "id": "@core:compatible_with",
+  "label": "compatible with",
+  "description": "Another entity with which this entity interoperates. Weaker than implements — covers file format compatibility, API compatibility, or plugin compatibility.",
+  "lens": "core",
+  "value_type": "entity",
+  "domain": null,
+  "range": null,
+  "cardinality": "0..*"
+}

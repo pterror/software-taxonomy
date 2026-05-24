@@ -1,0 +1,20 @@
+{
+  "id": "@org:continue-dev",
+  "labels": {
+    "en": "Continue"
+  },
+  "description": "Open-source AI code assistant company behind the Continue IDE plugin.",
+  "statements": [
+    {
+      "id": "s:n6z2c3u",
+      "predicate": "@core:instance_of",
+      "value": "@class:organization",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "official:continue-dev@2026-05-23"
+        }
+      ]
+    }
+  ]
+}

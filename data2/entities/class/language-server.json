@@ -1,0 +1,21 @@
+{
+  "id": "@class:language-server",
+  "labels": {
+    "en": "Language Server"
+  },
+  "description": "A software component implementing the Language Server Protocol to provide IDE features for a programming language.",
+  "statements": [
+    {
+      "id": "s:dzv6a9b",
+      "predicate": "@core:instance_of",
+      "value": "@meta:class",
+      "lens": "core"
+    },
+    {
+      "id": "s:sgvykgr",
+      "predicate": "@core:subclass_of",
+      "value": "@class:software",
+      "lens": "core"
+    }
+  ]
+}

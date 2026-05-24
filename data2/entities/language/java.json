@@ -1,0 +1,42 @@
+{
+  "id": "@language:java",
+  "labels": {
+    "en": "Java"
+  },
+  "description": "A class-based, object-oriented programming language designed to have as few implementation dependencies as possible, first released by Sun Microsystems in 1995.",
+  "statements": [
+    {
+      "id": "s:j6553fa",
+      "predicate": "@core:instance_of",
+      "value": "@class:programming-language",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:java_programming_language@1352120936"
+        }
+      ]
+    },
+    {
+      "id": "s:csrqw42",
+      "predicate": "@core:wikipedia",
+      "value": "Java_(programming_language)",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:java_programming_language@1352120936"
+        }
+      ]
+    },
+    {
+      "id": "s:aix0rkh",
+      "predicate": "@core:first_released",
+      "value": "1995",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:java_programming_language@1352120936"
+        }
+      ]
+    }
+  ]
+}

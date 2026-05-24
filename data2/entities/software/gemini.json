@@ -1,0 +1,90 @@
+{
+  "id": "@software:gemini",
+  "labels": {
+    "en": "Gemini"
+  },
+  "aliases": [
+    "Google Gemini",
+    "Bard"
+  ],
+  "description": "A multimodal AI assistant developed by Google DeepMind, formerly known as Bard, launched publicly in March 2023 and rebranded to Gemini in February 2024.",
+  "statements": [
+    {
+      "id": "s:gr2ii3a",
+      "predicate": "@core:instance_of",
+      "value": "@class:chat-model",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:gemini_chatbot@1321440491"
+        }
+      ]
+    },
+    {
+      "id": "s:jlqhg99",
+      "predicate": "@core:developed_by",
+      "value": "@org:google",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:gemini_chatbot@1321440491"
+        }
+      ]
+    },
+    {
+      "id": "s:giobg8q",
+      "predicate": "@core:first_released",
+      "value": "2023-03-21",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:gemini_chatbot@1321440491"
+        }
+      ]
+    },
+    {
+      "id": "s:ilyd8nz",
+      "predicate": "@core:runs_on",
+      "value": "@os:linux",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:gemini_chatbot@1321440491"
+        }
+      ]
+    },
+    {
+      "id": "s:xnz6mv6",
+      "predicate": "@core:licensed_under",
+      "value": "@license:proprietary",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:gemini_chatbot@1321440491"
+        }
+      ]
+    },
+    {
+      "id": "s:pgaaw04",
+      "predicate": "@core:wikipedia",
+      "value": "Gemini_(chatbot)",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:gemini_chatbot@1321440491"
+        }
+      ]
+    },
+    {
+      "id": "s:vtu0whl",
+      "predicate": "@core:official_url",
+      "value": "https://gemini.google.com",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:gemini_chatbot@1321440491"
+        }
+      ]
+    }
+  ]
+}

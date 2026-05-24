@@ -1,0 +1,21 @@
+{
+  "id": "@class:web-server",
+  "labels": {
+    "en": "Web Server"
+  },
+  "description": "Software that serves HTTP responses to client requests over a network.",
+  "statements": [
+    {
+      "id": "s:ci6bxiq",
+      "predicate": "@core:instance_of",
+      "value": "@meta:class",
+      "lens": "core"
+    },
+    {
+      "id": "s:yowm0w1",
+      "predicate": "@core:subclass_of",
+      "value": "@class:software",
+      "lens": "core"
+    }
+  ]
+}

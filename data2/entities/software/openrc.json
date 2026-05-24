@@ -1,0 +1,150 @@
+{
+  "id": "@software:openrc",
+  "labels": {
+    "en": "OpenRC"
+  },
+  "description": "A dependency-based init system for Unix-like operating systems, originally developed by Roy Marples for Gentoo Linux and now maintained as a cross-distribution project.",
+  "statements": [
+    {
+      "id": "s:xi5eftk",
+      "predicate": "@core:instance_of",
+      "value": "@class:init-system",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:openrc@1337532832"
+        }
+      ]
+    },
+    {
+      "id": "s:ya672tx",
+      "predicate": "@core:developed_by",
+      "value": "@person:roy-marples",
+      "lens": "core",
+      "rank": "deprecated",
+      "qualifiers": {
+        "@core:start_time": "2007",
+        "@core:end_time": "2010"
+      },
+      "sources": [
+        {
+          "id": "wp:openrc@1337532832"
+        }
+      ]
+    },
+    {
+      "id": "s:92idou5",
+      "predicate": "@core:developed_by",
+      "value": "@collective:openrc-developers",
+      "lens": "core",
+      "rank": "preferred",
+      "qualifiers": {
+        "@core:start_time": "2010"
+      },
+      "sources": [
+        {
+          "id": "wp:openrc@1337532832"
+        }
+      ]
+    },
+    {
+      "id": "s:tnc9mim",
+      "predicate": "@core:principal_author",
+      "value": "@person:roy-marples",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:openrc@1337532832"
+        }
+      ]
+    },
+    {
+      "id": "s:c5rz2gi",
+      "predicate": "@core:first_released",
+      "value": "2007-04-05",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:openrc@1337532832"
+        }
+      ]
+    },
+    {
+      "id": "s:u6foyvi",
+      "predicate": "@core:runs_on",
+      "value": "@os:linux",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:openrc@1337532832"
+        }
+      ]
+    },
+    {
+      "id": "s:l7a2yna",
+      "predicate": "@core:runs_on",
+      "value": "@os:bsd",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:openrc@1337532832"
+        }
+      ]
+    },
+    {
+      "id": "s:bdf4ywm",
+      "predicate": "@core:written_in",
+      "value": "@language:c",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:openrc@1337532832"
+        }
+      ]
+    },
+    {
+      "id": "s:o4gbelc",
+      "predicate": "@core:written_in",
+      "value": "@language:shell",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:openrc@1337532832"
+        }
+      ]
+    },
+    {
+      "id": "s:x69r4su",
+      "predicate": "@core:licensed_under",
+      "value": "@license:bsd-2-clause",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:openrc@1337532832"
+        }
+      ]
+    },
+    {
+      "id": "s:cifdr29",
+      "predicate": "@core:wikipedia",
+      "value": "OpenRC",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:openrc@1337532832"
+        }
+      ]
+    },
+    {
+      "id": "s:qrcji1e",
+      "predicate": "@core:official_url",
+      "value": "https://github.com/OpenRC/openrc",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:openrc@1337532832"
+        }
+      ]
+    }
+  ]
+}

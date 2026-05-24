@@ -1,0 +1,42 @@
+{
+  "id": "@org:google",
+  "labels": {
+    "en": "Google"
+  },
+  "description": "American multinational technology corporation specializing in internet services, search, cloud computing, and software.",
+  "statements": [
+    {
+      "id": "s:xnftlc2",
+      "predicate": "@core:instance_of",
+      "value": "@class:organization",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:google@1355489222"
+        }
+      ]
+    },
+    {
+      "id": "s:7c50nev",
+      "predicate": "@core:wikipedia",
+      "value": "Google",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:google@1355489222"
+        }
+      ]
+    },
+    {
+      "id": "s:lva8icg",
+      "predicate": "@core:founded",
+      "value": "1998-09-04",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:google@1355489222"
+        }
+      ]
+    }
+  ]
+}

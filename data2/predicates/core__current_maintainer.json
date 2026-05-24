@@ -1,0 +1,15 @@
+{
+  "id": "@core:current_maintainer",
+  "label": "current maintainer",
+  "description": "Organization or person currently responsible for ongoing maintenance. May differ from developed_by if the project transferred stewardship.",
+  "lens": "core",
+  "value_type": "entity",
+  "domain": [
+    "@class:software"
+  ],
+  "range": [
+    "@class:organization",
+    "@class:person"
+  ],
+  "cardinality": "0..*"
+}

@@ -1,0 +1,42 @@
+{
+  "id": "@org:sun-microsystems",
+  "labels": {
+    "en": "Sun Microsystems"
+  },
+  "description": "American technology company that acquired MySQL AB in 2008; itself acquired by Oracle Corporation in 2010. Also known for the Java platform, Solaris, and SPARC processors.",
+  "statements": [
+    {
+      "id": "s:3pdqrwc",
+      "predicate": "@core:instance_of",
+      "value": "@class:organization",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:sun_microsystems@1355336235"
+        }
+      ]
+    },
+    {
+      "id": "s:m3c14s9",
+      "predicate": "@core:wikipedia",
+      "value": "Sun_Microsystems",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:sun_microsystems@1355336235"
+        }
+      ]
+    },
+    {
+      "id": "s:fn97tdy",
+      "predicate": "@core:founded",
+      "value": "1982-02-24",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:sun_microsystems@1355336235"
+        }
+      ]
+    }
+  ]
+}

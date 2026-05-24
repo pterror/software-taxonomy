@@ -1,0 +1,142 @@
+{
+  "id": "@software:mercurial",
+  "labels": {
+    "en": "Mercurial"
+  },
+  "aliases": [
+    "hg"
+  ],
+  "description": "A free, distributed source control management tool, created by Olivia Mackall in 2005 as an alternative to BitKeeper for the Linux kernel, emphasizing speed and scalability.",
+  "statements": [
+    {
+      "id": "s:93havhw",
+      "predicate": "@core:instance_of",
+      "value": "@class:version-control-system",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mercurial@1352838775"
+        }
+      ]
+    },
+    {
+      "id": "s:ku9qp9g",
+      "predicate": "@core:developed_by",
+      "value": "@person:olivia-mackall",
+      "lens": "core",
+      "rank": "deprecated",
+      "qualifiers": {
+        "@core:start_time": "2005",
+        "@core:end_time": "2016"
+      },
+      "sources": [
+        {
+          "id": "wp:mercurial@1352838775"
+        }
+      ]
+    },
+    {
+      "id": "s:okzfbdt",
+      "predicate": "@core:developed_by",
+      "value": "@person:pierre-yves-david",
+      "lens": "core",
+      "rank": "preferred",
+      "qualifiers": {
+        "@core:start_time": "2016"
+      },
+      "sources": [
+        {
+          "id": "wp:mercurial@1352838775"
+        }
+      ]
+    },
+    {
+      "id": "s:iochfbi",
+      "predicate": "@core:principal_author",
+      "value": "@person:olivia-mackall",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mercurial@1352838775"
+        }
+      ]
+    },
+    {
+      "id": "s:2l3ukkv",
+      "predicate": "@core:first_released",
+      "value": "2005-04-19",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mercurial@1352838775"
+        }
+      ]
+    },
+    {
+      "id": "s:gvrlf9k",
+      "predicate": "@core:licensed_under",
+      "value": "@license:gpl-v2",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mercurial@1352838775"
+        }
+      ]
+    },
+    {
+      "id": "s:r3akkte",
+      "predicate": "@core:written_in",
+      "value": "@language:python",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mercurial@1352838775"
+        }
+      ]
+    },
+    {
+      "id": "s:37iwrzj",
+      "predicate": "@core:written_in",
+      "value": "@language:c",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mercurial@1352838775"
+        }
+      ]
+    },
+    {
+      "id": "s:7yax4hr",
+      "predicate": "@core:written_in",
+      "value": "@language:rust",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mercurial@1352838775"
+        }
+      ]
+    },
+    {
+      "id": "s:4lzhs3l",
+      "predicate": "@core:wikipedia",
+      "value": "Mercurial",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mercurial@1352838775"
+        }
+      ]
+    },
+    {
+      "id": "s:9fcar4m",
+      "predicate": "@core:official_url",
+      "value": "https://www.mercurial-scm.org/",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mercurial@1352838775"
+        }
+      ]
+    }
+  ]
+}

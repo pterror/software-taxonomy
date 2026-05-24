@@ -1,0 +1,14 @@
+{
+  "id": "@biology:competes_with",
+  "label": "competes with",
+  "description": "An entity occupying the same functional niche and market segment as this one. Symmetric in practice — if A competes with B, B competes with A. Include historical competitors even if one is discontinued.",
+  "lens": "biology",
+  "value_type": "entity",
+  "domain": [
+    "@class:software"
+  ],
+  "range": [
+    "@class:software"
+  ],
+  "cardinality": "0..*"
+}

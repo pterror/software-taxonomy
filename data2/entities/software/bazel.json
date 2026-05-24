@@ -1,0 +1,119 @@
+{
+  "id": "@software:bazel",
+  "labels": {
+    "en": "Bazel"
+  },
+  "description": "An open-source build and test tool developed by Google, using a Python-like language (Starlark) for build descriptions, designed for multi-language monorepo builds with reproducible outputs.",
+  "statements": [
+    {
+      "id": "s:o6i0aey",
+      "predicate": "@core:instance_of",
+      "value": "@class:build-system",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:bazel_software@1355337427"
+        }
+      ]
+    },
+    {
+      "id": "s:llgpq4f",
+      "predicate": "@core:developed_by",
+      "value": "@org:google",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:bazel_software@1355337427"
+        }
+      ]
+    },
+    {
+      "id": "s:hotysem",
+      "predicate": "@core:first_released",
+      "value": "2015-03-25",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:bazel_software@1355337427"
+        }
+      ]
+    },
+    {
+      "id": "s:pukjzds",
+      "predicate": "@core:runs_on",
+      "value": "@os:linux",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:bazel_software@1355337427"
+        }
+      ]
+    },
+    {
+      "id": "s:k2wlpcl",
+      "predicate": "@core:runs_on",
+      "value": "@os:macos",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:bazel_software@1355337427"
+        }
+      ]
+    },
+    {
+      "id": "s:t4w5gz1",
+      "predicate": "@core:runs_on",
+      "value": "@os:windows",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:bazel_software@1355337427"
+        }
+      ]
+    },
+    {
+      "id": "s:82fza0f",
+      "predicate": "@core:written_in",
+      "value": "@language:java",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:bazel_software@1355337427"
+        }
+      ]
+    },
+    {
+      "id": "s:3sq1284",
+      "predicate": "@core:licensed_under",
+      "value": "@license:apache-2",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:bazel_software@1355337427"
+        }
+      ]
+    },
+    {
+      "id": "s:n4ct9j7",
+      "predicate": "@core:wikipedia",
+      "value": "Bazel_(software)",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:bazel_software@1355337427"
+        }
+      ]
+    },
+    {
+      "id": "s:mxcoihs",
+      "predicate": "@core:official_url",
+      "value": "https://bazel.build",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:bazel_software@1355337427"
+        }
+      ]
+    }
+  ]
+}

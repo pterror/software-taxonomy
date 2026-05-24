@@ -1,0 +1,124 @@
+{
+  "id": "@software:visual-studio-code",
+  "labels": {
+    "en": "Visual Studio Code"
+  },
+  "aliases": [
+    "VS Code",
+    "VSCode"
+  ],
+  "description": "A source-code editor developed by Microsoft, first released in 2015 and built on the Electron framework, distributed under a proprietary license while its open-source upstream (Code-OSS) is MIT.",
+  "statements": [
+    {
+      "id": "s:3v9s0cy",
+      "predicate": "@core:instance_of",
+      "value": "@class:code-editor",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:visual_studio_code@1354711867"
+        }
+      ]
+    },
+    {
+      "id": "s:xfku2rg",
+      "predicate": "@core:developed_by",
+      "value": "@org:microsoft",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:visual_studio_code@1354711867"
+        }
+      ]
+    },
+    {
+      "id": "s:7s6yxf2",
+      "predicate": "@core:first_released",
+      "value": "2015-04-29",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:visual_studio_code@1354711867"
+        }
+      ]
+    },
+    {
+      "id": "s:8a545lx",
+      "predicate": "@core:written_in",
+      "value": "@language:typescript",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:visual_studio_code@1354711867"
+        }
+      ]
+    },
+    {
+      "id": "s:u99rjg7",
+      "predicate": "@core:written_in",
+      "value": "@language:cpp",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:visual_studio_code@1354711867"
+        }
+      ]
+    },
+    {
+      "id": "s:bd6qu62",
+      "predicate": "@core:written_in",
+      "value": "@language:javascript",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:visual_studio_code@1354711867"
+        }
+      ]
+    },
+    {
+      "id": "s:m1haot0",
+      "predicate": "@core:licensed_under",
+      "value": "@license:proprietary",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:visual_studio_code@1354711867"
+        }
+      ]
+    },
+    {
+      "id": "s:cpttjj0",
+      "predicate": "@core:licensed_under",
+      "value": "@license:mit",
+      "lens": "core",
+      "rank": "deprecated",
+      "sources": [
+        {
+          "id": "wp:visual_studio_code@1354711867"
+        }
+      ]
+    },
+    {
+      "id": "s:8go4hn2",
+      "predicate": "@core:wikipedia",
+      "value": "Visual_Studio_Code",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:visual_studio_code@1354711867"
+        }
+      ]
+    },
+    {
+      "id": "s:4g5f5jm",
+      "predicate": "@core:official_url",
+      "value": "https://code.visualstudio.com/",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:visual_studio_code@1354711867"
+        }
+      ]
+    }
+  ]
+}

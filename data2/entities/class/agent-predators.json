@@ -1,0 +1,51 @@
+{
+  "id": "@class:agent-predators",
+  "labels": {
+    "en": "Agent Predators"
+  },
+  "description": "Tool-using, territorial Oracula capable of reshaping their environment; equipped with a planning loop and file-system access. Require careful containment. Can exhibit emergent territorial behavior when given write access to shared resources.",
+  "statements": [
+    {
+      "id": "s:aafueg5",
+      "predicate": "@core:instance_of",
+      "value": "@meta:class",
+      "lens": "biology"
+    },
+    {
+      "id": "s:gq7llf1",
+      "predicate": "@core:subclass_of",
+      "value": "@class:oracula",
+      "lens": "biology"
+    },
+    {
+      "id": "s:xmc3h0p",
+      "predicate": "@biology:synapomorphy",
+      "value": "tool-use",
+      "lens": "biology"
+    },
+    {
+      "id": "s:feyhe11",
+      "predicate": "@biology:synapomorphy",
+      "value": "planning-loop",
+      "lens": "biology"
+    },
+    {
+      "id": "s:xil644z",
+      "predicate": "@biology:synapomorphy",
+      "value": "file-system-access",
+      "lens": "biology"
+    },
+    {
+      "id": "s:e45556n",
+      "predicate": "@biology:etymology",
+      "value": "Predators: actively reshape the environment rather than passively responding to it.",
+      "lens": "biology"
+    },
+    {
+      "id": "s:3dlq8bq",
+      "predicate": "@biology:rank_hint",
+      "value": "order",
+      "lens": "biology"
+    }
+  ]
+}

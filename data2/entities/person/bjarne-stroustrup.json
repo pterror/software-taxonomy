@@ -1,0 +1,31 @@
+{
+  "id": "@person:bjarne-stroustrup",
+  "labels": {
+    "en": "Bjarne Stroustrup"
+  },
+  "description": "Danish computer scientist who designed and implemented the C++ programming language at Bell Labs beginning in 1979.",
+  "statements": [
+    {
+      "id": "s:4b4b4nl",
+      "predicate": "@core:instance_of",
+      "value": "@class:person",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:bjarne_stroustrup@1353720236"
+        }
+      ]
+    },
+    {
+      "id": "s:5ti18jw",
+      "predicate": "@core:wikipedia",
+      "value": "Bjarne_Stroustrup",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:bjarne_stroustrup@1353720236"
+        }
+      ]
+    }
+  ]
+}

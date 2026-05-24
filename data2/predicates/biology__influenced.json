@@ -1,0 +1,15 @@
+{
+  "id": "@biology:influenced",
+  "label": "influenced",
+  "description": "Inverse of influenced_by. This entity influenced another.",
+  "lens": "biology",
+  "value_type": "entity",
+  "domain": [
+    "@class:software"
+  ],
+  "range": [
+    "@class:software"
+  ],
+  "cardinality": "0..*",
+  "inverse": "@biology:influenced_by"
+}

@@ -1,0 +1,15 @@
+{
+  "id": "@core:runs_on",
+  "label": "runs on",
+  "description": "Platforms or operating systems on which this entity can run. Use @-prefixed OS entities (e.g. @windows, @linux, @macos).",
+  "lens": "core",
+  "value_type": "entity",
+  "domain": [
+    "@class:software"
+  ],
+  "range": [
+    "@class:operating-system"
+  ],
+  "cardinality": "0..*",
+  "expect_preferred": false
+}

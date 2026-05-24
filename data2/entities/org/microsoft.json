@@ -1,0 +1,42 @@
+{
+  "id": "@org:microsoft",
+  "labels": {
+    "en": "Microsoft"
+  },
+  "description": "American multinational technology corporation headquartered in Redmond, Washington, developing software, consumer electronics, and cloud services.",
+  "statements": [
+    {
+      "id": "s:zk195th",
+      "predicate": "@core:instance_of",
+      "value": "@class:organization",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:microsoft@1355602846"
+        }
+      ]
+    },
+    {
+      "id": "s:pdat8tx",
+      "predicate": "@core:wikipedia",
+      "value": "Microsoft",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:microsoft@1355602846"
+        }
+      ]
+    },
+    {
+      "id": "s:fmpre19",
+      "predicate": "@core:founded",
+      "value": "1975-04-04",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:microsoft@1355602846"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "id": "@biology:convergent_with",
+  "label": "convergent with",
+  "description": "An entity that independently evolved a similar feature or capability via a different lineage. Marks evolutionary convergence — use when two entities in different clades arrived at the same solution without shared ancestry.",
+  "lens": "biology",
+  "value_type": "entity",
+  "domain": [
+    "@class:software"
+  ],
+  "range": [
+    "@class:software"
+  ],
+  "cardinality": "0..*"
+}

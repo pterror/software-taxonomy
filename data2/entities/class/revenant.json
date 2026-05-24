@@ -1,0 +1,21 @@
+{
+  "id": "@class:revenant",
+  "labels": {
+    "en": "Revenant"
+  },
+  "description": "Mythological class: software spirits that refuse to die — processes that respawn, zombie processes, software whose maintainers are gone but which still runs on ancient servers.",
+  "statements": [
+    {
+      "id": "s:0rdstj1",
+      "predicate": "@core:instance_of",
+      "value": "@meta:class",
+      "lens": "mythology-demo"
+    },
+    {
+      "id": "s:dofa2rg",
+      "predicate": "@core:subclass_of",
+      "value": "@class:software",
+      "lens": "mythology-demo"
+    }
+  ]
+}

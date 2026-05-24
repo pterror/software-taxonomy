@@ -1,0 +1,121 @@
+{
+  "id": "@software:postgresql",
+  "labels": {
+    "en": "PostgreSQL"
+  },
+  "aliases": [
+    "Postgres"
+  ],
+  "description": "A powerful, open-source object-relational database management system emphasizing extensibility and SQL compliance, developed by the PostgreSQL Global Development Group since 1996; descended from the Berkeley POSTGRES project led by Michael Stonebraker 1986-1994.",
+  "statements": [
+    {
+      "id": "s:up72yck",
+      "predicate": "@core:instance_of",
+      "value": "@class:postgres",
+      "lens": "core",
+      "rank": "preferred",
+      "sources": [
+        {
+          "id": "wp:postgresql@1354201532"
+        }
+      ]
+    },
+    {
+      "id": "s:hziw8lv",
+      "predicate": "@core:instance_of",
+      "value": "@class:database",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:postgresql@1354201532"
+        }
+      ]
+    },
+    {
+      "id": "s:s5wuq4o",
+      "predicate": "@core:developed_by",
+      "value": "@person:michael-stonebraker",
+      "lens": "core",
+      "rank": "deprecated",
+      "qualifiers": {
+        "@core:start_time": "1986",
+        "@core:end_time": "1996"
+      },
+      "sources": [
+        {
+          "id": "wp:postgresql@1354201532"
+        }
+      ]
+    },
+    {
+      "id": "s:dog449e",
+      "predicate": "@core:developed_by",
+      "value": "@collective:postgresql-global-development-group",
+      "lens": "core",
+      "rank": "preferred",
+      "qualifiers": {
+        "@core:start_time": "1996"
+      },
+      "sources": [
+        {
+          "id": "wp:postgresql@1354201532"
+        }
+      ]
+    },
+    {
+      "id": "s:4jey8yb",
+      "predicate": "@core:first_released",
+      "value": "1996-07-08",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:postgresql@1354201532"
+        }
+      ]
+    },
+    {
+      "id": "s:e44fkee",
+      "predicate": "@core:licensed_under",
+      "value": "@license:postgresql",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:postgresql@1354201532"
+        }
+      ]
+    },
+    {
+      "id": "s:nfgi0uw",
+      "predicate": "@core:written_in",
+      "value": "@language:c",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:postgresql@1354201532"
+        }
+      ]
+    },
+    {
+      "id": "s:jh98oml",
+      "predicate": "@core:wikipedia",
+      "value": "PostgreSQL",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:postgresql@1354201532"
+        }
+      ]
+    },
+    {
+      "id": "s:oykwfn5",
+      "predicate": "@core:official_url",
+      "value": "https://www.postgresql.org/",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:postgresql@1354201532"
+        }
+      ]
+    }
+  ]
+}

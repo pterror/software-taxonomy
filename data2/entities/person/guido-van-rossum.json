@@ -1,0 +1,31 @@
+{
+  "id": "@person:guido-van-rossum",
+  "labels": {
+    "en": "Guido van Rossum"
+  },
+  "description": "Dutch programmer who created the Python programming language and served as its principal author until 2018.",
+  "statements": [
+    {
+      "id": "s:lwdt3cj",
+      "predicate": "@core:instance_of",
+      "value": "@class:person",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:guido_van_rossum@1347451896"
+        }
+      ]
+    },
+    {
+      "id": "s:gpclvgp",
+      "predicate": "@core:wikipedia",
+      "value": "Guido_van_Rossum",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:guido_van_rossum@1347451896"
+        }
+      ]
+    }
+  ]
+}

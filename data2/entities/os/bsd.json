@@ -1,0 +1,42 @@
+{
+  "id": "@os:bsd",
+  "labels": {
+    "en": "BSD"
+  },
+  "description": "A Unix derivative originally developed at the University of California, Berkeley, first released in 1978.",
+  "statements": [
+    {
+      "id": "s:r2vaenl",
+      "predicate": "@core:instance_of",
+      "value": "@class:operating-system",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:berkeley_software_distribution@1353913370"
+        }
+      ]
+    },
+    {
+      "id": "s:mz8sz7b",
+      "predicate": "@core:wikipedia",
+      "value": "Berkeley_Software_Distribution",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:berkeley_software_distribution@1353913370"
+        }
+      ]
+    },
+    {
+      "id": "s:711yvb1",
+      "predicate": "@core:first_released",
+      "value": "1978",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:berkeley_software_distribution@1353913370"
+        }
+      ]
+    }
+  ]
+}

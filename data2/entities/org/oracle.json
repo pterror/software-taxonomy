@@ -1,0 +1,42 @@
+{
+  "id": "@org:oracle",
+  "labels": {
+    "en": "Oracle Corporation"
+  },
+  "description": "American multinational technology corporation specializing in database software, cloud infrastructure, and enterprise software products.",
+  "statements": [
+    {
+      "id": "s:yb5fkq9",
+      "predicate": "@core:instance_of",
+      "value": "@class:organization",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:oracle_corporation@1355344850"
+        }
+      ]
+    },
+    {
+      "id": "s:xm7go5y",
+      "predicate": "@core:wikipedia",
+      "value": "Oracle_Corporation",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:oracle_corporation@1355344850"
+        }
+      ]
+    },
+    {
+      "id": "s:7m9rziz",
+      "predicate": "@core:founded",
+      "value": "1977-06-16",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:oracle_corporation@1355344850"
+        }
+      ]
+    }
+  ]
+}

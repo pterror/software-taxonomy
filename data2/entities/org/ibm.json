@@ -1,0 +1,42 @@
+{
+  "id": "@org:ibm",
+  "labels": {
+    "en": "IBM"
+  },
+  "description": "American multinational technology corporation that manufactures and markets computer hardware, middleware, and software, and provides hosting and consulting services.",
+  "statements": [
+    {
+      "id": "s:i7hpqlc",
+      "predicate": "@core:instance_of",
+      "value": "@class:organization",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:ibm@1354198349"
+        }
+      ]
+    },
+    {
+      "id": "s:md296bx",
+      "predicate": "@core:wikipedia",
+      "value": "IBM",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:ibm@1354198349"
+        }
+      ]
+    },
+    {
+      "id": "s:0m99nik",
+      "predicate": "@core:founded",
+      "value": "1911-06-16",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:ibm@1354198349"
+        }
+      ]
+    }
+  ]
+}

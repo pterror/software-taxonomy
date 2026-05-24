@@ -1,0 +1,31 @@
+{
+  "id": "@org:proofpoint",
+  "labels": {
+    "en": "Proofpoint, Inc."
+  },
+  "description": "American enterprise security company specializing in email security and compliance; acquired Sendmail, Inc. in 2013.",
+  "statements": [
+    {
+      "id": "s:lvofqzu",
+      "predicate": "@core:instance_of",
+      "value": "@class:organization",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:proofpoint@1350715750"
+        }
+      ]
+    },
+    {
+      "id": "s:8gluaye",
+      "predicate": "@core:wikipedia",
+      "value": "Proofpoint",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:proofpoint@1350715750"
+        }
+      ]
+    }
+  ]
+}

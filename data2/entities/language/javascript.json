@@ -1,0 +1,53 @@
+{
+  "id": "@language:javascript",
+  "labels": {
+    "en": "JavaScript"
+  },
+  "description": "A lightweight, interpreted programming language with first-class functions, created by Brendan Eich at Netscape in 1995.",
+  "statements": [
+    {
+      "id": "s:0rp4gla",
+      "predicate": "@core:instance_of",
+      "value": "@class:programming-language",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:javascript@1351077540"
+        }
+      ]
+    },
+    {
+      "id": "s:3anaghh",
+      "predicate": "@core:wikipedia",
+      "value": "JavaScript",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:javascript@1351077540"
+        }
+      ]
+    },
+    {
+      "id": "s:foufct4",
+      "predicate": "@core:first_released",
+      "value": "1995",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:javascript@1351077540"
+        }
+      ]
+    },
+    {
+      "id": "s:o5ssscl",
+      "predicate": "@core:principal_author",
+      "value": "@person:brendan-eich",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:javascript@1351077540"
+        }
+      ]
+    }
+  ]
+}

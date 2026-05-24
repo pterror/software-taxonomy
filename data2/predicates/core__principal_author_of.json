@@ -1,0 +1,15 @@
+{
+  "id": "@core:principal_author_of",
+  "label": "principal author of",
+  "description": "Inverse of principal_author. A person is the principal author of a software entity.",
+  "lens": "core",
+  "value_type": "entity",
+  "domain": [
+    "@class:agent"
+  ],
+  "range": [
+    "@class:technical-artifact"
+  ],
+  "cardinality": "0..*",
+  "inverse": "@core:principal_author"
+}

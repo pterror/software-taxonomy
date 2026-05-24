@@ -1,0 +1,31 @@
+{
+  "id": "@license:mit",
+  "labels": {
+    "en": "MIT License"
+  },
+  "description": "A permissive free software license originating at the Massachusetts Institute of Technology.",
+  "statements": [
+    {
+      "id": "s:jhnhmk3",
+      "predicate": "@core:instance_of",
+      "value": "@class:license",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mit_license@1354674068"
+        }
+      ]
+    },
+    {
+      "id": "s:wyc5u9b",
+      "predicate": "@core:wikipedia",
+      "value": "MIT_License",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mit_license@1354674068"
+        }
+      ]
+    }
+  ]
+}

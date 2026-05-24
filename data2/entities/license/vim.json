@@ -1,0 +1,31 @@
+{
+  "id": "@license:vim",
+  "labels": {
+    "en": "Vim License"
+  },
+  "description": "The license for the Vim text editor, a charityware license that encourages users to donate to children in Uganda; compatible with GPL-2.0-or-later.",
+  "statements": [
+    {
+      "id": "s:glfjwif",
+      "predicate": "@core:instance_of",
+      "value": "@class:license",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:charityware@961253206"
+        }
+      ]
+    },
+    {
+      "id": "s:26z7kih",
+      "predicate": "@core:wikipedia",
+      "value": "Charityware",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:charityware@961253206"
+        }
+      ]
+    }
+  ]
+}

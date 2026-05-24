@@ -1,0 +1,16 @@
+{
+  "id": "@folklore:subject_of",
+  "label": "subject of",
+  "description": "A law, parable, aphorism, or cultural artifact that this entity is the primary subject of. Value is a folklore entity (a @folklore-artifact).",
+  "lens": "folklore",
+  "value_type": "entity",
+  "domain": [
+    "@class:software",
+    "@class:person",
+    "@class:organization"
+  ],
+  "range": [
+    "@folklore-artifact"
+  ],
+  "cardinality": "0..*"
+}

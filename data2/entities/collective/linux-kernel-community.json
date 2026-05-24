@@ -1,0 +1,42 @@
+{
+  "id": "@collective:linux-kernel-community",
+  "labels": {
+    "en": "Linux Kernel Community"
+  },
+  "description": "Distributed community of developers contributing to the Linux kernel and associated projects, coordinated via kernel.org and LKML.",
+  "statements": [
+    {
+      "id": "s:l03tla9",
+      "predicate": "@core:instance_of",
+      "value": "@class:collective",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:linux@1354653858"
+        }
+      ]
+    },
+    {
+      "id": "s:lap6dxv",
+      "predicate": "@core:wikipedia",
+      "value": "Linux_kernel",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:linux@1354653858"
+        }
+      ]
+    },
+    {
+      "id": "s:k4kx41e",
+      "predicate": "@core:official_url",
+      "value": "https://kernel.org/",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:linux@1354653858"
+        }
+      ]
+    }
+  ]
+}

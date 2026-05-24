@@ -1,0 +1,21 @@
+{
+  "id": "@class:word-processor",
+  "labels": {
+    "en": "Word Processor"
+  },
+  "description": "A software application for the composition, editing, formatting, and printing of documents.",
+  "statements": [
+    {
+      "id": "s:zii14c3",
+      "predicate": "@core:instance_of",
+      "value": "@meta:class",
+      "lens": "core"
+    },
+    {
+      "id": "s:7kgk19w",
+      "predicate": "@core:subclass_of",
+      "value": "@class:software",
+      "lens": "core"
+    }
+  ]
+}

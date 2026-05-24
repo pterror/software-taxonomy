@@ -1,0 +1,20 @@
+{
+  "id": "@org:cognition-ai",
+  "labels": {
+    "en": "Cognition AI"
+  },
+  "description": "American AI company that developed Devin, an autonomous AI software engineer.",
+  "statements": [
+    {
+      "id": "s:7kwssta",
+      "predicate": "@core:instance_of",
+      "value": "@class:organization",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "official:cognition-ai@2026-05-23"
+        }
+      ]
+    }
+  ]
+}

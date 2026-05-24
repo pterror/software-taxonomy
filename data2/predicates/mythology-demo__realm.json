@@ -1,0 +1,13 @@
+{
+  "id": "@mythology-demo:realm",
+  "label": "realm",
+  "description": "The mythological domain or underworld layer this daimon inhabits. String-valued (e.g. 'scheduler-underworld', 'routing-labyrinth').",
+  "lens": "mythology-demo",
+  "value_type": "string",
+  "domain": [
+    "@class:daimon",
+    "@class:revenant"
+  ],
+  "range": null,
+  "cardinality": "0..1"
+}

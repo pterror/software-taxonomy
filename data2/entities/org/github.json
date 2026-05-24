@@ -1,0 +1,42 @@
+{
+  "id": "@org:github",
+  "labels": {
+    "en": "GitHub"
+  },
+  "description": "American software development platform and hosting service for version control using Git, acquired by Microsoft in 2018.",
+  "statements": [
+    {
+      "id": "s:7jp5tgd",
+      "predicate": "@core:instance_of",
+      "value": "@class:organization",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:github@1355198684"
+        }
+      ]
+    },
+    {
+      "id": "s:i85o6ol",
+      "predicate": "@core:wikipedia",
+      "value": "GitHub",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:github@1355198684"
+        }
+      ]
+    },
+    {
+      "id": "s:te1zfg4",
+      "predicate": "@core:founded",
+      "value": "2008-04-10",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:github@1355198684"
+        }
+      ]
+    }
+  ]
+}

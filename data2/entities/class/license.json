@@ -1,0 +1,15 @@
+{
+  "id": "@class:license",
+  "labels": {
+    "en": "License"
+  },
+  "description": "Class of software licenses under which programs and source code are distributed.",
+  "statements": [
+    {
+      "id": "s:yy4ihlz",
+      "predicate": "@core:instance_of",
+      "value": "@meta:class",
+      "lens": "core"
+    }
+  ]
+}

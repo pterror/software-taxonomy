@@ -1,0 +1,31 @@
+{
+  "id": "@license:shareware",
+  "labels": {
+    "en": "Shareware"
+  },
+  "description": "A software licensing model that allows free evaluation of a product for a limited time or with limited features, with purchase required for continued or full use.",
+  "statements": [
+    {
+      "id": "s:shk7phs",
+      "predicate": "@core:instance_of",
+      "value": "@class:license",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:shareware@1353475964"
+        }
+      ]
+    },
+    {
+      "id": "s:98mw204",
+      "predicate": "@core:wikipedia",
+      "value": "Shareware",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:shareware@1353475964"
+        }
+      ]
+    }
+  ]
+}

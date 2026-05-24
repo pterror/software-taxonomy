@@ -1,0 +1,31 @@
+{
+  "id": "@person:igor-sysoev",
+  "labels": {
+    "en": "Igor Sysoev"
+  },
+  "description": "Russian software engineer who created the nginx web server while working at Rambler, the Russian internet company, releasing it publicly in 2004.",
+  "statements": [
+    {
+      "id": "s:j0lyqe2",
+      "predicate": "@core:instance_of",
+      "value": "@class:person",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:igor_sysoev@1341415728"
+        }
+      ]
+    },
+    {
+      "id": "s:9za4i34",
+      "predicate": "@core:wikipedia",
+      "value": "Igor_Sysoev",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:igor_sysoev@1341415728"
+        }
+      ]
+    }
+  ]
+}

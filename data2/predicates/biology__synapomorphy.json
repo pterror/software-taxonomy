@@ -1,0 +1,13 @@
+{
+  "id": "@biology:synapomorphy",
+  "label": "synapomorphy",
+  "description": "A shared derived characteristic that defines membership in a clade. String-valued (feature slug). Used on class entities to document the defining traits of that taxon.",
+  "lens": "biology",
+  "value_type": "string",
+  "domain": [
+    "@meta:class"
+  ],
+  "range": null,
+  "cardinality": "0..*",
+  "expect_preferred": false
+}

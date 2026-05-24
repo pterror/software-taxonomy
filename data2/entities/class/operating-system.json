@@ -1,0 +1,21 @@
+{
+  "id": "@class:operating-system",
+  "labels": {
+    "en": "Operating System"
+  },
+  "description": "Software that manages hardware resources and provides common services for computer programs.",
+  "statements": [
+    {
+      "id": "s:uqlkexb",
+      "predicate": "@core:instance_of",
+      "value": "@meta:class",
+      "lens": "core"
+    },
+    {
+      "id": "s:e7b5blb",
+      "predicate": "@core:subclass_of",
+      "value": "@class:software",
+      "lens": "core"
+    }
+  ]
+}

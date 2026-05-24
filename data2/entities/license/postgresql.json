@@ -1,0 +1,31 @@
+{
+  "id": "@license:postgresql",
+  "labels": {
+    "en": "PostgreSQL License"
+  },
+  "description": "A permissive free software license used by the PostgreSQL project, similar in structure to the BSD and MIT licenses.",
+  "statements": [
+    {
+      "id": "s:cbujyn1",
+      "predicate": "@core:instance_of",
+      "value": "@class:license",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:postgresql@1354201532"
+        }
+      ]
+    },
+    {
+      "id": "s:kmq6dou",
+      "predicate": "@core:wikipedia",
+      "value": "PostgreSQL",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:postgresql@1354201532"
+        }
+      ]
+    }
+  ]
+}

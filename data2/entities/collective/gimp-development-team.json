@@ -1,0 +1,20 @@
+{
+  "id": "@collective:gimp-development-team",
+  "labels": {
+    "en": "GIMP Development Team"
+  },
+  "description": "The volunteer community of developers and contributors who maintain the GIMP image editor as part of the GNU and GNOME projects.",
+  "statements": [
+    {
+      "id": "s:ldekomi",
+      "predicate": "@core:instance_of",
+      "value": "@class:collective",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:gimp@1354233554"
+        }
+      ]
+    }
+  ]
+}

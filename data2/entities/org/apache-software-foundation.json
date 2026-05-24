@@ -1,0 +1,42 @@
+{
+  "id": "@org:apache-software-foundation",
+  "labels": {
+    "en": "Apache Software Foundation"
+  },
+  "description": "American non-profit corporation that supports open-source software projects including the Apache HTTP Server and numerous related projects.",
+  "statements": [
+    {
+      "id": "s:vu4ejwh",
+      "predicate": "@core:instance_of",
+      "value": "@class:organization",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:apache_software_foundation@1083650073"
+        }
+      ]
+    },
+    {
+      "id": "s:qah7i9f",
+      "predicate": "@core:wikipedia",
+      "value": "Apache_Software_Foundation",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:apache_software_foundation@1083650073"
+        }
+      ]
+    },
+    {
+      "id": "s:iscb5xj",
+      "predicate": "@core:founded",
+      "value": "1999-03-25",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:apache_software_foundation@1083650073"
+        }
+      ]
+    }
+  ]
+}

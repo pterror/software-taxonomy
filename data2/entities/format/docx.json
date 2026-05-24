@@ -1,0 +1,31 @@
+{
+  "id": "@format:docx",
+  "labels": {
+    "en": "DOCX"
+  },
+  "description": "A file format for word-processing documents based on the Office Open XML standard, developed by Microsoft and first standardized in 2006.",
+  "statements": [
+    {
+      "id": "s:i3o3w3j",
+      "predicate": "@core:instance_of",
+      "value": "@class:file-format",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:office_open_xml@1342064084"
+        }
+      ]
+    },
+    {
+      "id": "s:29his3i",
+      "predicate": "@core:wikipedia",
+      "value": "Office_Open_XML",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:office_open_xml@1342064084"
+        }
+      ]
+    }
+  ]
+}

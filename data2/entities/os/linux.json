@@ -1,0 +1,53 @@
+{
+  "id": "@os:linux",
+  "labels": {
+    "en": "Linux"
+  },
+  "description": "A family of open-source Unix-like operating systems based on the Linux kernel, first released by Linus Torvalds on September 17, 1991.",
+  "statements": [
+    {
+      "id": "s:npca3y2",
+      "predicate": "@core:instance_of",
+      "value": "@class:operating-system",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:linux@1354653858"
+        }
+      ]
+    },
+    {
+      "id": "s:qdduvtq",
+      "predicate": "@core:wikipedia",
+      "value": "Linux",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:linux@1354653858"
+        }
+      ]
+    },
+    {
+      "id": "s:w37x1qz",
+      "predicate": "@core:first_released",
+      "value": "1991-09-17",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:linux@1354653858"
+        }
+      ]
+    },
+    {
+      "id": "s:zmo6nza",
+      "predicate": "@core:principal_author",
+      "value": "@person:linus-torvalds",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:linux@1354653858"
+        }
+      ]
+    }
+  ]
+}

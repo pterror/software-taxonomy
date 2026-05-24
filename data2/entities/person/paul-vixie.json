@@ -1,0 +1,31 @@
+{
+  "id": "@person:paul-vixie",
+  "labels": {
+    "en": "Paul Vixie"
+  },
+  "description": "American computer scientist who rewrote the cron daemon for BSD in 1987, producing the widely-deployed Vixie cron.",
+  "statements": [
+    {
+      "id": "s:x7m4yb5",
+      "predicate": "@core:instance_of",
+      "value": "@class:person",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:paul_vixie@1352431459"
+        }
+      ]
+    },
+    {
+      "id": "s:vbj4ddf",
+      "predicate": "@core:wikipedia",
+      "value": "Paul_Vixie",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:paul_vixie@1352431459"
+        }
+      ]
+    }
+  ]
+}

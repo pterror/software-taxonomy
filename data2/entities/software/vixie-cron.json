@@ -1,0 +1,125 @@
+{
+  "id": "@software:vixie-cron",
+  "labels": {
+    "en": "Vixie cron"
+  },
+  "aliases": [
+    "cron",
+    "cron daemon",
+    "ISC Cron"
+  ],
+  "description": "The dominant Unix cron implementation, rewritten by Paul Vixie in 1987 from the earlier AT&T/BSD variants, widely deployed as the default cron on Linux and BSD systems.",
+  "statements": [
+    {
+      "id": "s:he3ieo3",
+      "predicate": "@core:instance_of",
+      "value": "@class:cron",
+      "lens": "core",
+      "rank": "preferred",
+      "sources": [
+        {
+          "id": "wp:cron@1353491489"
+        }
+      ]
+    },
+    {
+      "id": "s:w925sto",
+      "predicate": "@core:developed_by",
+      "value": "@person:paul-vixie",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:cron@1353491489"
+        }
+      ]
+    },
+    {
+      "id": "s:g1dew0k",
+      "predicate": "@core:principal_author",
+      "value": "@person:paul-vixie",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:cron@1353491489"
+        }
+      ]
+    },
+    {
+      "id": "s:7s4c6yo",
+      "predicate": "@core:first_released",
+      "value": "1987",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:cron@1353491489"
+        }
+      ]
+    },
+    {
+      "id": "s:kgpe5t1",
+      "predicate": "@core:runs_on",
+      "value": "@os:linux",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:cron@1353491489"
+        }
+      ]
+    },
+    {
+      "id": "s:q1qe68y",
+      "predicate": "@core:runs_on",
+      "value": "@os:unix",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:cron@1353491489"
+        }
+      ]
+    },
+    {
+      "id": "s:oub3c73",
+      "predicate": "@core:runs_on",
+      "value": "@os:macos",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:cron@1353491489"
+        }
+      ]
+    },
+    {
+      "id": "s:gpzpaxs",
+      "predicate": "@core:written_in",
+      "value": "@language:c",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:cron@1353491489"
+        }
+      ]
+    },
+    {
+      "id": "s:zczieyp",
+      "predicate": "@core:licensed_under",
+      "value": "@license:public-domain",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:cron@1353491489"
+        }
+      ]
+    },
+    {
+      "id": "s:i24yzt1",
+      "predicate": "@core:wikipedia",
+      "value": "Cron",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:cron@1353491489"
+        }
+      ]
+    }
+  ]
+}

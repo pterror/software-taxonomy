@@ -1,0 +1,51 @@
+{
+  "id": "@daimon:of-cron",
+  "labels": {
+    "en": "The Daimon of Cron"
+  },
+  "description": "The time-keeper daimon who governs the scheduler underworld. Every five minutes it wakes, consults its tablets (crontabs), dispatches messengers, and returns to slumber. It neither knows nor cares what its tasks accomplish.",
+  "statements": [
+    {
+      "id": "s:qrdwxbm",
+      "predicate": "@core:instance_of",
+      "value": "@class:daimon",
+      "lens": "mythology-demo"
+    },
+    {
+      "id": "s:f7elvel",
+      "predicate": "@mythology-demo:invoked_by",
+      "value": "crontab -e",
+      "lens": "mythology-demo"
+    },
+    {
+      "id": "s:6wkag64",
+      "predicate": "@mythology-demo:aspect_of",
+      "value": "cyclical-time",
+      "lens": "mythology-demo"
+    },
+    {
+      "id": "s:pdk9kwy",
+      "predicate": "@mythology-demo:aspect_of",
+      "value": "scheduled-fate",
+      "lens": "mythology-demo"
+    },
+    {
+      "id": "s:7554les",
+      "predicate": "@mythology-demo:aspect_of",
+      "value": "indifferent-execution",
+      "lens": "mythology-demo"
+    },
+    {
+      "id": "s:bhswrz5",
+      "predicate": "@mythology-demo:realm",
+      "value": "scheduler-underworld",
+      "lens": "mythology-demo"
+    },
+    {
+      "id": "s:brugecg",
+      "predicate": "@mythology-demo:binds_to",
+      "value": "@daimon:of-sendmail",
+      "lens": "mythology-demo"
+    }
+  ]
+}

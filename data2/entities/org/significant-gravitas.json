@@ -1,0 +1,20 @@
+{
+  "id": "@org:significant-gravitas",
+  "labels": {
+    "en": "Significant Gravitas Ltd."
+  },
+  "description": "The company behind Auto-GPT, founded by Toran Bruce Richards, one of the earliest autonomous AI agent projects.",
+  "statements": [
+    {
+      "id": "s:1cz89re",
+      "predicate": "@core:instance_of",
+      "value": "@class:organization",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:autogpt@1247136685"
+        }
+      ]
+    }
+  ]
+}

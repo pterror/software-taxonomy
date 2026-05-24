@@ -1,0 +1,42 @@
+{
+  "id": "@org:kitware",
+  "labels": {
+    "en": "Kitware"
+  },
+  "description": "American software research and development company specializing in open-source scientific computing tools, and the primary developer of CMake.",
+  "statements": [
+    {
+      "id": "s:levtscu",
+      "predicate": "@core:instance_of",
+      "value": "@class:organization",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:kitware@1317299631"
+        }
+      ]
+    },
+    {
+      "id": "s:itkebtt",
+      "predicate": "@core:wikipedia",
+      "value": "Kitware",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:kitware@1317299631"
+        }
+      ]
+    },
+    {
+      "id": "s:5fq3je6",
+      "predicate": "@core:founded",
+      "value": "1998",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:kitware@1317299631"
+        }
+      ]
+    }
+  ]
+}

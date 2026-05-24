@@ -1,0 +1,31 @@
+{
+  "id": "@person:junio-hamano",
+  "labels": {
+    "en": "Junio C Hamano"
+  },
+  "description": "Japanese-American software engineer who has been the primary maintainer of the Git version control system since July 2005.",
+  "statements": [
+    {
+      "id": "s:vofyo00",
+      "predicate": "@core:instance_of",
+      "value": "@class:person",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:junio_hamano@1111759766"
+        }
+      ]
+    },
+    {
+      "id": "s:haqiryt",
+      "predicate": "@core:wikipedia",
+      "value": "Junio_Hamano",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:junio_hamano@1111759766"
+        }
+      ]
+    }
+  ]
+}

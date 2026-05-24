@@ -1,0 +1,42 @@
+{
+  "id": "@org:red-hat",
+  "labels": {
+    "en": "Red Hat"
+  },
+  "description": "An American software company that provides open-source software products, most notably Red Hat Enterprise Linux, acquired by IBM in 2019.",
+  "statements": [
+    {
+      "id": "s:if8d7yo",
+      "predicate": "@core:instance_of",
+      "value": "@class:organization",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:red_hat@1354433938"
+        }
+      ]
+    },
+    {
+      "id": "s:qn6hgie",
+      "predicate": "@core:wikipedia",
+      "value": "Red_Hat",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:red_hat@1354433938"
+        }
+      ]
+    },
+    {
+      "id": "s:yketk1r",
+      "predicate": "@core:official_url",
+      "value": "https://www.redhat.com/",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:red_hat@1354433938"
+        }
+      ]
+    }
+  ]
+}

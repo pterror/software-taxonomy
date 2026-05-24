@@ -1,0 +1,20 @@
+{
+  "id": "@org:anysphere",
+  "labels": {
+    "en": "Anysphere"
+  },
+  "description": "American software company that develops the Cursor AI code editor.",
+  "statements": [
+    {
+      "id": "s:bcvhxj2",
+      "predicate": "@core:instance_of",
+      "value": "@class:organization",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "official:anysphere@2026-05-23"
+        }
+      ]
+    }
+  ]
+}

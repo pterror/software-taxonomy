@@ -1,0 +1,142 @@
+{
+  "id": "@software:langchain",
+  "labels": {
+    "en": "LangChain"
+  },
+  "description": "An open-source framework for building applications powered by large language models, enabling chaining of LLM calls with tools, agents, and memory, first released in October 2022 by Harrison Chase and maintained by LangChain Inc.",
+  "statements": [
+    {
+      "id": "s:d09vag9",
+      "predicate": "@core:instance_of",
+      "value": "@class:agent-framework",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:langchain@1342539249"
+        }
+      ]
+    },
+    {
+      "id": "s:esd8mnl",
+      "predicate": "@core:developed_by",
+      "value": "@org:langchain-inc",
+      "lens": "core",
+      "rank": "preferred",
+      "sources": [
+        {
+          "id": "wp:langchain@1342539249"
+        }
+      ]
+    },
+    {
+      "id": "s:hksfptx",
+      "predicate": "@core:principal_author",
+      "value": "@person:harrison-chase",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:langchain@1342539249"
+        }
+      ]
+    },
+    {
+      "id": "s:h29l5t9",
+      "predicate": "@core:first_released",
+      "value": "2022-10",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:langchain@1342539249"
+        }
+      ]
+    },
+    {
+      "id": "s:e7vygt7",
+      "predicate": "@core:runs_on",
+      "value": "@os:linux",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:langchain@1342539249"
+        }
+      ]
+    },
+    {
+      "id": "s:bmd2wnd",
+      "predicate": "@core:runs_on",
+      "value": "@os:macos",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:langchain@1342539249"
+        }
+      ]
+    },
+    {
+      "id": "s:kzg8u6k",
+      "predicate": "@core:runs_on",
+      "value": "@os:windows",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:langchain@1342539249"
+        }
+      ]
+    },
+    {
+      "id": "s:6yrk2hk",
+      "predicate": "@core:written_in",
+      "value": "@language:python",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:langchain@1342539249"
+        }
+      ]
+    },
+    {
+      "id": "s:z3w3bod",
+      "predicate": "@core:written_in",
+      "value": "@language:javascript",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:langchain@1342539249"
+        }
+      ]
+    },
+    {
+      "id": "s:939qxpy",
+      "predicate": "@core:licensed_under",
+      "value": "@license:mit",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:langchain@1342539249"
+        }
+      ]
+    },
+    {
+      "id": "s:8knxpmn",
+      "predicate": "@core:wikipedia",
+      "value": "LangChain",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:langchain@1342539249"
+        }
+      ]
+    },
+    {
+      "id": "s:oy3z548",
+      "predicate": "@core:official_url",
+      "value": "https://www.langchain.com",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:langchain@1342539249"
+        }
+      ]
+    }
+  ]
+}

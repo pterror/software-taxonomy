@@ -1,0 +1,14 @@
+{
+  "id": "@biology:type_instance",
+  "label": "type instance",
+  "description": "The canonical or prototypical instance of this class entity. Analogous to a type species in biological taxonomy. Value is an @-prefixed entity id.",
+  "lens": "biology",
+  "value_type": "entity",
+  "domain": [
+    "@meta:class"
+  ],
+  "range": [
+    "@class:software"
+  ],
+  "cardinality": "0..1"
+}

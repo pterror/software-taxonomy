@@ -7,10 +7,15 @@
     "query": "bun src/query.ts",
     "tree": "bun src/tree.ts",
     "check-links": "bun src/check-links.ts",
-    "test-fixtures": "bun src/test-fixtures.ts"
+    "test-fixtures": "bun src/test-fixtures.ts",
+    "convert": "bun src/convert.ts",
+    "load2": "bun src/lib/load2.ts"
   },
   "devDependencies": {
     "ajv": "^8.17.1",
     "ajv-formats": "^3.0.1"
+  },
+  "dependencies": {
+    "datascript": "^1.7.8"
   }
 }

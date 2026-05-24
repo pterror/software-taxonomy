@@ -1,0 +1,42 @@
+{
+  "id": "@org:anthropic",
+  "labels": {
+    "en": "Anthropic"
+  },
+  "description": "American artificial intelligence safety company that develops large language models including the Claude family.",
+  "statements": [
+    {
+      "id": "s:sqcdh40",
+      "predicate": "@core:instance_of",
+      "value": "@class:organization",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:anthropic@1355429624"
+        }
+      ]
+    },
+    {
+      "id": "s:kgj282y",
+      "predicate": "@core:wikipedia",
+      "value": "Anthropic",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:anthropic@1355429624"
+        }
+      ]
+    },
+    {
+      "id": "s:evz6ad5",
+      "predicate": "@core:founded",
+      "value": "2021",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:anthropic@1355429624"
+        }
+      ]
+    }
+  ]
+}

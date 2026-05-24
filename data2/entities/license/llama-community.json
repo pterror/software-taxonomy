@@ -1,0 +1,20 @@
+{
+  "id": "@license:llama-community",
+  "labels": {
+    "en": "Llama Community License"
+  },
+  "description": "A source-available license used by Meta for the Llama family of language models, permitting commercial use subject to usage restrictions and acceptable use policies.",
+  "statements": [
+    {
+      "id": "s:w03sofs",
+      "predicate": "@core:instance_of",
+      "value": "@class:license",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:llama_language_model@1353017318"
+        }
+      ]
+    }
+  ]
+}

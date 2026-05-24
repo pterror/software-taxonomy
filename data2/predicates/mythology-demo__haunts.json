@@ -1,0 +1,15 @@
+{
+  "id": "@mythology-demo:haunts",
+  "label": "haunts",
+  "description": "The software entity this daimon or revenant is spiritually bound to. Use when a mythological being is the animating spirit of a program.",
+  "lens": "mythology-demo",
+  "value_type": "entity",
+  "domain": [
+    "@class:daimon",
+    "@class:revenant"
+  ],
+  "range": [
+    "@class:software"
+  ],
+  "cardinality": "0..*"
+}

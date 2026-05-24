@@ -1,0 +1,18 @@
+{
+  "id": "@core:descended_from",
+  "label": "descended from",
+  "description": "The entity from which this one is directly derived, usually via a design lineage or spiritual inheritance in the biological metaphor (not necessarily a code fork). For direct code forks use forked_from. Transitive — chains through the lineage.",
+  "lens": "core",
+  "value_type": "entity",
+  "domain": [
+    "@class:technical-artifact",
+    "@meta:class"
+  ],
+  "range": [
+    "@class:technical-artifact",
+    "@meta:class"
+  ],
+  "cardinality": "0..*",
+  "inverse": "@core:gave_rise_to",
+  "transitive": true
+}

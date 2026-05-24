@@ -1,0 +1,42 @@
+{
+  "id": "@language:lisp",
+  "labels": {
+    "en": "Lisp"
+  },
+  "description": "A family of programming languages with a long history and a distinctive, fully parenthesized prefix notation for syntax, originating in 1960 from John McCarthy's work at MIT.",
+  "statements": [
+    {
+      "id": "s:4yqrx56",
+      "predicate": "@core:instance_of",
+      "value": "@class:programming-language",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:lisp_programming_language@1350208827"
+        }
+      ]
+    },
+    {
+      "id": "s:g1jl0je",
+      "predicate": "@core:wikipedia",
+      "value": "Lisp_(programming_language)",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:lisp_programming_language@1350208827"
+        }
+      ]
+    },
+    {
+      "id": "s:ay7ch1w",
+      "predicate": "@core:first_released",
+      "value": "1960",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:lisp_programming_language@1350208827"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "id": "@os:windows",
+  "labels": {
+    "en": "Microsoft Windows"
+  },
+  "description": "A family of proprietary graphical operating systems developed and sold by Microsoft, first released in 1985.",
+  "statements": [
+    {
+      "id": "s:h71c3g4",
+      "predicate": "@core:instance_of",
+      "value": "@class:operating-system",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:microsoft_windows@1353528101"
+        }
+      ]
+    },
+    {
+      "id": "s:53jce0r",
+      "predicate": "@core:wikipedia",
+      "value": "Microsoft_Windows",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:microsoft_windows@1353528101"
+        }
+      ]
+    },
+    {
+      "id": "s:cxkghxv",
+      "predicate": "@core:first_released",
+      "value": "1985",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:microsoft_windows@1353528101"
+        }
+      ]
+    },
+    {
+      "id": "s:rfl7mxu",
+      "predicate": "@core:developed_by",
+      "value": "@org:microsoft",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:microsoft_windows@1353528101"
+        }
+      ]
+    }
+  ]
+}

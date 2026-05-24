@@ -1,0 +1,15 @@
+{
+  "id": "@core:has_fork",
+  "label": "has fork",
+  "description": "Inverse of forked_from. This entity has a fork in the form of another entity.",
+  "lens": "core",
+  "value_type": "entity",
+  "domain": [
+    "@class:technical-artifact"
+  ],
+  "range": [
+    "@class:technical-artifact"
+  ],
+  "cardinality": "0..*",
+  "inverse": "@core:forked_from"
+}

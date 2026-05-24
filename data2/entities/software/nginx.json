@@ -1,0 +1,121 @@
+{
+  "id": "@software:nginx",
+  "labels": {
+    "en": "nginx"
+  },
+  "aliases": [
+    "nginx",
+    "NGINX"
+  ],
+  "description": "A free, open-source, high-performance HTTP server, reverse proxy, and IMAP/POP3 proxy server created by Igor Sysoev and first publicly released in 2004; acquired by F5, Inc. in 2019.",
+  "statements": [
+    {
+      "id": "s:elhblkc",
+      "predicate": "@core:instance_of",
+      "value": "@class:web-server",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:nginx@1353230091"
+        }
+      ]
+    },
+    {
+      "id": "s:032sfj3",
+      "predicate": "@core:developed_by",
+      "value": "@person:igor-sysoev",
+      "lens": "core",
+      "rank": "deprecated",
+      "qualifiers": {
+        "@core:start_time": "2004",
+        "@core:end_time": "2019"
+      },
+      "sources": [
+        {
+          "id": "wp:nginx@1353230091"
+        }
+      ]
+    },
+    {
+      "id": "s:j79a2z3",
+      "predicate": "@core:developed_by",
+      "value": "@org:f5-inc",
+      "lens": "core",
+      "rank": "preferred",
+      "qualifiers": {
+        "@core:start_time": "2019"
+      },
+      "sources": [
+        {
+          "id": "wp:nginx@1353230091"
+        }
+      ]
+    },
+    {
+      "id": "s:1gqfhko",
+      "predicate": "@core:principal_author",
+      "value": "@person:igor-sysoev",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:nginx@1353230091"
+        }
+      ]
+    },
+    {
+      "id": "s:cglwlrc",
+      "predicate": "@core:first_released",
+      "value": "2004-10-04",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:nginx@1353230091"
+        }
+      ]
+    },
+    {
+      "id": "s:7rl04zv",
+      "predicate": "@core:licensed_under",
+      "value": "@license:bsd-2-clause",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:nginx@1353230091"
+        }
+      ]
+    },
+    {
+      "id": "s:v2cfkg6",
+      "predicate": "@core:written_in",
+      "value": "@language:c",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:nginx@1353230091"
+        }
+      ]
+    },
+    {
+      "id": "s:h5hz7o5",
+      "predicate": "@core:wikipedia",
+      "value": "Nginx",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:nginx@1353230091"
+        }
+      ]
+    },
+    {
+      "id": "s:nr9zuh7",
+      "predicate": "@core:official_url",
+      "value": "https://nginx.org/",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:nginx@1353230091"
+        }
+      ]
+    }
+  ]
+}

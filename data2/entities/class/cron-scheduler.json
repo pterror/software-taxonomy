@@ -1,0 +1,21 @@
+{
+  "id": "@class:cron-scheduler",
+  "labels": {
+    "en": "Cron Scheduler"
+  },
+  "description": "Software for scheduling and executing recurring tasks at specified times.",
+  "statements": [
+    {
+      "id": "s:4nfej60",
+      "predicate": "@core:instance_of",
+      "value": "@meta:class",
+      "lens": "core"
+    },
+    {
+      "id": "s:qf6c8jy",
+      "predicate": "@core:subclass_of",
+      "value": "@class:software",
+      "lens": "core"
+    }
+  ]
+}

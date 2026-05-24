@@ -1,0 +1,42 @@
+{
+  "id": "@org:mysql-ab",
+  "labels": {
+    "en": "MySQL AB"
+  },
+  "description": "The Swedish company founded by Michael Widenius and David Axmark that originally developed MySQL; acquired by Sun Microsystems in 2008.",
+  "statements": [
+    {
+      "id": "s:bdw5he0",
+      "predicate": "@core:instance_of",
+      "value": "@class:organization",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mysql_ab@1354212713"
+        }
+      ]
+    },
+    {
+      "id": "s:ysfb1tc",
+      "predicate": "@core:wikipedia",
+      "value": "MySQL_AB",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mysql_ab@1354212713"
+        }
+      ]
+    },
+    {
+      "id": "s:org00tf",
+      "predicate": "@core:founded",
+      "value": "1995",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:mysql_ab@1354212713"
+        }
+      ]
+    }
+  ]
+}

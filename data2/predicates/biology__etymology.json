@@ -1,0 +1,12 @@
+{
+  "id": "@biology:etymology",
+  "label": "etymology",
+  "description": "The linguistic or conceptual origin of this entity's name. String-valued narrative.",
+  "lens": "biology",
+  "value_type": "string",
+  "domain": [
+    "@meta:class"
+  ],
+  "range": null,
+  "cardinality": "0..1"
+}

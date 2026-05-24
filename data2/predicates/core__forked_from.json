@@ -1,0 +1,15 @@
+{
+  "id": "@core:forked_from",
+  "label": "forked from",
+  "description": "The entity from which this one was directly forked (i.e. the codebase was copied and diverged). Implies shared ancestry at a specific point in time. More specific than descended_from.",
+  "lens": "core",
+  "value_type": "entity",
+  "domain": [
+    "@class:technical-artifact"
+  ],
+  "range": [
+    "@class:technical-artifact"
+  ],
+  "cardinality": "0..*",
+  "inverse": "@core:has_fork"
+}

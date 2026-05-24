@@ -1,0 +1,21 @@
+{
+  "id": "@class:chat-model",
+  "labels": {
+    "en": "Chat Model"
+  },
+  "description": "A large language model deployed as a conversational interface for general-purpose text interaction.",
+  "statements": [
+    {
+      "id": "s:nyn0xn9",
+      "predicate": "@core:instance_of",
+      "value": "@meta:class",
+      "lens": "core"
+    },
+    {
+      "id": "s:aqboer7",
+      "predicate": "@core:subclass_of",
+      "value": "@class:software",
+      "lens": "core"
+    }
+  ]
+}

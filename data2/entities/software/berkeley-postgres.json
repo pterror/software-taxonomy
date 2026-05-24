@@ -1,0 +1,103 @@
+{
+  "id": "@software:berkeley-postgres",
+  "labels": {
+    "en": "Berkeley POSTGRES"
+  },
+  "aliases": [
+    "POSTGRES",
+    "Postgres 4.2"
+  ],
+  "description": "The original Berkeley database research system created by Michael Stonebraker at UC Berkeley in 1986, which introduced the object-relational model and post-relational query capabilities; the direct ancestor of PostgreSQL.",
+  "statements": [
+    {
+      "id": "s:jpmr2s3",
+      "predicate": "@core:instance_of",
+      "value": "@class:postgres",
+      "lens": "core",
+      "rank": "preferred",
+      "sources": [
+        {
+          "id": "wp:postgresql@1354201532"
+        }
+      ]
+    },
+    {
+      "id": "s:e7t0uq2",
+      "predicate": "@core:instance_of",
+      "value": "@class:database",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:postgresql@1354201532"
+        }
+      ]
+    },
+    {
+      "id": "s:odki0yr",
+      "predicate": "@core:developed_by",
+      "value": "@person:michael-stonebraker",
+      "lens": "core",
+      "rank": "preferred",
+      "sources": [
+        {
+          "id": "wp:postgresql@1354201532"
+        }
+      ]
+    },
+    {
+      "id": "s:l4vc1ex",
+      "predicate": "@core:principal_author",
+      "value": "@person:michael-stonebraker",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:michael_stonebraker@1350075405"
+        }
+      ]
+    },
+    {
+      "id": "s:vwsyfio",
+      "predicate": "@core:first_released",
+      "value": "1986",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:postgresql@1354201532"
+        }
+      ]
+    },
+    {
+      "id": "s:y82tr3x",
+      "predicate": "@core:discontinued",
+      "value": "1994",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:postgresql@1354201532"
+        }
+      ]
+    },
+    {
+      "id": "s:vasbb6t",
+      "predicate": "@core:written_in",
+      "value": "@language:c",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:postgresql@1354201532"
+        }
+      ]
+    },
+    {
+      "id": "s:st7jjk6",
+      "predicate": "@core:wikipedia",
+      "value": "POSTGRES",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:postgresql@1354201532"
+        }
+      ]
+    }
+  ]
+}

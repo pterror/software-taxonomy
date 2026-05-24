@@ -1,0 +1,31 @@
+{
+  "id": "@license:proprietary",
+  "labels": {
+    "en": "Proprietary License"
+  },
+  "description": "A license under which the publisher retains exclusive intellectual property rights, restricting use, modification, and redistribution.",
+  "statements": [
+    {
+      "id": "s:qjkpnb2",
+      "predicate": "@core:instance_of",
+      "value": "@class:license",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:proprietary_software@1355232517"
+        }
+      ]
+    },
+    {
+      "id": "s:0mgxxfo",
+      "predicate": "@core:wikipedia",
+      "value": "Proprietary_software",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:proprietary_software@1355232517"
+        }
+      ]
+    }
+  ]
+}

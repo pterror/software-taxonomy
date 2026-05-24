@@ -1,0 +1,75 @@
+{
+  "id": "@software:chatgpt",
+  "labels": {
+    "en": "ChatGPT"
+  },
+  "description": "An AI chatbot developed by OpenAI, built on the GPT family of large language models, first released in November 2022 as a conversational text generation service.",
+  "statements": [
+    {
+      "id": "s:j76uwxm",
+      "predicate": "@core:instance_of",
+      "value": "@class:chat-model",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:chatgpt@1355452158"
+        }
+      ]
+    },
+    {
+      "id": "s:9z6f2r1",
+      "predicate": "@core:developed_by",
+      "value": "@org:openai",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:chatgpt@1355452158"
+        }
+      ]
+    },
+    {
+      "id": "s:9f2y7s6",
+      "predicate": "@core:first_released",
+      "value": "2022-11-30",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:chatgpt@1355452158"
+        }
+      ]
+    },
+    {
+      "id": "s:hnqln7v",
+      "predicate": "@core:licensed_under",
+      "value": "@license:proprietary",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:chatgpt@1355452158"
+        }
+      ]
+    },
+    {
+      "id": "s:0azbgvw",
+      "predicate": "@core:wikipedia",
+      "value": "ChatGPT",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:chatgpt@1355452158"
+        }
+      ]
+    },
+    {
+      "id": "s:984mntq",
+      "predicate": "@core:official_url",
+      "value": "https://chatgpt.com",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:chatgpt@1355452158"
+        }
+      ]
+    }
+  ]
+}

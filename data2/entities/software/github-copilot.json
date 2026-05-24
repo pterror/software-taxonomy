@@ -1,0 +1,89 @@
+{
+  "id": "@software:github-copilot",
+  "labels": {
+    "en": "GitHub Copilot"
+  },
+  "aliases": [
+    "Copilot"
+  ],
+  "description": "An AI-powered code completion tool developed by GitHub and OpenAI, first released in June 2021, that suggests code and entire functions in real time.",
+  "statements": [
+    {
+      "id": "s:hzirhjl",
+      "predicate": "@core:instance_of",
+      "value": "@class:code-assistant",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:github_copilot@1349111254"
+        }
+      ]
+    },
+    {
+      "id": "s:8hi6yve",
+      "predicate": "@core:developed_by",
+      "value": "@org:github",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:github_copilot@1349111254"
+        }
+      ]
+    },
+    {
+      "id": "s:bia1dpe",
+      "predicate": "@core:developed_by",
+      "value": "@org:openai",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:github_copilot@1349111254"
+        }
+      ]
+    },
+    {
+      "id": "s:4f1rfhj",
+      "predicate": "@core:first_released",
+      "value": "2021-06-29",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:github_copilot@1349111254"
+        }
+      ]
+    },
+    {
+      "id": "s:tglbytr",
+      "predicate": "@core:licensed_under",
+      "value": "@license:proprietary",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:github_copilot@1349111254"
+        }
+      ]
+    },
+    {
+      "id": "s:o6wedx7",
+      "predicate": "@core:wikipedia",
+      "value": "GitHub_Copilot",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:github_copilot@1349111254"
+        }
+      ]
+    },
+    {
+      "id": "s:08ars9n",
+      "predicate": "@core:official_url",
+      "value": "https://github.com/features/copilot",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:github_copilot@1349111254"
+        }
+      ]
+    }
+  ]
+}

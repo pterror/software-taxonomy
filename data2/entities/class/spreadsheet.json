@@ -1,0 +1,21 @@
+{
+  "id": "@class:spreadsheet",
+  "labels": {
+    "en": "Spreadsheet"
+  },
+  "description": "A software application for the organization and analysis of data in tabular form.",
+  "statements": [
+    {
+      "id": "s:ig7tadg",
+      "predicate": "@core:instance_of",
+      "value": "@meta:class",
+      "lens": "core"
+    },
+    {
+      "id": "s:opelge4",
+      "predicate": "@core:subclass_of",
+      "value": "@class:software",
+      "lens": "core"
+    }
+  ]
+}

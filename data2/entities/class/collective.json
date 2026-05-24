@@ -1,0 +1,21 @@
+{
+  "id": "@class:collective",
+  "labels": {
+    "en": "Collective"
+  },
+  "description": "Group of people working on a project without formal organizational structure: open-source communities, anonymous developer pools, named contributor cohorts.",
+  "statements": [
+    {
+      "id": "s:2vgrk7i",
+      "predicate": "@core:instance_of",
+      "value": "@meta:class",
+      "lens": "core"
+    },
+    {
+      "id": "s:rg3s6ur",
+      "predicate": "@core:subclass_of",
+      "value": "@class:agent",
+      "lens": "core"
+    }
+  ]
+}

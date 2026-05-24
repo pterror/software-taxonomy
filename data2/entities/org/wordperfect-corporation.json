@@ -1,0 +1,31 @@
+{
+  "id": "@org:wordperfect-corporation",
+  "labels": {
+    "en": "WordPerfect Corporation"
+  },
+  "description": "The original company behind the WordPerfect word processor, founded by Alan Ashton and Bruce Bastian; acquired by Novell in 1994.",
+  "statements": [
+    {
+      "id": "s:myh618b",
+      "predicate": "@core:instance_of",
+      "value": "@class:organization",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:wordperfect_corporation@1137170512"
+        }
+      ]
+    },
+    {
+      "id": "s:gsm5sy7",
+      "predicate": "@core:wikipedia",
+      "value": "WordPerfect_Corporation",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wp:wordperfect_corporation@1137170512"
+        }
+      ]
+    }
+  ]
+}

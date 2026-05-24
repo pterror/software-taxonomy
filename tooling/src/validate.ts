@@ -174,6 +174,16 @@ for (const v of allViolations) {
   logFn(`${prefix} [${v.lens}] ${loc} [${v.entityId}] {${v.predicateId}} ${v.rule}: ${v.message}`);
 }
 
+// Merge Datalog violations into per-lens summaries
+const dlByLens = new Map<string, { errors: number; warnings: number }>();
+for (const v of datalogViolations) {
+  if (v.severity === "info") continue;
+  const entry = dlByLens.get(v.lens) ?? { errors: 0, warnings: 0 };
+  if (v.severity === "error") entry.errors++;
+  else entry.warnings++;
+  dlByLens.set(v.lens, entry);
+}
+
 console.log("\n--- Validation Summary ---");
 let totalEntities = 0;
 let totalPredicates = 0;
@@ -182,8 +192,11 @@ let totalSources = 0;
 for (const s of tsResult.summaries) {
   const show = !targetLens || targetLens.has(s.lensId);
   if (!show) continue;
+  const dl = dlByLens.get(s.lensId) ?? { errors: 0, warnings: 0 };
+  const errors = s.errors + dl.errors;
+  const warnings = s.warnings + dl.warnings;
   console.log(
-    `  ${s.lensId.padEnd(20)} entities: ${String(s.entities).padStart(3)}  predicates: ${String(s.predicates).padStart(3)}  sources: ${String(s.sources).padStart(3)}  errors: ${s.errors}  warnings: ${s.warnings}`
+    `  ${s.lensId.padEnd(20)} entities: ${String(s.entities).padStart(3)}  predicates: ${String(s.predicates).padStart(3)}  sources: ${String(s.sources).padStart(3)}  errors: ${errors}  warnings: ${warnings}`
   );
   totalEntities += s.entities;
   totalPredicates += s.predicates;

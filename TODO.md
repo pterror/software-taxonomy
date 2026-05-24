@@ -136,3 +136,39 @@ README numbering with this doc in a docs-polish pass.
 **CI parity.** Pre-commit runs validate + test-fixtures; push to master should
 too. Add a scheduled run of `verify-snippets --source wikipedia` (weekly?) to
 catch revision drift on cited articles.
+
+## Open questions from the founding session
+
+Surfaced by mining session `b933d7e2` (the founding conversation) — flagged
+there, unresolved, not yet tracked.
+
+**Specs / standards / protocols as first-class entities.** HTTP, JSON, PDF
+"aren't software in core's typology and do have release dates and dependencies;
+however they *are* specs/standards/protocols." Either widen `@software:` to
+cover them, or open a sibling namespace (`@spec:`, `@protocol:`). Affects how
+`implements` / `conforms_to` relate ingested software to the standards
+underneath. Decision needed before bulk ingest (phases 5–6) touches anything
+spec-shaped.
+
+**Temporal `developed_by` semantics.** The nginx case: Sysoev is the original
+developer, F5 is the current owner. Both are true at different times. Today's
+schema flattens them. Options: a time-bounded predicate variant
+(`developed_by_during`), a separate `originally_developed_by` predicate, or
+EAV values that carry their own date range. Not urgent; will bite at scale.
+
+**Lore / folklore lens.** Software mythology as its own lens: Mythical
+Man-Month, Worse Is Better, Zawinski's Law, founder myths, war stories. A
+companion to `worldbuilding.*` but rooted in real industry folklore rather
+than fiction. The `mythology-demo` entity exists as a seed.
+
+**Worldbuilding sub-lens namespaces.** `worldbuilding` was always meant as a
+namespace of distinct universe lenses, not a single flat overlay:
+`worldbuilding.scifi`, `worldbuilding.fantasy`, `worldbuilding.grimdark`,
+`worldbuilding.space-opera`, `worldbuilding.mythology`. Lens architecture
+already supports namespacing; what's missing is the convention + a seeded
+example beyond mythology.
+
+**Adversarial scalability subagent.** Distinct from 4.2's correctness wave: a
+standing agent whose job is to stress-test how the corpus / pipeline behaves at
+10×, 100× current size. Useful before phase 6 (bulk LLM ingest) commits to a
+representation that doesn't scale.

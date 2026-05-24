@@ -5,7 +5,7 @@
 import { readFileSync, readdirSync, existsSync } from "fs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
-import { emptyDb, transact, datumCount, type TxMap, type Db } from "./store.js";
+import { emptyDb, transact, datumCount, q, type TxMap, type Db } from "./store.js";
 import { SCHEMA } from "./schema.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -207,8 +207,15 @@ export function loadData2(baseDir: string = data2Dir): Db {
   return db;
 }
 
-// Smoke-test entry point: load and print datom count.
+// Smoke-test entry point: load, print datom count, run a trivial query.
 if (import.meta.main) {
   const db = loadData2();
   console.log(`Loaded data2/. Total datoms: ${datumCount(db)}`);
+
+  // Verify entity count via query: find all entity/id values.
+  const entityResults = q(
+    { q: [{ where: [["?e", "entity/id", "?v"]] }], select: ["v"] },
+    db,
+  );
+  console.log(`Entities via query: ${entityResults.size} (expect ~234)`);
 }

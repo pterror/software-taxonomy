@@ -1,0 +1,11 @@
+{
+  "id": "@core:bad_pred",
+  "label": "Bad Pred",
+  "description": "d",
+  "lens": "other-lens",
+  "value_type": "string",
+  "domain": null,
+  "range": null,
+  "cardinality": "0..*",
+  "expect_preferred": false
+}

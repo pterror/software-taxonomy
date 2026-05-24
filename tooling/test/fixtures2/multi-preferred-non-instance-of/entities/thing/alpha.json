@@ -1,0 +1,23 @@
+{
+  "id": "@thing:alpha",
+  "lens": "core",
+  "labels": {
+    "en": "Alpha"
+  },
+  "statements": [
+    {
+      "id": "s:z5yavpr",
+      "predicate": "@core:label",
+      "value": "first",
+      "lens": "core",
+      "rank": "preferred"
+    },
+    {
+      "id": "s:xz1bya8",
+      "predicate": "@core:label",
+      "value": "second",
+      "lens": "core",
+      "rank": "preferred"
+    }
+  ]
+}

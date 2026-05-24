@@ -1,0 +1,15 @@
+{
+  "id": "@cls:org",
+  "lens": "core",
+  "labels": {
+    "en": "Org"
+  },
+  "statements": [
+    {
+      "id": "s:jnckqyf",
+      "predicate": "@core:instance_of",
+      "value": "@meta:class",
+      "lens": "core"
+    }
+  ]
+}

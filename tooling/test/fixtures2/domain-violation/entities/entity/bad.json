@@ -1,0 +1,15 @@
+{
+  "id": "@entity:bad",
+  "lens": "core",
+  "labels": {
+    "en": "Bad"
+  },
+  "statements": [
+    {
+      "id": "s:dtmv6ka",
+      "predicate": "@core:developed_by",
+      "value": "@entity:dev",
+      "lens": "core"
+    }
+  ]
+}

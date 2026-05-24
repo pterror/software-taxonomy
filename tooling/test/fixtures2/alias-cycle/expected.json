@@ -1,0 +1,10 @@
+[
+  {
+    "rule": "alias_cycle",
+    "predicateId": "@core:pred_a"
+  },
+  {
+    "rule": "alias_cycle",
+    "predicateId": "@core:pred_b"
+  }
+]

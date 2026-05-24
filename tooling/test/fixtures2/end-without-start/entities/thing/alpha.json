@@ -1,0 +1,18 @@
+{
+  "id": "@thing:alpha",
+  "lens": "core",
+  "labels": {
+    "en": "Alpha"
+  },
+  "statements": [
+    {
+      "id": "s:eyeeib5",
+      "predicate": "@core:label",
+      "value": "hi",
+      "lens": "core",
+      "qualifiers": {
+        "@core:end_time": "2024-01-01"
+      }
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "@cls:c",
+  "lens": "core",
+  "labels": {
+    "en": "C"
+  },
+  "statements": [
+    {
+      "id": "s:lc4ka2b",
+      "predicate": "@core:instance_of",
+      "value": "@meta:class",
+      "lens": "core"
+    },
+    {
+      "id": "s:k93c1li",
+      "predicate": "@core:subclass_of",
+      "value": "@cls:b",
+      "lens": "core"
+    }
+  ]
+}

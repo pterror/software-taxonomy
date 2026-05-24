@@ -1,0 +1,17 @@
+{
+  "id": "@thing:alpha",
+  "lens": "core",
+  "labels": {
+    "en": "Alpha"
+  },
+  "statements": [
+    {
+      "id": "s:7jmrc9f",
+      "predicate": "@core:strict",
+      "value": {
+        "unknown": true
+      },
+      "lens": "core"
+    }
+  ]
+}

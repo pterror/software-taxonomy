@@ -1,0 +1,10 @@
+{
+  "id": "@core:instance_of",
+  "label": "instance of",
+  "description": "Type/class membership.",
+  "lens": "core",
+  "value_type": "entity",
+  "domain": null,
+  "range": null,
+  "cardinality": "0..*"
+}

@@ -1,0 +1,13 @@
+{
+  "id": "@core:developed_by",
+  "label": "developed by",
+  "description": "d",
+  "lens": "core",
+  "value_type": "entity",
+  "domain": [
+    "@sw:app"
+  ],
+  "range": null,
+  "cardinality": "0..*",
+  "expect_preferred": false
+}

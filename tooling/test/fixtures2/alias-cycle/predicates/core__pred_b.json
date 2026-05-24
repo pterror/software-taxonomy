@@ -1,0 +1,11 @@
+{
+  "id": "@core:pred_b",
+  "label": "pred b",
+  "description": "Aliases pred_a — cycle",
+  "lens": "core",
+  "value_type": "string",
+  "domain": null,
+  "range": null,
+  "cardinality": "0..*",
+  "alias_of": "@core:pred_a"
+}

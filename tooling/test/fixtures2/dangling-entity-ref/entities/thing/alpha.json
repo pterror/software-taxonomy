@@ -1,0 +1,15 @@
+{
+  "id": "@thing:alpha",
+  "lens": "core",
+  "labels": {
+    "en": "Alpha"
+  },
+  "statements": [
+    {
+      "id": "s:3wr420i",
+      "predicate": "@core:instance_of",
+      "value": "@class:nonexistent",
+      "lens": "core"
+    }
+  ]
+}

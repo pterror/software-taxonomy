@@ -1,0 +1,8 @@
+[
+  {
+    "rule": "source_required_violation",
+    "entityId": "@thing:alpha",
+    "predicateId": "@core:label",
+    "count": 1
+  }
+]

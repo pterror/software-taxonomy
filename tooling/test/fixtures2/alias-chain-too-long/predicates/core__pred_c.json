@@ -1,0 +1,11 @@
+{
+  "id": "@core:pred_c",
+  "label": "c",
+  "description": "d",
+  "lens": "core",
+  "value_type": "string",
+  "domain": null,
+  "range": null,
+  "cardinality": "0..*",
+  "alias_of": "@core:pred_d"
+}

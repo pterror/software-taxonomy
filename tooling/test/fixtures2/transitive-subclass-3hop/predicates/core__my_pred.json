@@ -1,0 +1,13 @@
+{
+  "id": "@core:my_pred",
+  "label": "my pred",
+  "description": "d",
+  "lens": "core",
+  "value_type": "entity",
+  "domain": [
+    "@cls:a"
+  ],
+  "range": null,
+  "cardinality": "0..*",
+  "expect_preferred": false
+}

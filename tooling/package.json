@@ -9,7 +9,9 @@
     "check-links": "bun src/check-links.ts",
     "test-fixtures": "bun src/test-fixtures.ts",
     "convert": "bun src/convert.ts",
-    "load2": "bun src/lib/load2.ts"
+    "load2": "bun src/lib/load2.ts",
+    "validate2": "bun src/validate2.ts",
+    "test-fixtures2": "bun src/test-fixtures2.ts"
   },
   "devDependencies": {
     "ajv": "^8.17.1",

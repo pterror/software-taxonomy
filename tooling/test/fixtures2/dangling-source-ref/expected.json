@@ -1,0 +1,7 @@
+[
+  {
+    "rule": "dangling_source_ref",
+    "entityId": "@thing:alpha",
+    "predicateId": "@core:label"
+  }
+]

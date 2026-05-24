@@ -1,0 +1,11 @@
+{
+  "id": "@core:instance_of",
+  "label": "instance of",
+  "description": "d",
+  "lens": "core",
+  "value_type": "entity",
+  "domain": null,
+  "range": null,
+  "cardinality": "0..*",
+  "expect_preferred": false
+}

@@ -1,0 +1,16 @@
+{
+  "id": "@thing:alpha",
+  "lens": "core",
+  "labels": {
+    "en": "Alpha"
+  },
+  "statements": [
+    {
+      "id": "s:alw8qzo",
+      "predicate": "@core:label",
+      "value": "old",
+      "lens": "core",
+      "rank": "deprecated"
+    }
+  ]
+}

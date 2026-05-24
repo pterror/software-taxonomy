@@ -1,0 +1,15 @@
+{
+  "id": "@person:bill",
+  "lens": "core",
+  "labels": {
+    "en": "Bill"
+  },
+  "statements": [
+    {
+      "id": "s:hfuxr2m",
+      "predicate": "@core:made_by",
+      "value": "@org:acme",
+      "lens": "core"
+    }
+  ]
+}

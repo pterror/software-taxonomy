@@ -1,0 +1,8 @@
+{
+  "id": "@org:acme",
+  "lens": "core",
+  "labels": {
+    "en": "Acme"
+  },
+  "statements": []
+}

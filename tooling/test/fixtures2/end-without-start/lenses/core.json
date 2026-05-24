@@ -1,0 +1,9 @@
+{
+  "id": "core",
+  "label": "Core",
+  "description": "Fixture: end_time without start_time",
+  "register": "factual",
+  "depends_on": [],
+  "source_required": false,
+  "author": "fixture"
+}

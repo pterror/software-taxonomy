@@ -1,0 +1,11 @@
+{
+  "id": "@core:required_name",
+  "label": "required name",
+  "description": "A required label — cardinality 1..*",
+  "lens": "core",
+  "value_type": "string",
+  "domain": null,
+  "range": null,
+  "cardinality": "1..*",
+  "expect_preferred": false
+}

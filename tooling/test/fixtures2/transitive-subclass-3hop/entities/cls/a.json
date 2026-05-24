@@ -1,0 +1,15 @@
+{
+  "id": "@cls:a",
+  "lens": "core",
+  "labels": {
+    "en": "A"
+  },
+  "statements": [
+    {
+      "id": "s:ymhncmb",
+      "predicate": "@core:instance_of",
+      "value": "@meta:class",
+      "lens": "core"
+    }
+  ]
+}

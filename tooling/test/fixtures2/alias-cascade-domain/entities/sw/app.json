@@ -1,0 +1,15 @@
+{
+  "id": "@sw:app",
+  "lens": "core",
+  "labels": {
+    "en": "Application"
+  },
+  "statements": [
+    {
+      "id": "s:9ny582d",
+      "predicate": "@core:instance_of",
+      "value": "@meta:class",
+      "lens": "core"
+    }
+  ]
+}

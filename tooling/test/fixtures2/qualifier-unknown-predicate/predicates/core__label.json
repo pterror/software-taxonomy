@@ -1,0 +1,11 @@
+{
+  "id": "@core:label",
+  "label": "Label",
+  "description": "d",
+  "lens": "core",
+  "value_type": "string",
+  "domain": null,
+  "range": null,
+  "cardinality": "0..*",
+  "expect_preferred": false
+}

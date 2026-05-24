@@ -1,0 +1,21 @@
+{
+  "id": "@entity:sw",
+  "lens": "core",
+  "labels": {
+    "en": "SW"
+  },
+  "statements": [
+    {
+      "id": "s:7vl10ks",
+      "predicate": "@core:instance_of",
+      "value": "@cls:software",
+      "lens": "core"
+    },
+    {
+      "id": "s:ke774eg",
+      "predicate": "@core:developed_by",
+      "value": "@entity:notorg",
+      "lens": "core"
+    }
+  ]
+}

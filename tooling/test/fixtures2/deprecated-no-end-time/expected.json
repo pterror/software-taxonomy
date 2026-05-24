@@ -1,0 +1,7 @@
+[
+  {
+    "rule": "deprecated_no_end_time",
+    "entityId": "@thing:alpha",
+    "predicateId": "@core:label"
+  }
+]

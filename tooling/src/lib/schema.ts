@@ -15,6 +15,7 @@ export interface AttributeSpec {
 export const SCHEMA: Record<string, AttributeSpec> = {
   // --- Entity ---
   "entity/id":          { cardinality: "one", valueType: "string", unique: true },
+  "entity/lens":        { cardinality: "one", valueType: "string" }, // owner lens id
   "entity/labels":      { cardinality: "one", valueType: "json" },   // JSON-stringified Record<string,string>
   "entity/aliases":     { cardinality: "one", valueType: "json" },   // JSON-stringified string[]
   "entity/description": { cardinality: "one", valueType: "string" },

@@ -1,0 +1,15 @@
+{
+  "id": "@meta:class",
+  "lens": "core",
+  "labels": {
+    "en": "Class"
+  },
+  "statements": [
+    {
+      "id": "s:k2vp9r7",
+      "predicate": "@core:instance_of",
+      "value": "@meta:class",
+      "lens": "core"
+    }
+  ]
+}

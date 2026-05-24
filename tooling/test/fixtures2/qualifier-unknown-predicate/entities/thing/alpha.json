@@ -1,0 +1,18 @@
+{
+  "id": "@thing:alpha",
+  "lens": "core",
+  "labels": {
+    "en": "Alpha"
+  },
+  "statements": [
+    {
+      "id": "s:b3kolhf",
+      "predicate": "@core:label",
+      "value": "hi",
+      "lens": "core",
+      "qualifiers": {
+        "@unknown:ghost_qual": "2024"
+      }
+    }
+  ]
+}

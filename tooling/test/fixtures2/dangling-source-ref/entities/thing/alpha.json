@@ -1,0 +1,20 @@
+{
+  "id": "@thing:alpha",
+  "lens": "core",
+  "labels": {
+    "en": "Alpha"
+  },
+  "statements": [
+    {
+      "id": "s:df207p5",
+      "predicate": "@core:label",
+      "value": "hi",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "nonexistent:source"
+        }
+      ]
+    }
+  ]
+}

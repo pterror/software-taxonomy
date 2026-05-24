@@ -1,0 +1,12 @@
+{
+  "id": "@core:made_by",
+  "label": "made by",
+  "description": "alias",
+  "lens": "core",
+  "value_type": "entity",
+  "domain": null,
+  "range": null,
+  "cardinality": "0..*",
+  "alias_of": "@core:developed_by",
+  "expect_preferred": false
+}

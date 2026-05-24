@@ -1,0 +1,7 @@
+[
+  {
+    "rule": "qualifier_unknown_predicate",
+    "entityId": "@thing:alpha",
+    "predicateId": "@core:label"
+  }
+]

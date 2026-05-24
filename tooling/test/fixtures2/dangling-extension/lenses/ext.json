@@ -1,0 +1,11 @@
+{
+  "id": "ext",
+  "label": "Ext",
+  "description": "Extension lens",
+  "register": "factual",
+  "depends_on": [
+    "core"
+  ],
+  "source_required": false,
+  "author": "fixture"
+}

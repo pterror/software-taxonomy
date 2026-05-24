@@ -1,0 +1,18 @@
+{
+  "id": "@thing:alpha",
+  "lens": "core",
+  "labels": {
+    "en": "Alpha"
+  },
+  "statements": [
+    {
+      "id": "s:9m1gbw1",
+      "predicate": "@core:label",
+      "value": "hi",
+      "lens": "core",
+      "qualifiers": {
+        "@core:applies_to": "@nonexistent:entity"
+      }
+    }
+  ]
+}

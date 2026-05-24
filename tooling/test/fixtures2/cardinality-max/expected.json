@@ -1,0 +1,7 @@
+[
+  {
+    "rule": "cardinality_violation_max",
+    "entityId": "@thing:alpha",
+    "predicateId": "@core:unique_name"
+  }
+]

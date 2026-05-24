@@ -1,0 +1,11 @@
+{
+  "id": "@nonexistent:entity",
+  "statements": [
+    {
+      "id": "s:9m1emrj",
+      "predicate": "@core:label",
+      "value": "hi",
+      "lens": "ext"
+    }
+  ]
+}

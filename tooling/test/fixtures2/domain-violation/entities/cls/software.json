@@ -1,0 +1,15 @@
+{
+  "id": "@cls:software",
+  "lens": "core",
+  "labels": {
+    "en": "Software"
+  },
+  "statements": [
+    {
+      "id": "s:58349ir",
+      "predicate": "@core:instance_of",
+      "value": "@meta:class",
+      "lens": "core"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "@entity:x",
+  "lens": "core",
+  "labels": {
+    "en": "X"
+  },
+  "statements": [
+    {
+      "id": "s:g55qoce",
+      "predicate": "@core:instance_of",
+      "value": "@cls:c",
+      "lens": "core"
+    },
+    {
+      "id": "s:ddeagrf",
+      "predicate": "@core:my_pred",
+      "value": "@entity:y",
+      "lens": "core"
+    }
+  ]
+}

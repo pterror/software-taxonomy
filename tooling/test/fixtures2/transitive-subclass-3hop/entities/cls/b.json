@@ -1,0 +1,21 @@
+{
+  "id": "@cls:b",
+  "lens": "core",
+  "labels": {
+    "en": "B"
+  },
+  "statements": [
+    {
+      "id": "s:5mgk245",
+      "predicate": "@core:instance_of",
+      "value": "@meta:class",
+      "lens": "core"
+    },
+    {
+      "id": "s:w9iar1z",
+      "predicate": "@core:subclass_of",
+      "value": "@cls:a",
+      "lens": "core"
+    }
+  ]
+}

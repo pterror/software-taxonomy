@@ -1,0 +1,11 @@
+{
+  "id": "@core:start_time",
+  "label": "start time",
+  "description": "d",
+  "lens": "core",
+  "value_type": "date",
+  "domain": null,
+  "range": null,
+  "cardinality": "0..*",
+  "expect_preferred": false
+}

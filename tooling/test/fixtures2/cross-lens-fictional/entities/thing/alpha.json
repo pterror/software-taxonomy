@@ -1,0 +1,15 @@
+{
+  "id": "@thing:alpha",
+  "lens": "facts",
+  "labels": {
+    "en": "Alpha"
+  },
+  "statements": [
+    {
+      "id": "s:y0bxe4w",
+      "predicate": "@facts:related_to",
+      "value": "@char:dragon",
+      "lens": "facts"
+    }
+  ]
+}

@@ -26,6 +26,7 @@ interface NewStatement {
 
 interface NewEntity {
   id: string;
+  lens?: string;  // owner lens id (written by convert-lib.ts)
   labels?: Record<string, string>;
   aliases?: string[];
   description?: string;
@@ -67,6 +68,12 @@ interface NewLens {
   depends_on: string[];
   source_required: boolean;
   author: string;
+}
+
+// Sentinel values: {unknown: true} or {novalue: true} → stored as "__sentinel__"
+function isSentinelValue(v: unknown): boolean {
+  if (typeof v !== "object" || v === null) return false;
+  return ("unknown" in v) || ("novalue" in v);
 }
 
 // Find the 1-based line number of a statement id in file text.
@@ -169,6 +176,7 @@ export function loadData2(baseDir: string = data2Dir): Db {
         // Transact entity record.
         transact(db, [{
           "entity/id":          entity.id,
+          ...(entity.lens        !== undefined && { "entity/lens":        entity.lens }),
           ...(entity.labels      !== undefined && { "entity/labels":      JSON.stringify(entity.labels) }),
           ...(entity.aliases     !== undefined && { "entity/aliases":     JSON.stringify(entity.aliases) }),
           ...(entity.description !== undefined && { "entity/description": entity.description }),
@@ -181,7 +189,8 @@ export function loadData2(baseDir: string = data2Dir): Db {
             "statement/id":        stmt.id,
             "statement/subject":   entity.id,
             "statement/predicate": stmt.predicate,
-            "statement/value":     String(stmt.value),
+            // Sentinel objects ({unknown:true} / {novalue:true}) → "__sentinel__"
+            "statement/value":     isSentinelValue(stmt.value) ? "__sentinel__" : String(stmt.value),
             "statement/lens":      stmt.lens,
             "statement/file":      filePath,
             ...(line !== -1 && { "statement/line": line }),

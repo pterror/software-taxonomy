@@ -1,0 +1,26 @@
+{
+  "id": "@thing:alpha",
+  "lens": "core",
+  "labels": {
+    "en": "Alpha"
+  },
+  "statements": [
+    {
+      "id": "s:8j947b5",
+      "predicate": "@core:label",
+      "value": "first",
+      "lens": "core",
+      "sources": [
+        {
+          "id": "wiki:t"
+        }
+      ]
+    },
+    {
+      "id": "s:i2ndwhp",
+      "predicate": "@core:label",
+      "value": "second",
+      "lens": "core"
+    }
+  ]
+}

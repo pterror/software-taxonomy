@@ -1,56 +1,138 @@
-# TODO
+# Roadmap
 
-Forward-looking work after Phase 4.0 (A–E) shipped the datascript-shaped redesign.
+## What this is
 
-## Ongoing: snippet backfill (4.0.E continuation)
+"A general knowledge graph of software, where taxonomy is a derived view."
+Cladistic taxonomy of software treated as living organisms — a structured,
+queryable corpus that grows over many critique rounds. Taxonomy is derived,
+not fixed.
 
-- 921 statements still need snippets. Drain the worklist via repeated `/propose-snippets N` → `bun run review-snippets` cycles. No code change required; this is editorial work.
-- The worklist file (`.snippet-worklist.json`) is gitignored. Progress lives locally. If multi-machine drive becomes useful, decide on persistence (tracked branch, side repo, or just accept locality).
-- 38 official-source statements use a crude HTML→plaintext extractor. Snippets there may need manual editing more often than wikipedia ones. Watch acceptance rate; consider a real readability extractor if quality is low.
+## Currently shipped
 
-## Sourceless triage (4.0.F candidate)
+Phase 1–3: corpus seed, lens architecture, namespaced entity IDs, multi-lens
+validation.
 
-- 159 statements have no source at all. Reported by `bun run sourceless-report`. Triage paths:
-  - For lenses with `source_required: false` (biology, folklore, mythology-demo) — these are *legal*, just unsourced. Decide whether to add interpretive/folkloric source records anyway for traceability.
-  - For core (where `source_required: true` but the validator currently rules these warnings) — add wikipedia/official sources or strike the statement.
-- Decision needed: should `source_required_violation` upgrade from warning to error after triage? That's a one-line change in `rules.ts`.
+Phase 4.0 (A–E): full pipeline rewrite. In-process triplestore replacing the
+Ascent subprocess; entity-per-file format; snippet-as-anti-confabulation
+primitive introduced and wired into the acceptance gate. 922→921 snippets
+drained so far.
 
-## Adversarial wave on the new pipeline (4.1)
+## Active drain (4.0.E continuation)
 
-Every prior phase's adversarial wave found bugs. The new pipeline has not been waved yet. Hypotheses worth probing:
+Snippet backfill via repeated `/propose-snippets N` → `bun run review-snippets`
+cycles. 921 statements still need snippets. The worklist (`.snippet-worklist.json`)
+is gitignored; progress is local. 38 official-source statements use crude
+HTML→plaintext extraction — watch acceptance rate, consider a real readability
+extractor if quality is low.
 
-- Closure helpers (subclassClosure, instanceClosure, aliasClosure) — write fixtures exercising deep chains, cycles, and self-references that didn't exist before.
-- Negation-as-failure rules — write fixtures where the positive query returns empty for non-obvious reasons (e.g. case-sensitivity, predicate alias resolution).
-- Query API ergonomics — `q()` accumulates subscriptions per call (note from store.ts); confirm no leak under repeated calls in long-running tools like the REPL.
-- Snippet acceptance gate — verify it actually catches a mis-quoted snippet (test fixture: a worklist entry whose proposed_snippet is NOT in the fetched revision; reviewer's accept should refuse).
+Sourceless triage: 159 statements flagged by `bun run sourceless-report`. For
+lenses with `source_required: false`, decide whether interpretive sources are
+worth adding anyway. For core, add sources or strike the statement. Decision
+needed: should `source_required_violation` upgrade from warning to error once
+triage is done? One-line change in `rules.ts`.
 
-## Engine choice revisit (4.2 candidate)
+## Near-term phases (artifact-stated)
 
-`@thi.ng/rstream-query` is a reactive triple store, not a datalog engine. Limitations carried as TS post-processing:
+### 4.1 — Biology overlay substrate (next)
 
-- No native recursion (transitive closure done by iterating queries to fixpoint).
-- No native aggregation (group-by done in TS).
-- No native negation (positive query + TS filter).
-- No CLJS-keyword friction (good), but query syntax is bespoke (not EDN), so the "rules are a portable spec" claim is weak.
+From CLAUDE.md Status. ~26 organ/metabolism class entities. Resolve organ vs
+feature naming convention (e.g. "memory" as organ or feature?). Expand biology
+predicates: metabolism, reproduction, niche, lifecycle. The first overlay that
+meaningfully exercises the lens system beyond the demo.
 
-Reassess if corpus growth makes TS post-processing slow, or if rule expressivity becomes a bottleneck. Alternatives: real datalog (custom evaluator over the existing EAV indices), `@thi.ng/datalog`-shaped library if one matures, or Cozo (out-of-process again, but more capable).
+### 4.2 — Adversarial wave on new pipeline (parallel)
 
-## Dead-rule cleanup (low priority)
+Every prior phase's wave found bugs; the new pipeline hasn't been waved yet.
+Targets: closure helpers under deep chains and cycles; negation-as-failure rules
+under predicate-alias resolution; `q()` subscription accumulation in long-running
+REPL sessions; snippet acceptance gate against mis-quoted snippets (test fixture:
+proposed snippet NOT present in the fetched revision; accept should refuse).
 
-Three Ascent rules became unreachable by construction in the new format: `dangling_extension`, `own_entity_extension`, `duplicate_entity_id`. They're not present in `rules.ts` (the port phase already dropped them). Sanity check: confirm no residual references in docs.
+### 4.3 — Engine revisit (conditional, performance-gated)
 
-## Worklist file format hardening
+`@thi.ng/rstream-query` has no native recursion, aggregation, or negation;
+current workarounds are TS post-processing. Reassess only if corpus growth makes
+this slow, or if rule expressivity becomes a bottleneck. Alternatives: custom
+datalog evaluator over existing EAV indices, `@thi.ng/datalog` if it matures,
+or Cozo. Don't pre-build.
 
-`review-snippets.ts` does atomic tmpfile+rename writes. Parallel `/propose-snippets` subagents do read-modify-write via Edit with the unique stmt_id as anchor. Failure mode: two subagents win the same stmt_id race (unlikely — dispatch slices into disjoint batches). If it ever happens: add a file lock, or move the worklist to SQLite. Don't pre-build.
+### 5 — Wikidata ingest
 
-## Documentation polish
+`@wd:` namespace already registered. Build reconciliation (`@wd:Qxxxxx` ↔
+`@software:slug`). Bulk import select claims. Preserve revid/snapshot pinning
+for source provenance — the lesson from 4.0 is that pinned source is the trust
+primitive.
 
-- CLAUDE.md now describes the new architecture but doesn't yet document the worklist workflow. Add a short subsection under "Snippets" once 4.0.E's drain has run a few rounds and the workflow has settled.
-- README.md roadmap table still references "future phases" loosely. Replace with a pointer to this TODO.
+### 6 — Bulk LLM-assisted ingest
 
-## CI
+Statement extraction at scale from documentation and articles. Per-source rather
+than per-statement (4.0.E's subagent pipeline was the per-statement prototype;
+6 generalizes). Snippet generation in the same pass. Human review remains.
 
-Currently the pre-commit hook runs validate + test-fixtures. CI parity:
+### 7 — Browseable site
 
-- Run validate + test-fixtures on push to master.
-- Run `verify-snippets --source wikipedia` on a cadence (weekly?) to catch revision drift on cited articles. (When a wikipedia article gets edited and the cited revid is OLDER than current, the substring should still match the pinned revid — `verify-snippets` already pins via `oldid`. The risk is link rot or rare revid invalidation.)
+Currently undesigned; needs its own design session. Likely: static site
+(VitePress matches the rest of the rhi ecosystem), query UI by lens / predicate /
+class hierarchy, derived tree views (`bun run tree` is the prototype), snippet
+and source display alongside every claim so the anti-confabulation is visible to
+readers. SvelteKit if interactivity demands it.
+
+## Speculative — past Phase 7
+
+### 8 — Comparative analysis (speculation)
+
+Inter-software diff. Cladistic distance metrics over predicate/value sets. Where
+the biology metaphor starts paying off in derived insight rather than just
+naming: "X and Y share these metabolism predicates → close kin."
+
+### 9 — Public API (speculation)
+
+Read-only query endpoint. Datalog over HTTP or something simpler. Federation
+hooks for other authors to consume the corpus programmatically.
+
+### 10 — Federated knowledge graphs (speculation)
+
+This corpus + Wikidata + third-party overlays. Snippet-as-anti-confabulation is
+the trust primitive across federation boundaries — the original reason 4.0 made
+snippets a first-class primitive.
+
+### 11+ — Cladistic exposition (speculation)
+
+The original goal restated: software as biological organisms with evolutionary
+history. At sufficient corpus density the cladistic story becomes writable. The
+artifact is essay, book, or interactive work — not the corpus itself. Corpus →
+exposition. Phases 4–10 are the corpus phase; 11+ is the artifact phase.
+
+## End condition (speculation)
+
+Three plausible terminations:
+
+1. Cladistic-exposition ships. The corpus was always the means; the essay is the
+   end. Maintenance after that is library-of-record only.
+2. Representative coverage reached (~10k entities?). Site live; maintenance only.
+3. Never. The project IS the corpus, perpetually curated.
+
+The README intro ("grows over many critique rounds") leans toward #3 as the
+default, with #1 as the artifact if motivation persists.
+
+## Tactical follow-ups (background, not phase-gated)
+
+**Dead-rule cleanup.** Three Ascent rules became unreachable in the new format
+(`dangling_extension`, `own_entity_extension`, `duplicate_entity_id`). Not
+present in `rules.ts`. Sanity-check: confirm no residual references in docs.
+
+**Worklist file format hardening.** `review-snippets.ts` does atomic
+tmpfile+rename writes; parallel `/propose-snippets` subagents do read-modify-write
+using stmt_id as anchor. Failure mode is a same-id race (unlikely given disjoint
+dispatch batches). If it happens: add a file lock or move to SQLite. Don't
+pre-build.
+
+**Documentation polish.** CLAUDE.md describes the new architecture but doesn't
+yet document the worklist workflow; add a short subsection under "Snippets" once
+4.0.E's drain has run a few rounds. README.md roadmap table has a numbering
+inconsistency ("4.1 next: Biology", then a bare "4" for Wikidata); reconcile
+README numbering with this doc in a docs-polish pass.
+
+**CI parity.** Pre-commit runs validate + test-fixtures; push to master should
+too. Add a scheduled run of `verify-snippets --source wikipedia` (weekly?) to
+catch revision drift on cited articles.

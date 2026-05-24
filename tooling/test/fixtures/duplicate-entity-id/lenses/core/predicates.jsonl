@@ -1,1 +1,0 @@
-{"id":"label","label":"label","description":"A human-readable label.","lens":"core","value_type":"string","domain":null,"range":null,"cardinality":"0..*"}

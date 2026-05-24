@@ -1,2 +1,0 @@
-{"id":"pred_a","label":"pred a","description":"Aliases pred_b","lens":"core","value_type":"string","domain":null,"range":null,"cardinality":"0..*","alias_of":"pred_b"}
-{"id":"pred_b","label":"pred b","description":"Aliases pred_a — cycle","lens":"core","value_type":"string","domain":null,"range":null,"cardinality":"0..*","alias_of":"pred_a"}

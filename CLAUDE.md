@@ -8,13 +8,26 @@ The repo is a standalone public corpus at https://github.com/pterror/software-ta
 
 ## Model
 
-The data lives in `data/lenses/<lens-name>/`:
-- `entities.jsonl` — one entity per line, Wikidata-style. Any kind of entity: program, language, format, organization, person, feature, class.
-- `predicates.jsonl` — curated predicate vocabulary. Validator warns on unknowns.
-- `sources.jsonl` — provenance records (Wikipedia revids, official URLs, etc.).
-- `manifest.json` — lens identity, register (`factual` | `interpretive` | `fictional` | `folkloric`), dependencies.
+The data lives in `data/`:
+- `data/entities/<ns>/<slug>.json` — one entity per file. `<ns>` is the id namespace (`software`, `class`, `org`, etc.). The file contains the entity id, optional metadata (labels, aliases, description), and a `statements` array.
+- `data/predicates/<predicate-file>.json` — one predicate definition per file.
+- `data/sources/<kind>.jsonl` — source records grouped by kind (e.g. `wikipedia.jsonl`, `official.jsonl`). One record per line.
+- `data/lenses/<lens-id>.json` — lens identity, register (`factual` | `interpretive` | `fictional` | `folkloric`), dependencies, `source_required` flag.
 
-Top-level schema files: `schema/entity.schema.json`, `schema/predicate.schema.json`, `schema/source.schema.json` — JSON Schema Draft 2020-12.
+Each statement is a flat object in the entity's `statements` array:
+
+```jsonc
+{
+  "id": "s:abc1234",
+  "predicate": "@core:instance_of",
+  "value": "@class:word-processor",
+  "lens": "@core",
+  "rank": "preferred",
+  "sources": [{"id": "wp:Microsoft_Word@1234567", "snippet": "..."}]
+}
+```
+
+The `snippet` field is the anti-confabulation primitive: every sourced statement must include the verbatim excerpt from the source that supports the claim. `bun run snippet-todo` surfaces statements with sources but no snippet. `bun run verify-snippets` checks that snippets are non-empty.
 
 A clade is an entity with `instance_of @meta:class`. The class hierarchy is `subclass_of` chains. Programs are `instance_of @some-class`. Everything else (people, orgs, features) is typed by their own `instance_of` statements.
 
@@ -66,7 +79,7 @@ Sentinels count toward **MAX** cardinality but **NOT MIN**. A `1..1` required pr
 - Entity ids: namespaced form `<type>:<slug>`, pattern `^[a-z0-9][a-z0-9_-]*:[a-z0-9][a-z0-9_-]*$` — exactly one colon, non-empty parts on each side. No bare ids, no double colons.
 - Predicate ids: snake_case, `^[a-z][a-z0-9_]*$`.
 - Entity refs in statement values: `@<namespace>:<slug>` prefix.
-- Source ids in statements: must exist in `sources.jsonl` in any loaded lens.
+- Source ids in statements: must exist in `data/sources/` (any `.jsonl` file therein).
 - Every factual claim needs a `source`. Class structure (synapomorphies, etymologies, rank hints) is intrinsic; structural predicates (`instance_of`, `subclass_of`) on class entities are exempt.
 - One record per line in all `.jsonl` files. Recompact with `jq -c`.
 - `instance_of` with `rank: "preferred"` disambiguates the primary class when multiple are present. **At most one** `instance_of` may be `preferred` — the validator errors on `multi-preferred-instance-of`.
@@ -82,53 +95,34 @@ New class checklist:
 
 ## Predicate vocab governance
 
-- **To add a predicate**: open a PR adding it to the relevant lens's `predicates.jsonl` with full `value_type`, `domain`, `range`, `cardinality` constraints, and a `since_version` tag. Consider whether an inverse is needed.
+- **To add a predicate**: open a PR adding a JSON file under `data/predicates/` with full `value_type`, `domain`, `range`, `cardinality` constraints, and a `lens` field. Consider whether an inverse is needed.
 - **To deprecate a predicate**: set `deprecated: true` and document the successor in the predicate's `description`. The validator will warn on all uses.
 - **To merge near-duplicates**: set `alias_of` on the deprecated predicate pointing to the canonical. The validator resolves constraints from the canonical and logs an info message on use.
 - **`expect_preferred` flag**: set `expect_preferred: false` on predicates where multiple parallel current values are the norm and designating a "primary" would be wrong (e.g. `written_in`, `runs_on`, `licensed_under`, `principal_author`, `synapomorphy`, `aspect_of`). The `no-preferred-rank` validator warning is suppressed for predicates with this flag. Default is `true`.
 
 ## Validation architecture
 
-Validation is split across two layers:
+`bun run validate` loads the full corpus into an in-process EAV TripleStore (`@thi.ng/rstream-query`) and runs all rules in a single TypeScript process — no subprocess, no external schema layer.
 
-**JSON Schema (AJV)** — record shape. Runs first; aborts on failure.
-- `schema/entity.schema.json`, `schema/predicate.schema.json`, `schema/source.schema.json`, `schema/manifest.schema.json`
+**Loader** (`tooling/src/lib/load.ts`) — reads `data/` and transacts all entities, predicates, sources, and lenses into a fresh `Db`. Tracks `:statement/file` and `:statement/line` for error provenance.
 
-**TypeScript structural checks** (`tooling/src/lib/validate-lib.ts`) — checks requiring TS semantics:
-- `lens-dependency-cycle`, `duplicate-predicate-id`
-- `unknown-predicate`, `deprecated-predicate`, `alias-chain-too-long`
-- `value-type`, `qualifier-value-type`
-
-**Datalog graph invariants** (`tooling/validate.ascent`) — checks over the entity/predicate graph:
+**Rules** (`tooling/src/lib/rules.ts`) — each rule is a TypeScript function over the `Db`. Rules use `q()` for basic joins; post-process in TS for recursion (fixpoint), negation-as-failure, and aggregation. Rule categories:
 - `duplicate_entity_id`, `dangling_entity_ref`, `dangling_source_ref`
 - `domain_violation`, `range_violation`
 - `cardinality_violation_min`, `cardinality_violation_max`
-- `multi_preferred`, `multi_preferred_instance_of`, `no_preferred_rank`
+- `multi_preferred`, `no_preferred_rank`
 - `deprecated_no_end_time`, `end_without_start`
 - `source_required_violation`, `cross_lens_fictional`
 - `qualifier_unknown_predicate`, `qualifier_dangling_ref`
-- `alias_self_reference`, `alias_cycle`
-- `predicate_lens_mismatch`, `dangling_extension`, `own_entity_extension`
+- `alias_self_reference`, `alias_cycle`, `alias_chain_too_long`
 
-**Alias constraint cascade:** `alias_of` now fully propagates constraints via Datalog.
-`canonical_predicate(alias, canonical)` is derived transitively from `predicate_alias`.
-`effective_predicate_def/domain/range` resolve through aliases. All domain, range, cardinality,
-and `expect_preferred` checks consult `effective_predicate_def` — an alias predicate inherits
-all constraints of its canonical automatically, without any TS fallback.
+**Alias constraint cascade:** `alias_of` predicates inherit domain, range, cardinality, and `expect_preferred` from their canonical predicate. All constraint checks consult the effective (canonical) predicate definition.
 
-**Statement-indexed facts:** Datalog facts use `stmt_id = "<entity>#<predicate>#<index>"` as
-the primary key for statement relations. `stmt_src(stmt_id, source)` is per-statement (not
-per-rank-bucket), so `source_required_violation` fires for each unsourced statement
-individually — a sourced sibling at the same rank does NOT exempt an unsourced one.
+**Source-required per-statement:** each statement is checked independently. A sourced sibling at the same rank does NOT exempt an unsourced one.
 
-**Provenance dispatch:** `enrichViolations` dispatches provenance lookup by rule category.
-Predicate-keyed rules (alias_self_reference, alias_cycle, predicate_lens_mismatch) use
-predicate-level provenance. Statement-keyed rules use entity-level provenance.
-Datalog violations are credited to per-lens error/warning counts in the summary table.
+**To add a new rule:** write a function in `tooling/src/lib/rules.ts` that accepts a `Db` and returns `Violation[]`. Register it in `runAllRules`.
 
-**To add a new invariant:** edit `tooling/validate.ascent`. Declare an output relation and write the rule. The harness (`tooling/src/lib/datalog.ts`) picks it up automatically if you add the relation name to `VIOLATION_RELATIONS` and `RULE_SEVERITY`.
-
-**Regression fixtures:** `tooling/test/fixtures/`. Each fixture is a minimal lens set + `expected.json`. Run: `bun run test-fixtures`.
+**Regression fixtures:** `tooling/test/fixtures/`. Each fixture is a minimal `data/`-style directory + `expected.json`. Run: `bun run test-fixtures`.
 
 **Fixture conventions:**
 - `expected.json` is an array of `{ rule, entityId?, predicateId?, severity?, count? }` objects.
@@ -151,13 +145,13 @@ Datalog violations are credited to per-lens error/warning counts in the summary 
 
 ## Source rot model
 
-Every source has an optional `last_verified` date. A future `bun run recheck-sources` job re-fetches Wikipedia revisions and updates revids. Sources older than 6 months without verification get flagged. The `last_verified` field is in `source.schema.json` and can be populated manually when re-checking.
+Every source has an optional `last_verified` date. A future `bun run recheck-sources` job re-fetches Wikipedia revisions and updates revids. Sources older than 6 months without verification get flagged. The `last_verified` field can be populated manually when re-checking.
 
 ## Workflow
 
 ```bash
 cd tooling
-bun run validate        # schema + referential integrity
+bun run validate        # referential integrity + rule checks
 bun run tree            # ASCII cladogram from @class:software root
 bun run tree --root @class:technical-artifact
 bun run query --entity software:microsoft-word
@@ -165,6 +159,10 @@ bun run query --subclass-of @class:software --transitive
 bun run query --instance-of @class:word-processor
 bun run query --has-predicate developed_by
 bun run check-links     # HEAD-check wikipedia statement slugs
+bun run snippet-todo    # list statements missing source snippets
+bun run verify-snippets # check all snippets are non-empty
+bun run new-statement   # interactive CLI to add a statement to an entity file
+bun run repl            # interactive query REPL over the data store
 ```
 
 The pre-commit hook runs `bun run validate`. Fix errors before committing; do not use `--no-verify`.
@@ -172,48 +170,26 @@ The pre-commit hook runs `bun run validate`. Fix errors before committing; do no
 ## Adding content
 
 **New class (clade):**
-1. Add entity with `instance_of @meta:class`, `subclass_of @class:<parent>`, and a new id in the `class:` namespace.
+1. Add a JSON file under `data/entities/class/<slug>.json` with `instance_of @meta:class`, `subclass_of @class:<parent>`.
 2. Add `synapomorphy` statements for defining traits (string-valued, unsourced is fine for class entities).
 3. Run `bun run tree` to verify placement.
 4. Classes need at least 3 real instances before adding — see class curation rule above.
 
 **New program entity:**
-1. Add entity with `instance_of @class:<class>` and id in the appropriate namespace (`software:`, `format:`, etc.).
-2. Every factual statement (`first_released`, `developed_by`, etc.) must have a `source` pointing to a record in `sources.jsonl`.
-3. Add the source record first; reference by id.
+1. Add a JSON file under `data/entities/<ns>/<slug>.json` with `instance_of @class:<class>`.
+2. Every factual statement (`first_released`, `developed_by`, etc.) must have a `sources` entry with a source id and snippet.
+3. Add the source record to the appropriate `data/sources/<kind>.jsonl` first; reference by id.
 
 **New predicate:**
-1. Add to the relevant lens's `predicates.jsonl` with id, label, description, `value_type`, `domain`, `range`, `cardinality`, and `since_version`.
+1. Add a JSON file under `data/predicates/` with id, label, description, `value_type`, `domain`, `range`, `cardinality`, and `lens`.
 2. Consider whether an inverse predicate should also be added.
 3. See predicate vocab governance above.
 
-## Cross-lens entity extension (overlay model)
+## Cross-lens statements
 
-A lens's `entities.jsonl` may contain two kinds of records:
+In the new store, every statement carries a `lens` field recording which lens contributed it. There is no separate "extension record" concept — a lens simply adds statement objects to entity files with its own `lens` id. Each entity file has a single `statements` array; statements from different lenses coexist.
 
-```jsonc
-// Definition record — owns the entity; exactly one definition per id across all lenses
-{
-  "id": "software:microsoft-word",
-  "labels": {"en": "Microsoft Word"},
-  "statements": { ... }
-}
-
-// Extension record — adds statements to an entity defined in another lens
-{
-  "extends": "@software:microsoft-word",
-  "statements": {
-    "influenced_by": [{"value": "@software:wordperfect"}]
-  }
-}
-```
-
-**Rules:**
-- A definition record has `id` (no `extends`). Exactly one definition per id globally — duplicate definition is an error.
-- An extension record has `extends` (no `id`, no `labels`, no `description`, no `aliases`). It targets a definition that must exist in another lens.
-- A lens cannot extend an entity it owns (`own-entity-extension` error — use the definition record instead).
-- Extension statements are tagged with `origin_lens` of the extending lens. Visible in `query --entity <id> --format text`.
-- `source_required` is evaluated against the **owning** lens's manifest. A biology overlay (`source_required: false`) extending a core entity (`source_required: true`) must still source every statement it adds. See "Temporal modeling" section for the `kind: "interpretive"` escape hatch.
+`source_required` is evaluated against the **owning** lens's manifest. A biology overlay (`source_required: false`) contributing statements to a core entity (`source_required: true`) must still source every statement it adds. See "Temporal modeling" section for the `kind: "interpretive"` escape hatch.
 
 ## Temporal modeling (Wikidata pattern)
 
@@ -262,48 +238,17 @@ The validator enforces referential integrity and warns on missing sources. Do no
 
 ## Status
 
-**Phase 3.10** complete — regression fixes for Phase 3.9 Datalog migration + fixture coverage:
-- **source_required fix**: statements now use `stmt_id = "<entity>#<predicate>#<index>"` as primary key. `stmt_src(stmt_id, source)` is per-statement — a sourced sibling no longer exempts an unsourced one at the same rank. Fixes critical regression #1.
-- **alias cascade fix**: `canonical_predicate` + `effective_predicate_def/domain/range` derived in Datalog. Domain, range, cardinality, and expect_preferred checks now consult effective definitions, so alias predicates inherit all constraints transitively. Fixes critical regression #2.
-- **predicate provenance**: enrichViolations dispatches by rule category (predicate-keyed vs statement-keyed vs lens-keyed). Predicate violations (alias_self_reference, alias_cycle, predicate_lens_mismatch) now report correct file:line instead of `(datalog) [?]`. Fixes regression #3.
-- **per-lens summary**: Datalog violations now contribute to per-lens error/warning counts in the validation summary table. Fixes regression #4.
-- **migration completion**: `predicate_lens_mismatch`, `dangling_extension`, `own_entity_extension` moved from TS to Datalog. TS handles only: cycle detection, schema validation, value-type, qualifier-value-type, alias-chain-too-long, unknown-predicate.
-- **error message fidelity**: range_violation includes target id; cross_lens_fictional includes subject entity; duplicate_entity_id distinguishes same-lens (both line numbers) vs cross-lens.
-- **fixture coverage**: 5 → 24 fixtures; harness strengthened with `count` multiplicity field and UNEXPECTED violation checking.
+**Phase 4.0.D** complete — cut over to new pipeline; retired Ascent + lens-as-directory:
+- Old `data/` (lens-as-directory JSONL) deleted; `data2/` → `data/` (entity-per-file, grouped sources).
+- Old tooling deleted: `validate-lib.ts`, `datalog.ts`, `graph.ts`, `load.ts`, `validate.ascent`, `schema/`, `ajv`, `ajv-formats`, `ascent-interpreter` dev-shell dep, one-shot conversion tools.
+- New tooling promoted: `load2.ts` → `load.ts`, `rules2.ts` → `rules.ts`, `violations2.ts` → `violations.ts`, `validate2.ts` → `validate.ts`, etc.
+- Validation is now entirely in-process: TripleStore load → rule queries → violations. No subprocess.
+- 24/24 regression fixtures passing.
 
-**Phase 3.9** complete — migrate graph-invariant validator from procedural TypeScript to Datalog (ascent-interpreter):
-- All graph invariants moved to `tooling/validate.ascent` (18 rule clusters, ~400 lines of Datalog).
-- `tooling/src/lib/datalog.ts` added: fact emission, subprocess harness, output parsing, provenance enrichment.
-- `tooling/src/lib/validate-lib.ts` reduced from ~770 lines to ~220: structural/value-type checks only.
-- `tooling/flake.nix` updated to expose `ascent-interpreter` binary via `nix develop`.
-- Regression fixture system added: `tooling/test/fixtures/` + `bun run test-fixtures` (5 fixtures).
-- Key Datalog design decisions: `@`-stripped entity refs in `entity_ref` facts (pre-processed in TS emitter); `entity_def` with line number for same-lens duplicate detection; sentinels as `"__sentinel__"` string + separate `is_sentinel` relation; `stmt_rank(x, p, rankKey, rank)` for per-statement qualifier tracking; `has_qualifier` + `qualifier_entity_ref` for qualifier invariants.
-- Known limitations: cardinality min only fires when entity has ≥1 statement for the predicate (absent predicates not checked); value-pattern checks remain in TS.
+**Phase 4.0.C** complete — tooling surface on new store: `snippet-todo`, `new-statement`, `verify-snippets`, `repl`, `query2`, `tree2`, `check-links2` all backed by the new store.
 
-**Phase 3.8** complete — validator structural refactor + qualifier completeness + temporal corpus completion:
-- Extracted `validateStatementEntry` as a single shared function (definition and extension paths unified — no more behavioral drift).
-- Qualifier shape validation now runs on **all** statements including `rank: deprecated` — previously silent.
-- Multi-preferred-rank check now uses MERGED statements across all lenses (catches cross-lens duplicates).
-- Qualifier values now support entity refs (`@namespace:id`) and sentinels (`{unknown:true}`, `{novalue:true}`); schema updated accordingly.
-- New validator warnings: `deprecated-no-end-time`, `end-without-start`, `no-preferred-rank` (with `expect_preferred: false` predicate flag to suppress).
-- `kind: "interpretive"` sources now require `last_verified` (same strictness as `official`).
-- `expect_preferred: false` set on `written_in`, `runs_on`, `licensed_under`, `principal_author`, `synapomorphy`, `aspect_of`.
-- Temporal completions: vim (Christian Brabandt as successor, 2023-08), sublime-text (jon-skinner → sublime-hq, 2014), vscode (stray `note` qualifier removed).
-- PostgreSQL concept split: `@class:postgres` + `@software:berkeley-postgres` (Stonebraker 1986-1994) + temporal `developed_by` on `@software:postgresql`.
-- Redundant `instance_of` removed from cron and make implementations (reachable via subclass_of chain).
-- Loader private field renamed from `_origin_lens` to `__loader_origin_lens` (double-underscore = loader-injected, not a data field).
+**Phase 4.0.B** complete — data migration: all entities, predicates, sources, and lenses converted from lens-as-directory JSONL to entity-per-file layout.
 
-**Phase 3.7** complete — validator parity + temporal discipline + retroactive fixes:
-- Extension records now validate at full parity with definition records (schema, domain, range, qualifier, cross-lens, source-required using owner policy).
-- `source_required` for extensions uses the OWNING lens's policy, not the extending lens's.
-- `"interpretive"` added to source `kind` enum for biology/interpretive warrants.
-- Multi-preferred-rank check generalized to all predicates (not just `instance_of`).
-- cron and make split into concept classes + instance entities (`@class:cron`, `@class:make`).
-- 14 retroactive temporal fixes from audit wave 2 (nginx, mysql, openrc, travis-ci, autogpt, langchain, cmake, git, postgresql, caddy + substrates).
-- 14 programs audited and fixed in wave 3 (sendmail, gimp, vim, jenkins, adobe-photoshop, mariadb, mongodb, redis, elasticsearch, mercurial, wordperfect, emacs, systemd + substrates).
-- 5 duplicate source records deduped (cmake, bazel, ninja, kitware, postgresql).
-- Tooling: `bun run tree` default root fixed to `@class:software`; duplicate source id detection; single lens load per validate run.
+**Phase 4.0.A** complete — new in-process TripleStore pipeline: `load2.ts`, `rules2.ts`, `violations2.ts`, `validate2.ts`; 24 regression fixtures; side-by-side with old pipeline.
 
-**Phase 3.6** complete — hardening pass two: cross-lens entity extension records (overlay model), sentinel cardinality semantics (count toward max, not min), tightened id pattern, multi-preferred-instance-of error, qualifier validation, source schema strictness (revid required for wikipedia, last_verified required for official), factual error corrections in seed corpus, predicate relocation (fork/lineage predicates to core), and tool improvements (tree --lens dependent loading, query --lens-family default action, structured cycle errors).
-
-Next: **Phase 3.11** — Biology overlay substrate (~26 organ/metabolism class entities, organ vs feature naming, biology predicate expansion). Phase 3.10 closed the last validator gap blocking biology ingest (unsourced statement leak via regression #1).
+Next: **Phase 4.1** — Biology overlay substrate (~26 organ/metabolism class entities, organ vs feature naming, biology predicate expansion).

@@ -2,14 +2,14 @@
 //
 // Strategy:
 //  - Use q() for basic joins; post-process in TS for recursion/negation/aggregation.
-//  - In data2/, entity ids and statement values keep the "@ns:slug" prefix throughout.
+//  - In data/, entity ids and statement values keep the "@ns:slug" prefix throughout.
 //  - Recursion (transitive closures) computed via iterative fixpoint — rstream-query
 //    has no recursion.
 //  - Negation-as-failure: build positive set, then filter in TS.
 //  - Aggregation: groupBy in TS after fetching all rows.
 
 import { q, type Db } from "./store.js";
-import type { Violation } from "./violations2.js";
+import type { Violation } from "./violations.js";
 
 // ─── Closure helpers ──────────────────────────────────────────────────────────
 
@@ -340,13 +340,13 @@ export function buildContext(db: Db): ValidateContext {
   const subclassClosure = buildSubclassClosure(stmts);
   const instanceClosure = buildInstanceClosure(stmts, subclassClosure);
 
-  // entity owner: read from entity/lens attribute (stored by load2.ts from convert-lib.ts).
+  // entity owner: read from entity/lens attribute (stored by load.ts).
   // Falls back to the first statement's lens for entities without an explicit lens attribute.
   const entityOwner = new Map<string, string>();
   for (const row of q({ q: [{ where: [["?e", "entity/id", "?id"], ["?e", "entity/lens", "?lens"]] }], select: ["id", "lens"] }, db)) {
     entityOwner.set(row["id"] as string, row["lens"] as string);
   }
-  // Fallback for entities without entity/lens (old data2/ files before this field was added)
+  // Fallback for entities without entity/lens (old data/ files before this field was added)
   for (const stmt of stmts) {
     if (!entityOwner.has(stmt.subject)) {
       entityOwner.set(stmt.subject, stmt.lens);
@@ -402,8 +402,8 @@ function prov(stmtId: string, ctx: ValidateContext): { file?: string; line?: num
 
 /**
  * duplicate_entity_id: fires for same entity id in two lenses or twice in one lens.
- * In data2/ entities are merged by convert.ts — cross-lens duplicates don't exist.
- * This rule has no violations in data2/ by construction.
+ * In data/ entities are merged by convert.ts — cross-lens duplicates don't exist.
+ * This rule has no violations in data/ by construction.
  */
 export function duplicateEntityId(_ctx: ValidateContext): Violation[] {
   return [];
@@ -932,7 +932,7 @@ export function aliasCycle(ctx: ValidateContext): Violation[] {
 
 /**
  * predicate_lens_mismatch: predicate record's "lens" field disagrees with
- * the lens namespace in its id. In data2/, predicate id = "@<lensId>:slug"
+ * the lens namespace in its id. In data/, predicate id = "@<lensId>:slug"
  * and predicate/lens = lensId. A mismatch is when these differ.
  */
 export function predicateLensMismatch(ctx: ValidateContext): Violation[] {
@@ -958,7 +958,7 @@ export function predicateLensMismatch(ctx: ValidateContext): Violation[] {
 }
 
 /**
- * dangling_extension and own_entity_extension: not applicable in data2/ —
+ * dangling_extension and own_entity_extension: not applicable in data/ —
  * extensions are merged into entity files by convert.ts.
  */
 export function danglingExtension(_ctx: ValidateContext): Violation[] { return []; }

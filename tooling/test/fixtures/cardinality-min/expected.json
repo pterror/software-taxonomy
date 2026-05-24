@@ -1,3 +1,7 @@
 [
-  { "rule": "cardinality_violation_min", "entityId": "thing:alpha", "predicateId": "required_name" }
+  {
+    "rule": "cardinality_violation_min",
+    "entityId": "@thing:alpha",
+    "predicateId": "@core:required_name"
+  }
 ]

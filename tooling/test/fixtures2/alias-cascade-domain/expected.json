@@ -1,7 +1,0 @@
-[
-  {
-    "rule": "domain_violation",
-    "entityId": "@person:bill",
-    "predicateId": "@core:made_by"
-  }
-]

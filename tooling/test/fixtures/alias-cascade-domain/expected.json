@@ -1,3 +1,7 @@
 [
-  { "rule": "domain_violation", "entityId": "person:bill", "predicateId": "made_by" }
+  {
+    "rule": "domain_violation",
+    "entityId": "@person:bill",
+    "predicateId": "@core:made_by"
+  }
 ]

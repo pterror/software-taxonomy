@@ -8,7 +8,7 @@
 // Flags:
 //   --source <kind>    filter by source kind (default: wikipedia only)
 
-import { loadData2 } from "./lib/load2.js";
+import { loadData } from "./lib/load.js";
 import { q } from "./lib/store.js";
 
 const args = process.argv.slice(2);
@@ -28,7 +28,7 @@ if (args.includes("--help")) {
 
 const sourceKindFilter = getArg("--source") ?? "wikipedia";
 
-const db = loadData2();
+const db = loadData();
 
 // Collect source metadata
 interface SourceMeta {

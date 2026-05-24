@@ -1,15 +1,15 @@
-// repl.ts — interactive REPL for querying the data2 store.
+// repl.ts — interactive REPL for querying the data store.
 //
 // Each line is parsed as JSON, treated as a QuerySpec, fed to q(), results pretty-printed.
 // Special commands: :help, :count, :exit
 
 import { createInterface } from "node:readline/promises";
-import { loadData2 } from "./lib/load2.js";
+import { loadData } from "./lib/load.js";
 import { q, datumCount } from "./lib/store.js";
 
-const db = loadData2();
+const db = loadData();
 
-console.log(`data2 store loaded. ${datumCount(db)} datoms.`);
+console.log(`data store loaded. ${datumCount(db)} datoms.`);
 console.log('Type a JSON QuerySpec, or :help, :count, :exit.');
 
 const rl = createInterface({

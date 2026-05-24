@@ -1,3 +1,7 @@
 [
-  { "rule": "end_without_start", "entityId": "thing:alpha", "predicateId": "label" }
+  {
+    "rule": "end_without_start",
+    "entityId": "@thing:alpha",
+    "predicateId": "@core:label"
+  }
 ]

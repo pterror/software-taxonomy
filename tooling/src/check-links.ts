@@ -1,67 +1,70 @@
-import { loadEntities } from "./lib/load.ts";
+// check-links.ts — checks all source/url values via HEAD requests.
+// Checks all source/url values via HEAD requests (concurrently, rate-limited).
+//
+// Unlike check-links.ts (which checked wikipedia slugs), this checks the full URL
+// stored in each source record. Wikipedia links are also covered since sources
+// store the canonical URL.
+
+import { loadData } from "./lib/load.js";
+import { q } from "./lib/store.js";
 
 const CONCURRENCY = 4;
-const DELAY_MS = 100;
+const DELAY_MS    = 100;
 
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-async function checkSlug(id: string, slug: string): Promise<void> {
-  const url = `https://en.wikipedia.org/wiki/${encodeURIComponent(slug)}`;
+async function checkUrl(sourceId: string, url: string): Promise<void> {
   try {
     const res = await fetch(url, { method: "HEAD" });
     if (res.status === 404) {
-      console.error(`404  ${id}  ${url}`);
+      console.error(`404  ${sourceId}  ${url}`);
     } else if (res.status !== 200) {
-      console.warn(`${res.status}  ${id}  ${url}`);
+      console.warn(`${res.status}  ${sourceId}  ${url}`);
     } else {
-      console.log(`200  ${id}  ${url}`);
+      console.log(`200  ${sourceId}  ${url}`);
     }
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : String(err);
-    console.error(`ERR  ${id}  ${url}  ${msg}`);
+    console.error(`ERR  ${sourceId}  ${url}  ${msg}`);
   }
 }
 
 async function run(): Promise<void> {
-  // Load entities from all lenses
-  const entityRecords = loadEntities();
+  const db = loadData();
 
-  // Collect entities that have a wikipedia statement
-  const withWikipedia: Array<{ id: string; slug: string }> = [];
-  for (const { record } of entityRecords) {
-    const wpEntries = record.statements["wikipedia"] ?? [];
-    for (const entry of wpEntries) {
-      if (typeof entry.value === "string") {
-        withWikipedia.push({ id: record.id, slug: entry.value });
-      }
-    }
+  const rows = q(
+    { q: [{ where: [["?e", "source/id", "?id"], ["?e", "source/url", "?url"]] }],
+      select: ["id", "url"] },
+    db,
+  );
+
+  const sources: Array<{ id: string; url: string }> = [];
+  for (const row of rows) {
+    sources.push({ id: row["id"] as string, url: row["url"] as string });
   }
 
-  if (withWikipedia.length === 0) {
-    console.log("No entities with wikipedia statements to check.");
+  if (sources.length === 0) {
+    console.log("No sources with URLs to check.");
     return;
   }
 
-  console.log(`Checking ${withWikipedia.length} Wikipedia link(s)...`);
+  console.log(`Checking ${sources.length} source URL(s)...`);
 
-  const queue = [...withWikipedia];
-  const active: Promise<void>[] = [];
+  const queue = [...sources];
 
   async function worker(): Promise<void> {
     while (queue.length > 0) {
       const item = queue.shift()!;
-      await checkSlug(item.id, item.slug);
+      await checkUrl(item.id, item.url);
       if (queue.length > 0) await sleep(DELAY_MS);
     }
   }
 
-  for (let i = 0; i < CONCURRENCY; i++) {
-    active.push(worker());
-  }
-
-  await Promise.all(active);
+  const workers: Promise<void>[] = [];
+  for (let i = 0; i < CONCURRENCY; i++) workers.push(worker());
+  await Promise.all(workers);
   console.log("Done.");
 }
 

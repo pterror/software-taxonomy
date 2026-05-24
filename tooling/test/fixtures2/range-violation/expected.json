@@ -1,7 +1,0 @@
-[
-  {
-    "rule": "range_violation",
-    "entityId": "@entity:sw",
-    "predicateId": "@core:developed_by"
-  }
-]

@@ -1,4 +1,4 @@
-// Helpers for locating and mutating entity JSON files in data2/.
+// Helpers for locating and mutating entity JSON files in data/.
 
 import { readFileSync, writeFileSync, existsSync } from "fs";
 import { join, dirname } from "path";
@@ -6,7 +6,7 @@ import { fileURLToPath } from "url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 export const repoRoot = join(__dirname, "../../..");
-export const data2Dir = join(repoRoot, "data2");
+export const dataDir = join(repoRoot, "data");
 
 export interface Statement {
   id: string;
@@ -27,13 +27,13 @@ export interface EntityFile {
   statements: Statement[];
 }
 
-// "@ns:slug" → data2/entities/<ns>/<slug>.json
+// "@ns:slug" → data/entities/<ns>/<slug>.json
 export function entityFilePath(entityId: string): string {
   const bare   = entityId.startsWith("@") ? entityId.slice(1) : entityId;
   const colon  = bare.indexOf(":");
   const ns     = colon >= 0 ? bare.slice(0, colon) : "unknown";
   const slug   = colon >= 0 ? bare.slice(colon + 1) : bare;
-  return join(data2Dir, "entities", ns, `${slug}.json`);
+  return join(dataDir, "entities", ns, `${slug}.json`);
 }
 
 export function readEntityFile(entityId: string): EntityFile | undefined {
@@ -47,11 +47,11 @@ export function writeEntityFile(entityId: string, content: EntityFile): void {
   writeFileSync(path, JSON.stringify(content, null, 2) + "\n", "utf-8");
 }
 
-// Collect all existing statement ids from the data2/ corpus.
+// Collect all existing statement ids from the data/ corpus.
 export function collectExistingStmtIds(): Set<string> {
   const { readdirSync } = require("fs") as typeof import("fs");
   const ids = new Set<string>();
-  const entitiesBase = join(data2Dir, "entities");
+  const entitiesBase = join(dataDir, "entities");
   if (!existsSync(entitiesBase)) return ids;
   for (const ns of readdirSync(entitiesBase)) {
     const nsDir = join(entitiesBase, ns);

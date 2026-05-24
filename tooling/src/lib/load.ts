@@ -1,89 +1,44 @@
+// Reads data/ → transacts everything into a fresh EAV store. Returns the db.
+// Also tracks :statement/file and :statement/line by scanning JSON text for
+// each statement id (ids are globally unique after convert.ts assigns them).
+
 import { readFileSync, readdirSync, existsSync } from "fs";
-import { resolve, dirname, join } from "path";
+import { join, dirname } from "path";
 import { fileURLToPath } from "url";
+import { emptyDb, transact, datumCount, q, type TxMap, type Db } from "./store.js";
+import { SCHEMA } from "./schema.js";
 
-export const __dirname = dirname(fileURLToPath(import.meta.url));
-export const dataDir = resolve(__dirname, "../../../data");
-export const schemaDir = resolve(__dirname, "../../../schema");
-export const lensesDir = resolve(dataDir, "lenses");
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const repoRoot = join(__dirname, "../../..");
+const dataDir = join(repoRoot, "data");
 
-export interface LoadedRecord<T = unknown> {
-  record: T;
-  line: number;
-  file: string;
-}
+// ---- New-format types (mirroring convert.ts output) ----
 
-export function loadJsonl<T = unknown>(filePath: string): LoadedRecord<T>[] {
-  let text: string;
-  try {
-    text = readFileSync(filePath, "utf-8");
-  } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : String(err);
-    throw new Error(`Cannot read ${filePath}: ${msg}`);
-  }
-
-  const results: LoadedRecord<T>[] = [];
-  const lines = text.split("\n");
-
-  for (let i = 0; i < lines.length; i++) {
-    const raw = lines[i].trim();
-    if (raw === "") continue;
-
-    let record: T;
-    try {
-      record = JSON.parse(raw) as T;
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : String(err);
-      throw new Error(`${filePath}:${i + 1}: JSON parse error: ${msg}`);
-    }
-
-    results.push({ record, line: i + 1, file: filePath });
-  }
-
-  return results;
-}
-
-// ---- Data types ----
-
-export type SentinelUnknown = { unknown: true };
-export type SentinelNovalue = { novalue: true };
-export type SentinelValue = SentinelUnknown | SentinelNovalue;
-
-export function isSentinel(value: unknown): value is SentinelValue {
-  if (typeof value !== "object" || value === null) return false;
-  return ("unknown" in value && (value as Record<string, unknown>)["unknown"] === true) ||
-         ("novalue" in value && (value as Record<string, unknown>)["novalue"] === true);
-}
-
-export interface StatementEntry {
-  value: string | number | boolean | SentinelValue;
-  source?: string;
-  qualifiers?: Record<string, string | number | boolean | SentinelValue>;
-  rank?: "preferred" | "normal" | "deprecated";
-}
-
-export interface Entity {
+interface NewStatement {
   id: string;
-  labels: Record<string, string>;
+  predicate: string;
+  value: unknown;
+  rank?: string;
+  qualifiers?: Record<string, unknown>;
+  lens: string;
+  sources?: Array<{ id: string; snippet?: string }>;
+}
+
+interface NewEntity {
+  id: string;
+  lens?: string;  // owner lens id (written by convert-lib.ts)
+  labels?: Record<string, string>;
   aliases?: string[];
   description?: string;
-  statements: Record<string, StatementEntry[]>;
+  statements: NewStatement[];
 }
 
-export interface ExtensionRecord {
-  extends: string; // "@namespace:id" entity ref
-  statements: Record<string, StatementEntry[]>;
-  /** Set by loader to indicate which lens this extension came from */
-  __loader_origin_lens?: string;
-}
-
-export interface Predicate {
+interface NewPredicate {
   id: string;
   label: string;
   description: string;
   lens: string;
-  value_type: "string" | "integer" | "boolean" | "date" | "url" | "entity" | "language_string";
-  value_pattern?: string;
+  value_type: string;
   domain: string[] | null;
   range: string[] | null;
   cardinality: string;
@@ -91,211 +46,185 @@ export interface Predicate {
   transitive?: boolean;
   deprecated?: boolean;
   alias_of?: string | null;
-  since_version?: string;
   expect_preferred?: boolean;
 }
 
-export interface Source {
+interface NewSource {
   id: string;
   kind: string;
   title: string;
   url: string;
   revid?: number;
   fetched?: string;
+  last_verified?: string;
 }
 
-export interface LensManifest {
+interface NewLens {
   id: string;
   label: string;
   description: string;
-  register: "factual" | "interpretive" | "fictional" | "folkloric";
+  register: string;
   family?: string;
   depends_on: string[];
   source_required: boolean;
   author: string;
 }
 
-// ---- Lens-aware loading ----
-
-export interface LoadedLens {
-  manifest: LensManifest;
-  manifestPath: string;
-  predicates: LoadedRecord<Predicate>[];
-  entities: LoadedRecord<Entity>[];
-  extensions: LoadedRecord<ExtensionRecord>[];
-  sources: LoadedRecord<Source>[];
+// Sentinel values: {unknown: true} or {novalue: true} → stored as "__sentinel__"
+function isSentinelValue(v: unknown): boolean {
+  if (typeof v !== "object" || v === null) return false;
+  return ("unknown" in v) || ("novalue" in v);
 }
 
-export interface LoadedLensSet {
-  lenses: Map<string, LoadedLens>;
-  /** Dependency-ordered list of lens ids (dependencies first) */
-  order: string[];
-  /** Cycle violation messages from topoSort (empty if no cycles) */
-  cycleViolations: string[];
-}
-
-export interface TopoSortResult {
-  order: string[];
-  /** Cycle violations found during sort (non-throwing) */
-  cycleViolations: string[];
-}
-
-function topoSort(lenses: Map<string, LensManifest>): TopoSortResult {
-  const visited = new Set<string>();
-  const result: string[] = [];
-  const cycleViolations: string[] = [];
-
-  function visit(id: string, path: string[]): void {
-    if (visited.has(id)) return;
-    if (path.includes(id)) {
-      cycleViolations.push(
-        `Circular dependency in lenses: ${[...path, id].join(" -> ")}`
-      );
-      visited.add(id); // mark visited to prevent infinite recursion
-      return;
-    }
-    const manifest = lenses.get(id);
-    if (!manifest) {
-      // dep missing — will be caught by manifest validation
-      visited.add(id);
-      return;
-    }
-    const newPath = [...path, id];
-    for (const dep of manifest.depends_on) {
-      visit(dep, newPath);
-    }
-    visited.add(id);
-    result.push(id);
+// Find the 1-based line number of a statement id in file text.
+// Searches for the first occurrence of '"id": "<stmtId>"' or '"id":"<stmtId>"'.
+function findStatementLine(text: string, stmtId: string): number {
+  // Match the opening brace preceding the "id" key of this statement.
+  // We search for the id value and then walk back to find the '{'.
+  const needle = `"${stmtId}"`;
+  const pos = text.indexOf(needle);
+  if (pos === -1) return -1;
+  // Count newlines up to pos to get line number (1-based).
+  let line = 1;
+  for (let i = 0; i < pos; i++) {
+    if (text[i] === "\n") line++;
   }
-
-  for (const id of lenses.keys()) {
-    visit(id, []);
-  }
-
-  return { order: result, cycleViolations };
+  return line;
 }
 
-export function loadLensSet(filter?: string[]): LoadedLensSet {
-  // Discover lens dirs
-  const lensDirs = readdirSync(lensesDir, { withFileTypes: true })
-    .filter((d) => d.isDirectory())
-    .map((d) => d.name);
+// Load data/ and return a populated db.
+export function loadData(baseDir: string = dataDir): Db {
+  const db = emptyDb(SCHEMA);
 
-  const manifests = new Map<string, LensManifest>();
-  const manifestPaths = new Map<string, string>();
-
-  for (const name of lensDirs) {
-    const manifestPath = join(lensesDir, name, "manifest.json");
-    if (!existsSync(manifestPath)) {
-      throw new Error(`Lens directory '${name}' is missing manifest.json`);
-    }
-    let manifest: LensManifest;
-    try {
-      manifest = JSON.parse(readFileSync(manifestPath, "utf-8")) as LensManifest;
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : String(err);
-      throw new Error(`Cannot parse ${manifestPath}: ${msg}`);
-    }
-    if (manifest.id !== name) {
-      throw new Error(`Lens dir '${name}' has manifest.id '${manifest.id}' — they must match`);
-    }
-    manifests.set(name, manifest);
-    manifestPaths.set(name, manifestPath);
-  }
-
-  const { order, cycleViolations } = topoSort(manifests);
-  if (cycleViolations.length > 0) {
-    // Surface cycle violations as errors on stderr; don't throw (callers may handle gracefully)
-    for (const msg of cycleViolations) {
-      process.stderr.write(`ERROR [lens-cycle] ${msg}\n`);
+  // --- Lenses ---
+  const lensesDir = join(baseDir, "lenses");
+  if (existsSync(lensesDir)) {
+    for (const file of readdirSync(lensesDir)) {
+      if (!file.endsWith(".json")) continue;
+      const lens = JSON.parse(readFileSync(join(lensesDir, file), "utf-8")) as NewLens;
+      transact(db, [{
+        "lens/id":             lens.id,
+        "lens/label":          lens.label,
+        "lens/description":    lens.description,
+        "lens/register":       lens.register,
+        ...(lens.family   !== undefined && { "lens/family":      lens.family }),
+        "lens/depends_on":     JSON.stringify(lens.depends_on),
+        "lens/source_required": lens.source_required,
+        "lens/author":         lens.author,
+      } as TxMap]);
     }
   }
 
-  // If filter specified, expand to include all deps (transitively)
-  let loadSet: string[];
-  if (filter && filter.length > 0) {
-    const needed = new Set<string>();
-    function addWithDeps(id: string): void {
-      if (needed.has(id)) return;
-      needed.add(id);
-      const m = manifests.get(id);
-      if (m) {
-        for (const dep of m.depends_on) addWithDeps(dep);
+  // --- Predicates ---
+  const predsDir = join(baseDir, "predicates");
+  if (existsSync(predsDir)) {
+    for (const file of readdirSync(predsDir)) {
+      if (!file.endsWith(".json")) continue;
+      const pred = JSON.parse(readFileSync(join(predsDir, file), "utf-8")) as NewPredicate;
+      transact(db, [{
+        "predicate/id":          pred.id,
+        "predicate/lens":        pred.lens,
+        "predicate/label":       pred.label,
+        "predicate/description": pred.description,
+        "predicate/value_type":  pred.value_type,
+        "predicate/domain":      JSON.stringify(pred.domain),
+        "predicate/range":       JSON.stringify(pred.range),
+        "predicate/cardinality": pred.cardinality,
+        ...(pred.inverse          !== undefined && { "predicate/inverse":          pred.inverse }),
+        ...(pred.transitive       !== undefined && { "predicate/transitive":       pred.transitive }),
+        ...(pred.deprecated       !== undefined && { "predicate/deprecated":       pred.deprecated }),
+        ...(pred.alias_of         !== undefined && pred.alias_of !== null && { "predicate/alias_of": pred.alias_of }),
+        ...(pred.expect_preferred !== undefined && { "predicate/expect_preferred": pred.expect_preferred }),
+      } as TxMap]);
+    }
+  }
+
+  // --- Sources ---
+  const sourcesDir = join(baseDir, "sources");
+  if (existsSync(sourcesDir)) {
+    for (const file of readdirSync(sourcesDir)) {
+      if (!file.endsWith(".jsonl")) continue;
+      const lines = readFileSync(join(sourcesDir, file), "utf-8")
+        .split("\n")
+        .filter((l) => l.trim());
+      for (const line of lines) {
+        const src = JSON.parse(line) as NewSource;
+        transact(db, [{
+          "source/id":    src.id,
+          "source/kind":  src.kind,
+          "source/title": src.title,
+          "source/url":   src.url,
+          ...(src.revid         !== undefined && { "source/revid":         src.revid }),
+          ...(src.fetched       !== undefined && { "source/fetched":       src.fetched }),
+          ...(src.last_verified !== undefined && { "source/last_verified": src.last_verified }),
+        } as TxMap]);
       }
     }
-    for (const id of filter) addWithDeps(id);
-    loadSet = order.filter((id) => needed.has(id));
-  } else {
-    loadSet = order;
   }
 
-  const lenses = new Map<string, LoadedLens>();
+  // --- Entities and Statements ---
+  const entitiesBase = join(baseDir, "entities");
+  if (existsSync(entitiesBase)) {
+    for (const ns of readdirSync(entitiesBase)) {
+      const nsDir = join(entitiesBase, ns);
+      for (const file of readdirSync(nsDir)) {
+        if (!file.endsWith(".json")) continue;
+        const filePath = join(nsDir, file);
+        const fileText = readFileSync(filePath, "utf-8");
+        const entity = JSON.parse(fileText) as NewEntity;
 
-  for (const id of loadSet) {
-    const manifest = manifests.get(id)!;
-    const lensDir = join(lensesDir, id);
+        // Transact entity record.
+        transact(db, [{
+          "entity/id":          entity.id,
+          ...(entity.lens        !== undefined && { "entity/lens":        entity.lens }),
+          ...(entity.labels      !== undefined && { "entity/labels":      JSON.stringify(entity.labels) }),
+          ...(entity.aliases     !== undefined && { "entity/aliases":     JSON.stringify(entity.aliases) }),
+          ...(entity.description !== undefined && { "entity/description": entity.description }),
+        } as TxMap]);
 
-    const predicatesPath = join(lensDir, "predicates.jsonl");
-    const entitiesPath = join(lensDir, "entities.jsonl");
-    const sourcesPath = join(lensDir, "sources.jsonl");
+        // Transact each statement.
+        for (const stmt of entity.statements) {
+          const line = findStatementLine(fileText, stmt.id);
+          transact(db, [{
+            "statement/id":        stmt.id,
+            "statement/subject":   entity.id,
+            "statement/predicate": stmt.predicate,
+            // Sentinel objects ({unknown:true} / {novalue:true}) → "__sentinel__"
+            "statement/value":     isSentinelValue(stmt.value) ? "__sentinel__" : String(stmt.value),
+            "statement/lens":      stmt.lens,
+            "statement/file":      filePath,
+            ...(line !== -1 && { "statement/line": line }),
+            ...(stmt.rank       !== undefined && { "statement/rank":       stmt.rank }),
+            ...(stmt.qualifiers !== undefined && { "statement/qualifiers": JSON.stringify(stmt.qualifiers) }),
+          } as TxMap]);
 
-    // Load entities.jsonl and split into definition records and extension records
-    const entityDefinitions: LoadedRecord<Entity>[] = [];
-    const entityExtensions: LoadedRecord<ExtensionRecord>[] = [];
-    if (existsSync(entitiesPath)) {
-      const rawRecords = loadJsonl<Record<string, unknown>>(entitiesPath);
-      for (const { record, line, file } of rawRecords) {
-        if ("extends" in record) {
-          // Extension record
-          const ext = record as unknown as ExtensionRecord;
-          ext.__loader_origin_lens = id;
-          entityExtensions.push({ record: ext, line, file });
-        } else {
-          // Definition record
-          entityDefinitions.push({ record: record as unknown as Entity, line, file });
+          // Transact src-links for each source reference.
+          if (stmt.sources) {
+            for (const srcRef of stmt.sources) {
+              transact(db, [{
+                "src-link/statement": stmt.id,
+                "src-link/source":    srcRef.id,
+                ...(srcRef.snippet !== undefined && { "src-link/snippet": srcRef.snippet }),
+              } as TxMap]);
+            }
+          }
         }
       }
     }
-
-    lenses.set(id, {
-      manifest,
-      manifestPath: manifestPaths.get(id)!,
-      predicates: existsSync(predicatesPath) ? loadJsonl<Predicate>(predicatesPath) : [],
-      entities: entityDefinitions,
-      extensions: entityExtensions,
-      sources: existsSync(sourcesPath) ? loadJsonl<Source>(sourcesPath) : [],
-    });
   }
 
-  return { lenses, order: loadSet, cycleViolations };
+  return db;
 }
 
-// ---- Legacy single-file loaders (kept for check-links compatibility) ----
+// Smoke-test entry point: load, print datom count, run a trivial query.
+if (import.meta.main) {
+  const db = loadData();
+  console.log(`Loaded data/. Total datoms: ${datumCount(db)}`);
 
-/** Returns all entities across all lenses. */
-export function loadEntities(filter?: string[]): LoadedRecord<Entity>[] {
-  const set = loadLensSet(filter);
-  const all: LoadedRecord<Entity>[] = [];
-  for (const id of set.order) {
-    all.push(...set.lenses.get(id)!.entities);
-  }
-  return all;
-}
-
-export function loadPredicates(filter?: string[]): LoadedRecord<Predicate>[] {
-  const set = loadLensSet(filter);
-  const all: LoadedRecord<Predicate>[] = [];
-  for (const id of set.order) {
-    all.push(...set.lenses.get(id)!.predicates);
-  }
-  return all;
-}
-
-export function loadSources(filter?: string[]): LoadedRecord<Source>[] {
-  const set = loadLensSet(filter);
-  const all: LoadedRecord<Source>[] = [];
-  for (const id of set.order) {
-    all.push(...set.lenses.get(id)!.sources);
-  }
-  return all;
+  // Verify entity count via query: find all entity/id values.
+  const entityResults = q(
+    { q: [{ where: [["?e", "entity/id", "?v"]] }], select: ["v"] },
+    db,
+  );
+  console.log(`Entities via query: ${entityResults.size} (expect ~234)`);
 }

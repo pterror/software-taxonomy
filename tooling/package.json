@@ -8,21 +8,10 @@
     "tree": "bun src/tree.ts",
     "check-links": "bun src/check-links.ts",
     "test-fixtures": "bun src/test-fixtures.ts",
-    "convert": "bun src/convert.ts",
-    "load2": "bun src/lib/load2.ts",
-    "validate2": "bun src/validate2.ts",
-    "test-fixtures2": "bun src/test-fixtures2.ts",
-    "query2": "bun src/query2.ts",
-    "tree2": "bun src/tree2.ts",
-    "check-links2": "bun src/check-links2.ts",
     "new-statement": "bun src/new-statement.ts",
     "snippet-todo": "bun src/snippet-todo.ts",
     "verify-snippets": "bun src/verify-snippets.ts",
     "repl": "bun src/repl.ts"
-  },
-  "devDependencies": {
-    "ajv": "^8.17.1",
-    "ajv-formats": "^3.0.1"
   },
   "dependencies": {
     "@thi.ng/rstream-query": "^2.1.233"

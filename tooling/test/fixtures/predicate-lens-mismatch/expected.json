@@ -1,3 +1,6 @@
 [
-  { "rule": "predicate_lens_mismatch", "predicateId": "bad_pred" }
+  {
+    "rule": "predicate_lens_mismatch",
+    "predicateId": "@core:bad_pred"
+  }
 ]

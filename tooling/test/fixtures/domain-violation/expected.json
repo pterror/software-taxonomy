@@ -1,3 +1,7 @@
 [
-  { "rule": "domain_violation", "entityId": "entity:bad", "predicateId": "developed_by" }
+  {
+    "rule": "domain_violation",
+    "entityId": "@entity:bad",
+    "predicateId": "@core:developed_by"
+  }
 ]

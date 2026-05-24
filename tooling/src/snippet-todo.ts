@@ -1,10 +1,10 @@
 // snippet-todo.ts — list every statement whose sources array is empty OR has a source-link
 // without a snippet. Output one line per statement; summary count at the end.
 
-import { loadData2 } from "./lib/load2.js";
+import { loadData } from "./lib/load.js";
 import { q } from "./lib/store.js";
 
-const db = loadData2();
+const db = loadData();
 
 // Collect all stmt ids that have at least one src-link with a snippet.
 const snippetedStmts = new Set<string>();

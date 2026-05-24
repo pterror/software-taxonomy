@@ -1,3 +1,7 @@
 [
-  { "rule": "dangling_entity_ref", "entityId": "thing:alpha", "predicateId": "instance_of" }
+  {
+    "rule": "dangling_entity_ref",
+    "entityId": "@thing:alpha",
+    "predicateId": "@core:instance_of"
+  }
 ]

@@ -1,3 +1,7 @@
 [
-  { "rule": "no_preferred_rank", "entityId": "thing:alpha", "predicateId": "label" }
+  {
+    "rule": "no_preferred_rank",
+    "entityId": "@thing:alpha",
+    "predicateId": "@core:label"
+  }
 ]

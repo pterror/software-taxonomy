@@ -1,9 +1,0 @@
-{
-  "id": "core",
-  "label": "Core",
-  "description": "Fixture: dangling entity reference",
-  "register": "factual",
-  "depends_on": [],
-  "source_required": false,
-  "author": "fixture"
-}

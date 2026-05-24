@@ -1,4 +1,0 @@
-{"id":"meta:class","labels":{"en":"Class"},"statements":{"instance_of":[{"value":"@meta:class"}]}}
-{"id":"cls:software","labels":{"en":"Software"},"statements":{"instance_of":[{"value":"@meta:class"}]}}
-{"id":"entity:bad","labels":{"en":"Bad"},"statements":{"developed_by":[{"value":"@entity:dev"}]}}
-{"id":"entity:dev","labels":{"en":"Dev"},"statements":{}}

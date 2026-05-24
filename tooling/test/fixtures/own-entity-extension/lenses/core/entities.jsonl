@@ -1,2 +1,0 @@
-{"id":"thing:alpha","labels":{"en":"Alpha"},"statements":{}}
-{"extends":"@thing:alpha","statements":{"label":[{"value":"extra"}]}}

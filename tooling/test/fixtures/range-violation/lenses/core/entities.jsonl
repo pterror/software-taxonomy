@@ -1,5 +1,0 @@
-{"id":"meta:class","labels":{"en":"Class"},"statements":{"instance_of":[{"value":"@meta:class"}]}}
-{"id":"cls:org","labels":{"en":"Org"},"statements":{"instance_of":[{"value":"@meta:class"}]}}
-{"id":"cls:software","labels":{"en":"Software"},"statements":{"instance_of":[{"value":"@meta:class"}]}}
-{"id":"entity:sw","labels":{"en":"SW"},"statements":{"instance_of":[{"value":"@cls:software"}],"developed_by":[{"value":"@entity:notorg"}]}}
-{"id":"entity:notorg","labels":{"en":"Not Org"},"statements":{}}

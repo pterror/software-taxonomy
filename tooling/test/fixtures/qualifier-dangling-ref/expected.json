@@ -1,3 +1,7 @@
 [
-  { "rule": "qualifier_dangling_ref", "entityId": "thing:alpha", "predicateId": "label" }
+  {
+    "rule": "qualifier_dangling_ref",
+    "entityId": "@thing:alpha",
+    "predicateId": "@core:label"
+  }
 ]

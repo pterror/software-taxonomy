@@ -1,9 +1,0 @@
-{
-  "id": "facts",
-  "label": "Facts",
-  "description": "Factual lens — should not reference fictional entities",
-  "register": "factual",
-  "depends_on": ["fiction"],
-  "source_required": false,
-  "author": "fixture"
-}

@@ -1,3 +1,0 @@
-{"id":"label","label":"Label","description":"d","lens":"core","value_type":"string","domain":null,"range":null,"cardinality":"0..*","expect_preferred":false}
-{"id":"end_time","label":"end time","description":"d","lens":"core","value_type":"date","domain":null,"range":null,"cardinality":"0..*","expect_preferred":false}
-{"id":"start_time","label":"start time","description":"d","lens":"core","value_type":"date","domain":null,"range":null,"cardinality":"0..*","expect_preferred":false}

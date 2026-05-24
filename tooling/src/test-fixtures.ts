@@ -1,134 +1,26 @@
-/**
- * Regression fixture runner.
- *
- * Each fixture is a directory under tooling/test/fixtures/ containing:
- *   lenses/<lens-id>/manifest.json
- *   lenses/<lens-id>/predicates.jsonl  (optional)
- *   lenses/<lens-id>/entities.jsonl    (optional)
- *   lenses/<lens-id>/sources.jsonl     (optional)
- *   expected.json  — array of ExpectedViolation
- *
- * ExpectedViolation: { rule: string, severity?: string, entityId?: string, predicateId?: string }
- *
- * The runner checks:
- *   - Every expected violation appears in the actual output.
- *   - No additional violations appear beyond those listed in expected.
- *
- * Run: bun run test-fixtures
- */
+// Fixture test runner.
+// Each fixture is a data-style directory with an expected.json.
+// Runs validate rules against each fixture and checks violations.
+//
+// Run: bun run test-fixtures
 
 import { readdirSync, readFileSync, existsSync } from "fs";
 import { resolve, join, dirname } from "path";
 import { fileURLToPath } from "url";
-import Ajv from "ajv/dist/2020";
-import addFormats from "ajv-formats";
-import { schemaDir, __dirname as loadDirname, loadJsonl } from "./lib/load.ts";
-import type {
-  LoadedLensSet, LoadedLens, LoadedRecord,
-  Entity, ExtensionRecord, Predicate, Source, LensManifest,
-} from "./lib/load.ts";
-import { validate } from "./lib/validate-lib.ts";
-import { emitFacts, runDatalog, enrichViolations } from "./lib/datalog.ts";
-import type { Violation } from "./lib/validate-lib.ts";
+import { loadData } from "./lib/load.js";
+import { runAllRules } from "./lib/rules.js";
+import type { Violation } from "./lib/violations.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const fixturesDir = resolve(__dirname, "../test/fixtures");
-
-// ---- AJV setup ----
-
-function loadSchema(name: string) {
-  return JSON.parse(readFileSync(resolve(schemaDir, name), "utf-8"));
-}
-
-const ajv = new Ajv({ allErrors: true });
-addFormats(ajv);
-const validateEntitySchema = ajv.compile(loadSchema("entity.schema.json"));
-const validatePredicateSchema = ajv.compile(loadSchema("predicate.schema.json"));
-const validateSourceSchema = ajv.compile(loadSchema("source.schema.json"));
-const validateManifestSchema = ajv.compile(loadSchema("manifest.schema.json"));
-
-// ---- Load a lens set from a specific directory ----
-
-function loadLensSetFromDir(lensesDir: string): LoadedLensSet {
-  const lensDirs = readdirSync(lensesDir, { withFileTypes: true })
-    .filter(d => d.isDirectory())
-    .map(d => d.name);
-
-  const manifests = new Map<string, LensManifest>();
-  const manifestPaths = new Map<string, string>();
-
-  for (const name of lensDirs) {
-    const manifestPath = join(lensesDir, name, "manifest.json");
-    if (!existsSync(manifestPath)) throw new Error(`Missing manifest: ${manifestPath}`);
-    const manifest = JSON.parse(readFileSync(manifestPath, "utf-8")) as LensManifest;
-    if (manifest.id !== name) throw new Error(`Lens dir '${name}' has manifest.id '${manifest.id}'`);
-    manifests.set(name, manifest);
-    manifestPaths.set(name, manifestPath);
-  }
-
-  // Toposort (simple DFS — fixtures are small)
-  const visited = new Set<string>();
-  const order: string[] = [];
-  function visit(id: string): void {
-    if (visited.has(id)) return;
-    visited.add(id);
-    const manifest = manifests.get(id);
-    if (manifest) for (const dep of manifest.depends_on) visit(dep);
-    order.push(id);
-  }
-  for (const id of manifests.keys()) visit(id);
-
-  const lenses = new Map<string, LoadedLens>();
-  for (const id of order) {
-    if (!manifests.has(id)) continue; // dep not present in fixture — skip
-    const manifest = manifests.get(id)!;
-    const lensDir = join(lensesDir, id);
-    const predicatesPath = join(lensDir, "predicates.jsonl");
-    const entitiesPath = join(lensDir, "entities.jsonl");
-    const sourcesPath = join(lensDir, "sources.jsonl");
-
-    const entityDefinitions: LoadedRecord<Entity>[] = [];
-    const entityExtensions: LoadedRecord<ExtensionRecord>[] = [];
-    if (existsSync(entitiesPath)) {
-      const rawRecords = loadJsonl<Record<string, unknown>>(entitiesPath);
-      for (const { record, line, file } of rawRecords) {
-        if ("extends" in record) {
-          const ext = record as unknown as ExtensionRecord;
-          ext.__loader_origin_lens = id;
-          entityExtensions.push({ record: ext, line, file });
-        } else {
-          entityDefinitions.push({ record: record as unknown as Entity, line, file });
-        }
-      }
-    }
-
-    lenses.set(id, {
-      manifest,
-      manifestPath: manifestPaths.get(id)!,
-      predicates: existsSync(predicatesPath) ? loadJsonl<Predicate>(predicatesPath) : [],
-      entities: entityDefinitions,
-      extensions: entityExtensions,
-      sources: existsSync(sourcesPath) ? loadJsonl<Source>(sourcesPath) : [],
-    });
-  }
-
-  return { lenses, order: order.filter(id => lenses.has(id)), cycleViolations: [] };
-}
-
-// ---- Expected violation type ----
 
 interface ExpectedViolation {
   rule: string;
   severity?: string;
   entityId?: string;
   predicateId?: string;
-  /** If specified, the number of times this violation must appear. Default: 1. */
   count?: number;
 }
-
-// ---- Run a single fixture ----
-
-const rulesPath = resolve(loadDirname, "../../validate.ascent");
 
 async function runFixture(fixturePath: string): Promise<{ passed: boolean; messages: string[] }> {
   const messages: string[] = [];
@@ -137,30 +29,20 @@ async function runFixture(fixturePath: string): Promise<{ passed: boolean; messa
   if (!existsSync(expectedPath)) return { passed: false, messages: ["Missing expected.json"] };
 
   const expected: ExpectedViolation[] = JSON.parse(readFileSync(expectedPath, "utf-8"));
-  const lensesDir = join(fixturePath, "lenses");
-  if (!existsSync(lensesDir)) return { passed: false, messages: ["Missing lenses/ directory"] };
 
-  let lensSet: LoadedLensSet;
+  let db;
   try {
-    lensSet = loadLensSetFromDir(lensesDir);
+    db = loadData(fixturePath);
   } catch (err) {
     return { passed: false, messages: [`Failed to load fixture: ${err instanceof Error ? err.message : String(err)}`] };
   }
 
-  // TS structural validation
-  const tsResult = validate(lensSet);
-
-  // Datalog validation
-  let datalogViolations: Violation[] = [];
+  let allViolations: Violation[];
   try {
-    const { facts, provenance } = emitFacts(lensSet);
-    const rawDlViolations = await runDatalog(facts, rulesPath);
-    datalogViolations = enrichViolations(rawDlViolations, lensSet, provenance);
+    allViolations = runAllRules(db);
   } catch (err) {
-    messages.push(`[datalog] ${err instanceof Error ? err.message : String(err)}`);
+    return { passed: false, messages: [`Rules threw: ${err instanceof Error ? err.message : String(err)}`] };
   }
-
-  const allViolations = [...tsResult.violations, ...datalogViolations];
 
   let passed = true;
 
@@ -170,19 +52,14 @@ async function runFixture(fixturePath: string): Promise<{ passed: boolean; messa
     const matches = allViolations.filter(v =>
       v.rule === exp.rule &&
       (!exp.severity || v.severity === exp.severity) &&
-      (!exp.entityId || v.entityId === exp.entityId) &&
-      (!exp.predicateId || v.predicateId === exp.predicateId)
+      (!exp.entityId || v.subject === exp.entityId) &&
+      (!exp.predicateId || v.predicate === exp.predicateId)
     );
     if (matches.length < requiredCount) {
       const detail = `rule=${exp.rule}${exp.entityId ? ` entityId=${exp.entityId}` : ""}${exp.predicateId ? ` predicateId=${exp.predicateId}` : ""}${exp.severity ? ` severity=${exp.severity}` : ""}`;
-      if (matches.length === 0) {
-        messages.push(`MISSING  ${detail}`);
-      } else {
-        messages.push(`TOO_FEW  ${detail} (expected ${requiredCount}, got ${matches.length})`);
-      }
+      messages.push(matches.length === 0 ? `MISSING  ${detail}` : `TOO_FEW  ${detail} (expected ${requiredCount}, got ${matches.length})`);
       passed = false;
     } else if (exp.count !== undefined && matches.length > requiredCount) {
-      // Only enforce exact count when count is explicitly specified
       const detail = `rule=${exp.rule}${exp.entityId ? ` entityId=${exp.entityId}` : ""}${exp.predicateId ? ` predicateId=${exp.predicateId}` : ""}`;
       messages.push(`TOO_MANY  ${detail} (expected ${requiredCount}, got ${matches.length})`);
       passed = false;
@@ -191,15 +68,15 @@ async function runFixture(fixturePath: string): Promise<{ passed: boolean; messa
 
   // Check for unexpected violations
   for (const v of allViolations) {
-    if (v.severity === "info") continue; // info messages not checked
+    if (v.severity === "info") continue;
     const covered = expected.some(exp =>
       exp.rule === v.rule &&
       (!exp.severity || exp.severity === v.severity) &&
-      (!exp.entityId || exp.entityId === v.entityId) &&
-      (!exp.predicateId || exp.predicateId === v.predicateId)
+      (!exp.entityId || exp.entityId === v.subject) &&
+      (!exp.predicateId || exp.predicateId === v.predicate)
     );
     if (!covered) {
-      messages.push(`UNEXPECTED  rule=${v.rule} severity=${v.severity} entityId=${v.entityId}${v.predicateId !== "?" ? ` predicateId=${v.predicateId}` : ""}: ${v.message}`);
+      messages.push(`UNEXPECTED  rule=${v.rule} severity=${v.severity} subject=${v.subject ?? "?"}${v.predicate ? ` predicate=${v.predicate}` : ""}: ${v.message}`);
       passed = false;
     }
   }
@@ -207,7 +84,10 @@ async function runFixture(fixturePath: string): Promise<{ passed: boolean; messa
   return { passed, messages };
 }
 
-// ---- Main ----
+if (!existsSync(fixturesDir)) {
+  console.log("No fixtures directory found at", fixturesDir);
+  process.exit(0);
+}
 
 const fixtureDirs = readdirSync(fixturesDir, { withFileTypes: true })
   .filter(d => d.isDirectory())

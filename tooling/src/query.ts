@@ -1,8 +1,22 @@
-import { buildGraph, getEntity, instancesOf, subclassesOf, MergedEntity } from "./lib/graph.ts";
-import { loadLensSet } from "./lib/load.ts";
+// query.ts — CLI for querying the data store.
+//
+// Supported flags:
+//   --entity <@id>           print a single entity as JSON or text
+//   --instance-of <@id>      list entities that are (transitively) instances of a class
+//   --subclass-of <@id>      list entities that are (transitively) subclasses of a class
+//   --has-predicate <id>     list entities that have at least one statement for a predicate
+//   --transitive             expand instance_of / subclass_of transitively (default: false)
+//   --format text|json       output format (default: json)
+//   --lens <l1,l2,...>       restrict results to these lens ids
+//   --lens-family <family>   restrict to lenses with matching family field
+//
+// Gaps vs query.ts:
+//   - No --lens-family standalone listing (old tool listed entities from matching-family lenses).
+//     Supported when combined with other filters by translating to --lens filter set.
+//   - entity labels are stored as JSON-stringified Record<string,string>; parsed on output.
 
-// Alias for readability
-type Entity = MergedEntity;
+import { loadData } from "./lib/load.js";
+import { q } from "./lib/store.js";
 
 const args = process.argv.slice(2);
 
@@ -15,146 +29,300 @@ function hasFlag(flag: string): boolean {
   return args.includes(flag);
 }
 
-const entityArg = getArg("--entity");
-const instanceOfArg = getArg("--instance-of");
-const subclassOfArg = getArg("--subclass-of");
-const hasPredicateArg = getArg("--has-predicate");
-const transitive = hasFlag("--transitive");
-const format = getArg("--format") ?? "json";
-const lensArg = getArg("--lens");
-const lensFamilyArg = getArg("--lens-family");
+const entityArg      = getArg("--entity");
+const instanceOfArg  = getArg("--instance-of");
+const subclassOfArg  = getArg("--subclass-of");
+const hasPredicateArg= getArg("--has-predicate");
+const transitive     = hasFlag("--transitive");
+const format         = getArg("--format") ?? "json";
+const lensArg        = getArg("--lens");
+const lensFamilyArg  = getArg("--lens-family");
 
 function stripAt(id: string): string {
-  return id.startsWith("@") ? id.slice(1) : id;
+  return id.startsWith("@") ? id : `@${id}`;
 }
 
-// Resolve lens filter from --lens or --lens-family
-let lensFilter: string[] | undefined;
+const db = loadData();
+
+// Resolve --lens-family → set of lens ids
+let lensFilter: Set<string> | undefined;
 if (lensArg) {
-  lensFilter = lensArg.split(",").map((s) => s.trim());
+  lensFilter = new Set(lensArg.split(",").map((s) => s.trim()));
 } else if (lensFamilyArg) {
-  // Load all manifests and find lenses with matching family
-  const fullSet = loadLensSet();
-  const matching: string[] = [];
-  for (const [id, lens] of fullSet.lenses) {
-    if (lens.manifest.family === lensFamilyArg) {
-      matching.push(id);
-    }
+  const rows = q(
+    { q: [{ where: [["?e", "lens/id", "?id"], ["?e", "lens/family", "?f"]] }], select: ["id", "f"] },
+    db,
+  );
+  lensFilter = new Set<string>();
+  for (const row of rows) {
+    if (row["f"] === lensFamilyArg) lensFilter.add(row["id"] as string);
   }
-  if (matching.length === 0) {
+  if (lensFilter.size === 0) {
     console.error(`No lenses found with family '${lensFamilyArg}'.`);
     process.exit(1);
   }
-  lensFilter = matching;
 }
 
-const graph = buildGraph(lensFilter);
-const lensFilterSet = lensFilter ? new Set(lensFilter) : undefined;
+// Load entity records into a Map for output
+interface EntityRecord {
+  id: string;
+  lens?: string;
+  labels: Record<string, string>;
+  description?: string;
+  aliases?: string[];
+  statements: Map<string, Array<{ value: string; rank?: string; lens?: string; qualifiers?: Record<string, unknown> }>>;
+}
 
-function formatEntity(entity: Entity): string {
-  if (format === "text") {
-    const lines: string[] = [];
-    lines.push(`${entity.labels["en"] ?? entity.id} (${entity.id}) [lens: ${entity.owner_lens}]`);
-    if (entity.description) lines.push(`  ${entity.description}`);
-    if (entity.aliases && entity.aliases.length > 0) {
-      lines.push(`  aliases: ${entity.aliases.join(", ")}`);
+function loadEntityRecord(entityId: string): EntityRecord | undefined {
+  const rows = q(
+    { q: [{ where: [["?e", "entity/id", "?id"]] }], select: ["id"] },
+    db,
+  );
+  const exists = [...rows].some((r) => r["id"] === entityId);
+  if (!exists) return undefined;
+
+  // Fetch entity metadata
+  const metaRows = q(
+    { q: [{ where: [["?e", "entity/id", "?id"], ["?e", "entity/labels", "?labels"]] }], select: ["id", "labels"] },
+    db,
+  );
+  let labels: Record<string, string> = {};
+  let description: string | undefined;
+  let ownerLens: string | undefined;
+  let aliases: string[] | undefined;
+
+  for (const row of metaRows) {
+    if (row["id"] === entityId) {
+      labels = JSON.parse(row["labels"] as string) as Record<string, string>;
     }
-    lines.push("  statements:");
-    for (const [pred, entries] of Object.entries(entity.statements)) {
-      lines.push(`    ${pred}:`);
-      for (const entry of entries) {
-        const parts: string[] = [`      value: ${entry.value}`];
-        if (entry.rank && entry.rank !== "normal") parts.push(`rank: ${entry.rank}`);
-        if (entry.source) parts.push(`source: ${entry.source}`);
-        if (entry.origin_lens) parts.push(`lens: ${entry.origin_lens}`);
-        if (entry.qualifiers) {
-          const qParts = Object.entries(entry.qualifiers).map(([k, v]) => `${k}=${v}`);
-          parts.push(`qualifiers: {${qParts.join(", ")}}`);
-        }
-        lines.push(parts.join("  "));
-      }
-    }
-    return lines.join("\n");
   }
-  return JSON.stringify(entity, null, 2);
+  for (const row of q({ q: [{ where: [["?e", "entity/id", "?id"], ["?e", "entity/description", "?d"]] }], select: ["id", "d"] }, db)) {
+    if (row["id"] === entityId) description = row["d"] as string;
+  }
+  for (const row of q({ q: [{ where: [["?e", "entity/id", "?id"], ["?e", "entity/lens", "?l"]] }], select: ["id", "l"] }, db)) {
+    if (row["id"] === entityId) ownerLens = row["l"] as string;
+  }
+  for (const row of q({ q: [{ where: [["?e", "entity/id", "?id"], ["?e", "entity/aliases", "?a"]] }], select: ["id", "a"] }, db)) {
+    if (row["id"] === entityId) aliases = JSON.parse(row["a"] as string) as string[];
+  }
+
+  // Fetch statements
+  const stmtRows = q(
+    { q: [{ where: [
+      ["?s", "statement/subject", "?subj"],
+      ["?s", "statement/predicate", "?pred"],
+      ["?s", "statement/value", "?val"],
+      ["?s", "statement/lens", "?lens"],
+    ]}], select: ["subj", "pred", "val", "lens"] },
+    db,
+  );
+  const statements = new Map<string, Array<{ value: string; rank?: string; lens?: string }>>();
+  for (const row of stmtRows) {
+    if (row["subj"] !== entityId) continue;
+    const pred = row["pred"] as string;
+    if (!statements.has(pred)) statements.set(pred, []);
+    statements.get(pred)!.push({ value: row["val"] as string, lens: row["lens"] as string });
+  }
+
+  return { id: entityId, lens: ownerLens, labels, description, aliases, statements };
+}
+
+function formatEntityText(rec: EntityRecord): string {
+  const lines: string[] = [];
+  lines.push(`${rec.labels["en"] ?? rec.id} (${rec.id}) [lens: ${rec.lens ?? "?"}]`);
+  if (rec.description) lines.push(`  ${rec.description}`);
+  if (rec.aliases && rec.aliases.length > 0) lines.push(`  aliases: ${rec.aliases.join(", ")}`);
+  lines.push("  statements:");
+  for (const [pred, entries] of rec.statements) {
+    lines.push(`    ${pred}:`);
+    for (const entry of entries) {
+      const parts = [`      value: ${entry.value}`];
+      if (entry.rank && entry.rank !== "normal") parts.push(`rank: ${entry.rank}`);
+      if (entry.lens) parts.push(`lens: ${entry.lens}`);
+      lines.push(parts.join("  "));
+    }
+  }
+  return lines.join("\n");
+}
+
+function formatEntityJson(rec: EntityRecord): unknown {
+  const stmtsObj: Record<string, unknown[]> = {};
+  for (const [pred, entries] of rec.statements) stmtsObj[pred] = entries;
+  return { id: rec.id, owner_lens: rec.lens, labels: rec.labels, description: rec.description, aliases: rec.aliases, statements: stmtsObj };
+}
+
+// Subclass closure: child → set of ancestor ids
+function buildSubclassChildren(): Map<string, Set<string>> {
+  const children = new Map<string, Set<string>>();
+  const stmtRows = q(
+    { q: [{ where: [["?s", "statement/predicate", "?pred"], ["?s", "statement/subject", "?subj"], ["?s", "statement/value", "?val"]] }],
+      select: ["pred", "subj", "val"] },
+    db,
+  );
+  for (const row of stmtRows) {
+    const pred = row["pred"] as string;
+    if (!pred.endsWith(":subclass_of")) continue;
+    const val = row["val"] as string;
+    if (!val.startsWith("@")) continue;
+    const parent = val;
+    const child  = row["subj"] as string;
+    if (!children.has(parent)) children.set(parent, new Set());
+    children.get(parent)!.add(child);
+  }
+  return children;
+}
+
+function buildInstanceChildren(): Map<string, Set<string>> {
+  const children = new Map<string, Set<string>>();
+  const stmtRows = q(
+    { q: [{ where: [["?s", "statement/predicate", "?pred"], ["?s", "statement/subject", "?subj"], ["?s", "statement/value", "?val"]] }],
+      select: ["pred", "subj", "val"] },
+    db,
+  );
+  for (const row of stmtRows) {
+    const pred = row["pred"] as string;
+    if (!pred.endsWith(":instance_of")) continue;
+    const val = row["val"] as string;
+    if (!val.startsWith("@")) continue;
+    const cls    = val;
+    const entity = row["subj"] as string;
+    if (!children.has(cls)) children.set(cls, new Set());
+    children.get(cls)!.add(entity);
+  }
+  return children;
+}
+
+// Collect entity lens for filtering
+function entityLensMap(): Map<string, string> {
+  const m = new Map<string, string>();
+  for (const row of q({ q: [{ where: [["?e", "entity/id", "?id"], ["?e", "entity/lens", "?l"]] }], select: ["id", "l"] }, db)) {
+    m.set(row["id"] as string, row["l"] as string);
+  }
+  return m;
+}
+
+function getLabel(entityId: string): string {
+  for (const row of q({ q: [{ where: [["?e", "entity/id", "?id"], ["?e", "entity/labels", "?labels"]] }], select: ["id", "labels"] }, db)) {
+    if (row["id"] === entityId) {
+      const parsed = JSON.parse(row["labels"] as string) as Record<string, string>;
+      return parsed["en"] ?? entityId;
+    }
+  }
+  return entityId;
+}
+
+// Expand subclasses of a class (BFS from direct children maps)
+function subclassesOf(classId: string, t: boolean, childrenMap: Map<string, Set<string>>, lf?: Set<string>): string[] {
+  const result: string[] = [];
+  const queue = [...(childrenMap.get(classId) ?? [])];
+  const visited = new Set<string>();
+  while (queue.length) {
+    const id = queue.shift()!;
+    if (visited.has(id)) continue;
+    visited.add(id);
+    if (!lf || lf.has(id)) result.push(id);  // filter by lens where applicable
+    if (t) for (const c of childrenMap.get(id) ?? []) if (!visited.has(c)) queue.push(c);
+  }
+  return result;
+}
+
+function instancesOf(classId: string, t: boolean, subChildren: Map<string, Set<string>>, instChildren: Map<string, Set<string>>, lf?: Set<string>): string[] {
+  // When transitive: all subclasses of classId, then instances of each
+  const classes = t ? [classId, ...subclassesOf(classId, true, subChildren)] : [classId];
+  const result: string[] = [];
+  const seen = new Set<string>();
+  for (const cls of classes) {
+    for (const inst of instChildren.get(cls) ?? []) {
+      if (seen.has(inst)) continue;
+      seen.add(inst);
+      if (!lf || lf.has(inst)) result.push(inst);
+    }
+  }
+  return result;
 }
 
 if (entityArg) {
   const id = stripAt(entityArg);
-  const entity = getEntity(graph, id);
-  if (!entity) {
+  const rec = loadEntityRecord(id);
+  if (!rec) {
     console.error(`Entity '${id}' not found.`);
     process.exit(1);
   }
-  console.log(formatEntity(entity));
+  console.log(format === "text" ? formatEntityText(rec) : JSON.stringify(formatEntityJson(rec), null, 2));
+
 } else if (instanceOfArg) {
   const classId = stripAt(instanceOfArg);
-  const ids = instancesOf(graph, classId, { transitive, lensFilter: lensFilterSet });
+  const subChildren  = buildSubclassChildren();
+  const instChildren = buildInstanceChildren();
+  const elMap = entityLensMap();
+  const lf = lensFilter ? new Set([...lensFilter].flatMap((l) => {
+    const ids: string[] = [];
+    for (const [eid, elens] of elMap) if (elens === l) ids.push(eid);
+    return ids;
+  })) : undefined;
+  const ids = instancesOf(classId, transitive, subChildren, instChildren, lf);
   if (format === "text") {
-    for (const id of ids) {
-      const e = getEntity(graph, id);
-      console.log(`${id}  ${e?.labels["en"] ?? ""}`);
-    }
+    for (const id of ids) console.log(`${id}  ${getLabel(id)}`);
   } else {
-    const entities = ids.map((id) => getEntity(graph, id)).filter(Boolean);
-    console.log(JSON.stringify(entities, null, 2));
+    console.log(JSON.stringify(ids.map((id) => ({ id, label: getLabel(id) })), null, 2));
   }
+
 } else if (subclassOfArg) {
   const classId = stripAt(subclassOfArg);
-  const ids = subclassesOf(graph, classId, { transitive, lensFilter: lensFilterSet });
+  const subChildren = buildSubclassChildren();
+  const elMap = entityLensMap();
+  const lf = lensFilter ? new Set([...lensFilter].flatMap((l) => {
+    const ids: string[] = [];
+    for (const [eid, elens] of elMap) if (elens === l) ids.push(eid);
+    return ids;
+  })) : undefined;
+  const ids = subclassesOf(classId, transitive, subChildren, lf);
   if (format === "text") {
-    for (const id of ids) {
-      const e = getEntity(graph, id);
-      console.log(`${id}  ${e?.labels["en"] ?? ""}`);
-    }
+    for (const id of ids) console.log(`${id}  ${getLabel(id)}`);
   } else {
-    const entities = ids.map((id) => getEntity(graph, id)).filter(Boolean);
-    console.log(JSON.stringify(entities, null, 2));
+    console.log(JSON.stringify(ids.map((id) => ({ id, label: getLabel(id) })), null, 2));
   }
+
 } else if (hasPredicateArg) {
   const pred = hasPredicateArg;
-  const results: Entity[] = [];
-  for (const [, entity] of graph.entities) {
-    if (pred in entity.statements) {
-      // Filter by lens if specified
-      if (!lensFilterSet || lensFilterSet.has(entity.owner_lens)) {
-        results.push(entity);
-      }
-    }
+  const elMap = entityLensMap();
+  const stmtRows = q(
+    { q: [{ where: [["?s", "statement/predicate", "?pred"], ["?s", "statement/subject", "?subj"]] }],
+      select: ["pred", "subj"] },
+    db,
+  );
+  const subjects = new Set<string>();
+  for (const row of stmtRows) {
+    if (row["pred"] === pred) subjects.add(row["subj"] as string);
   }
+  const results = [...subjects].filter((id) => !lensFilter || lensFilter.has(elMap.get(id) ?? ""));
   if (format === "text") {
-    for (const e of results) {
-      console.log(`${e.id}  ${e.labels["en"] ?? ""}`);
-    }
+    for (const id of results) console.log(`${id}  ${getLabel(id)}`);
   } else {
-    console.log(JSON.stringify(results, null, 2));
+    console.log(JSON.stringify(results.map((id) => ({ id, label: getLabel(id) })), null, 2));
   }
+
 } else if (lensFamilyArg && !entityArg && !instanceOfArg && !subclassOfArg && !hasPredicateArg) {
-  // --lens-family with no other filter: list all entities owned by matching lenses
-  const results: MergedEntity[] = [];
-  for (const [, entity] of graph.entities) {
-    if (lensFilterSet && lensFilterSet.has(entity.owner_lens)) {
-      results.push(entity);
-    }
-  }
+  const elMap = entityLensMap();
+  const results = [...elMap.entries()]
+    .filter(([, l]) => lensFilter?.has(l))
+    .map(([id]) => id);
   if (format === "text") {
-    for (const e of results) {
-      console.log(`${e.id}  ${e.labels["en"] ?? ""}  [lens: ${e.owner_lens}]`);
-    }
+    for (const id of results) console.log(`${id}  ${getLabel(id)}  [lens: ${elMap.get(id)}]`);
   } else {
-    console.log(JSON.stringify(results, null, 2));
+    console.log(JSON.stringify(results.map((id) => ({ id, label: getLabel(id), lens: elMap.get(id) })), null, 2));
   }
+
 } else {
   console.error(
     "Usage:\n" +
-    "  bun run query --entity <id>\n" +
-    "  bun run query --instance-of <@id> [--transitive]\n" +
-    "  bun run query --subclass-of <@id> [--transitive]\n" +
-    "  bun run query --has-predicate <predicate-id>\n" +
+    "  bun run query2 --entity <id>\n" +
+    "  bun run query2 --instance-of <@id> [--transitive]\n" +
+    "  bun run query2 --subclass-of <@id> [--transitive]\n" +
+    "  bun run query2 --has-predicate <predicate-id>\n" +
     "  Add --format text for human-readable output.\n" +
     "  Add --lens <lens1,lens2,...> to restrict to specific lenses.\n" +
-    "  Add --lens-family <family> to load all lenses with a matching family.\n" +
-    "  --lens-family alone lists all entities owned by matching-family lenses."
+    "  Add --lens-family <family> to load all lenses with a matching family."
   );
   process.exit(1);
 }

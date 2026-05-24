@@ -1,4 +1,4 @@
-// new-statement.ts — interactive CLI to append a statement to a data2 entity file.
+// new-statement.ts — interactive CLI to append a statement to an entity file.
 //
 // Usage: bun run new-statement <subject> <predicate> <value> --lens <lens>
 //
@@ -6,10 +6,10 @@
 //   - source id (or blank to omit)
 //   - snippet (or blank to omit; only prompted if source id provided)
 //
-// Aborts if subject entity or predicate does not exist in data2.
+// Aborts if subject entity or predicate does not exist in data/.
 
 import { createInterface } from "node:readline/promises";
-import { loadData2 } from "./lib/load2.js";
+import { loadData } from "./lib/load.js";
 import { q } from "./lib/store.js";
 import {
   readEntityFile,
@@ -37,13 +37,13 @@ if (!subjectRaw || !predicateRaw || valueRaw === undefined || !lensArg) {
 const subject   = subjectRaw.startsWith("@")   ? subjectRaw   : `@${subjectRaw}`;
 const predicate = predicateRaw.startsWith("@") ? predicateRaw : `@${predicateRaw}`;
 
-const db = loadData2();
+const db = loadData();
 
 // Verify subject exists
 const entityRows = q({ q: [{ where: [["?e", "entity/id", "?id"]] }], select: ["id"] }, db);
 const entityIds = new Set<string>([...entityRows].map((r) => r["id"] as string));
 if (!entityIds.has(subject)) {
-  console.error(`Subject entity '${subject}' not found in data2.`);
+  console.error(`Subject entity '${subject}' not found in data/`);
   process.exit(1);
 }
 
@@ -51,7 +51,7 @@ if (!entityIds.has(subject)) {
 const predRows = q({ q: [{ where: [["?e", "predicate/id", "?id"]] }], select: ["id"] }, db);
 const predIds = new Set<string>([...predRows].map((r) => r["id"] as string));
 if (!predIds.has(predicate)) {
-  console.error(`Predicate '${predicate}' not found in data2.`);
+  console.error(`Predicate '${predicate}' not found in data/`);
   process.exit(1);
 }
 

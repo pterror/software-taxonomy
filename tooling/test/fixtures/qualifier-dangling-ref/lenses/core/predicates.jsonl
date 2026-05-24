@@ -1,2 +1,0 @@
-{"id":"label","label":"Label","description":"d","lens":"core","value_type":"string","domain":null,"range":null,"cardinality":"0..*","expect_preferred":false}
-{"id":"applies_to","label":"Applies to","description":"d","lens":"core","value_type":"entity","domain":null,"range":null,"cardinality":"0..*","expect_preferred":false}

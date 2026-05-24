@@ -439,9 +439,19 @@ const RULE_SEVERITY: Record<string, Severity> = {
 function formatViolationMessage(raw: RawViolation): { entityId: string; predicateId: string; message: string; lens: string } {
   const [a0, a1, a2, a3] = raw.args;
   switch (raw.rule) {
-    case "duplicate_entity_id":
+    case "duplicate_entity_id": {
+      // Cross-lens: (x, l1, l2); same-lens: (x, l, ln2 where ln1 < ln2)
+      // Distinguish: same lens if a1 == a2 would be same (but we use lens ids vs line numbers)
+      // a1 = lens1 (or lens for same-lens), a2 = lens2 (or line2 for same-lens)
+      // Heuristic: if a2 looks like a number it's a line number (same-lens case)
+      const isSameLens = /^\d+$/.test(a2 ?? "");
+      if (isSameLens) {
+        return { entityId: a0, predicateId: "?", lens: a1,
+          message: `Entity id '${a0}' defined twice in lens '${a1}' (lines ${a2} and previous). Entity ids must be globally unique within a lens.` };
+      }
       return { entityId: a0, predicateId: "?", lens: a1,
-        message: `Entity id '${a0}' also appears in lens '${a2}'. Entity ids must be globally unique.` };
+        message: `Entity id '${a0}' defined in lens '${a1}' and also in lens '${a2}'. Entity ids must be globally unique.` };
+    }
     case "dangling_entity_ref":
       return { entityId: a0, predicateId: a1, lens: "?",
         message: `entity ref '@${a2}' does not exist in any loaded lens` };
@@ -452,8 +462,9 @@ function formatViolationMessage(raw: RawViolation): { entityId: string; predicat
       return { entityId: a0, predicateId: a1, lens: "?",
         message: `entity '${a0}' does not satisfy domain constraint of predicate '${a1}'` };
     case "range_violation":
+      // a0=subject, a1=predicate, a2=target
       return { entityId: a0, predicateId: a1, lens: "?",
-        message: `target entity does not satisfy range constraint of predicate '${a1}'` };
+        message: `entity '${a2}' does not satisfy range constraint of predicate '${a1}'` };
     case "cardinality_violation_min":
       return { entityId: a0, predicateId: a1, lens: "?",
         message: `cardinality min ${a2} not met: found ${a3} real (non-sentinel) values` };
@@ -479,14 +490,20 @@ function formatViolationMessage(raw: RawViolation): { entityId: string; predicat
       return { entityId: a0, predicateId: a1, lens: "?",
         message: `lens requires sources, but statement has no source` };
     case "cross_lens_fictional":
+      // a0=subject, a1=predicate, a2=owner_lens_of_target
       return { entityId: a0, predicateId: a1, lens: "?",
-        message: `factual lens references entity owned by fictional/interpretive lens '${a2}'` };
+        message: `factual lens references entity '${a0}' owned by fictional/interpretive lens '${a2}'` };
     case "qualifier_unknown_predicate":
       return { entityId: a0, predicateId: a1, lens: "?",
         message: `qualifier key '${a2}' is not a defined predicate` };
-    case "qualifier_dangling_ref":
+    case "qualifier_dangling_ref": {
+      // a0=subject, a1=predicate, a2=stmt_idx_key, a3=qualifier_key, a4=target OR
+      // old shape: a0=subject, a1=predicate, a2=target
+      // New shape from validate.ascent: qualifier_dangling_ref(x, p, t)
+      // The qualifier key is not in the tuple; include what we have
       return { entityId: a0, predicateId: a1, lens: "?",
-        message: `dangling entity ref '@${a2}' in qualifier` };
+        message: `dangling entity ref '@${a2}' in qualifier of predicate '${a1}'` };
+    }
     case "deprecated_no_end_time":
       return { entityId: a0, predicateId: a1, lens: "?",
         message: `deprecated statement on predicate '${a1}' has no end_time qualifier` };

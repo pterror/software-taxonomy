@@ -48,18 +48,34 @@ function valToStr(v: unknown): string {
 
 // ── Provenance map ────────────────────────────────────────────────────────────
 
-/** Key: "entityId\0predicateId\0rankIndex" where rankIndex distinguishes statements with same value */
+/** stmt_id → {file, line, lensId} for statement-keyed violations */
 export type ProvenanceMap = Map<string, { file: string; line: number; lensId: string }>;
+/** predicate_id → {file, line, lensId} for predicate-keyed violations */
+export type PredicateProvenanceMap = Map<string, { file: string; line: number; lensId: string }>;
+/** lens_id → {manifestPath} for lens-keyed violations */
+export type LensProvenanceMap = Map<string, { manifestPath: string }>;
+
+export interface ProvenanceMaps {
+  stmt: ProvenanceMap;
+  predicate: PredicateProvenanceMap;
+  lens: LensProvenanceMap;
+}
 
 // ── Facts emission ─────────────────────────────────────────────────────────────
 
 /**
  * Serialize a LoadedLensSet to Ascent fact syntax.
- * Returns { facts, provenance } where provenance maps statement keys to file:line.
+ * Returns { facts, provenance } where provenance contains maps for stmt, predicate, and lens.
+ *
+ * Statement facts use stmt_id = "<entity_id>#<predicate_id>#<index>" as primary key.
+ * This ensures source_required checks (and all other per-statement checks) work correctly
+ * even when multiple statements share the same (entity, predicate, rank) bucket.
  */
-export function emitFacts(lensSet: LoadedLensSet): { facts: string; provenance: ProvenanceMap } {
+export function emitFacts(lensSet: LoadedLensSet): { facts: string; provenance: ProvenanceMaps } {
   const lines: string[] = [];
-  const provenance: ProvenanceMap = new Map();
+  const stmtProv: ProvenanceMap = new Map();
+  const predicateProv: PredicateProvenanceMap = new Map();
+  const lensProv: LensProvenanceMap = new Map();
 
   function fact(rel: string, ...args: string[]): void {
     lines.push(`${rel}(${args.join(", ")});`);
@@ -69,12 +85,14 @@ export function emitFacts(lensSet: LoadedLensSet): { facts: string; provenance: 
   // entity_def(id, lens, line_str) — one fact per definition; line_str makes duplicates visible
   for (const lensId of lensSet.order) {
     const lens = lensSet.lenses.get(lensId)!;
+    // Lens provenance
+    lensProv.set(lensId, { manifestPath: lens.manifestPath });
     for (const { record: entity, file, line } of lens.entities) {
       fact("entity", escStr(entity.id), escStr(lensId));
       fact("entity_def", escStr(entity.id), escStr(lensId), escStr(String(line)));
       // Store provenance keyed by entity id (first occurrence wins)
-      if (!provenance.has(`entity\0${entity.id}`)) {
-        provenance.set(`entity\0${entity.id}`, { file, line, lensId });
+      if (!stmtProv.has(`entity#${entity.id}`)) {
+        stmtProv.set(`entity#${entity.id}`, { file, line, lensId });
       }
     }
   }
@@ -94,7 +112,7 @@ export function emitFacts(lensSet: LoadedLensSet): { facts: string; provenance: 
   // predicate_def and domain/range
   for (const lensId of lensSet.order) {
     const lens = lensSet.lenses.get(lensId)!;
-    for (const { record: pred } of lens.predicates) {
+    for (const { record: pred, file, line } of lens.predicates) {
       const [min, max] = parseCardinality(pred.cardinality ?? "0..*");
       const expectPreferred = escStr(String(pred.expect_preferred !== false));
       fact("predicate_def",
@@ -102,6 +120,10 @@ export function emitFacts(lensSet: LoadedLensSet): { facts: string; provenance: 
         String(min), String(max),
         expectPreferred, escStr(lensId)
       );
+      // Predicate provenance
+      if (!predicateProv.has(pred.id)) {
+        predicateProv.set(pred.id, { file, line, lensId });
+      }
       if (pred.alias_of) {
         fact("predicate_alias", escStr(pred.id), escStr(pred.alias_of));
       }
@@ -126,7 +148,15 @@ export function emitFacts(lensSet: LoadedLensSet): { facts: string; provenance: 
 
   // depends_on (not needed for current rules but reserved)
 
-  // Emit statements: entity_ref, stmt, stmt_src, is_sentinel
+  // Emit statements using stmt_id = "<entity_id>#<predicate_id>#<index>" as primary key.
+  // Relations emitted:
+  //   statement(stmt_id, entity_id, predicate_id, value, rank, origin_lens)
+  //   stmt_src(stmt_id, source_id)
+  //   entity_ref(subject, predicate, target_id, rank)   — for legacy joins
+  //   is_sentinel(stmt_id)
+  //   stmt_rank(subject, pred, stmt_id, rank)           — for qualifier rules
+  //   has_qualifier(subject, pred, stmt_id, q_pred)
+  //   qualifier_entity_ref(subject, pred, stmt_id, q_pred, target_id)
   function emitStatements(
     subjectId: string,
     statements: Record<string, StatementEntry[]>,
@@ -139,49 +169,53 @@ export function emitFacts(lensSet: LoadedLensSet): { facts: string; provenance: 
         const entry = entries[idx];
         const rank = entry.rank ?? "normal";
 
-        // Provenance key: "entity\0predicate\0rank\0idx"
-        const provKey = `stmt\0${subjectId}\0${predId}\0${rank}\0${idx}`;
-        provenance.set(provKey, { file, line, lensId: originLensId });
+        // stmt_id: printable, no NUL bytes
+        const stmtId = `${subjectId}#${predId}#${idx}`;
 
-        const rankKey = `${rank}\0${idx}`;
+        // Provenance keyed by stmt_id
+        stmtProv.set(stmtId, { file, line, lensId: originLensId });
 
-        // Emit stmt_rank for per-statement rank tracking (used by qualifier violation rules)
-        fact("stmt_rank", escStr(subjectId), escStr(predId), escStr(rankKey), escStr(rank));
+        // Emit statement(stmt_id, entity_id, predicate_id, value, rank, origin_lens)
+        // and the legacy stmt_rank (used by qualifier violation rules)
+        fact("stmt_rank", escStr(subjectId), escStr(predId), escStr(stmtId), escStr(rank));
 
         if (isSentinel(entry.value)) {
-          // Emit as stmt with sentinel marker
-          fact("stmt", escStr(subjectId), escStr(predId), escStr("__sentinel__"), escStr(rank));
-          fact("is_sentinel", escStr(subjectId), escStr(predId), escStr(rankKey));
+          fact("statement", escStr(stmtId), escStr(subjectId), escStr(predId), escStr("__sentinel__"), escStr(rank), escStr(originLensId));
+          fact("is_sentinel", escStr(stmtId));
           if (entry.source) {
-            fact("stmt_src", escStr(subjectId), escStr(predId), escStr(rank), escStr(entry.source));
+            fact("stmt_src", escStr(stmtId), escStr(entry.source));
           }
+          // Legacy stmt for counting rules
+          fact("stmt", escStr(subjectId), escStr(predId), escStr("__sentinel__"), escStr(rank));
         } else if (typeof entry.value === "string" && entry.value.startsWith("@")) {
           // Entity reference — strip @ for Datalog
           const targetId = entry.value.slice(1);
+          fact("statement", escStr(stmtId), escStr(subjectId), escStr(predId), escStr(entry.value), escStr(rank), escStr(originLensId));
           fact("entity_ref", escStr(subjectId), escStr(predId), escStr(targetId), escStr(rank));
           fact("stmt", escStr(subjectId), escStr(predId), escStr(entry.value), escStr(rank));
           if (entry.source) {
-            fact("stmt_src", escStr(subjectId), escStr(predId), escStr(rank), escStr(entry.source));
+            fact("stmt_src", escStr(stmtId), escStr(entry.source));
           }
         } else {
           // Scalar value
           const valueStr = String(entry.value);
+          fact("statement", escStr(stmtId), escStr(subjectId), escStr(predId), escStr(valueStr), escStr(rank), escStr(originLensId));
           fact("stmt", escStr(subjectId), escStr(predId), escStr(valueStr), escStr(rank));
           if (entry.source) {
-            fact("stmt_src", escStr(subjectId), escStr(predId), escStr(rank), escStr(entry.source));
+            fact("stmt_src", escStr(stmtId), escStr(entry.source));
           }
         }
 
-        // Qualifier facts: has_qualifier(subject, pred, rank_idx, q_pred)
-        // qualifier_entity_ref(subject, pred, rank_idx, q_pred, target_id)
+        // Qualifier facts: has_qualifier(subject, pred, stmt_id, q_pred)
+        // qualifier_entity_ref(subject, pred, stmt_id, q_pred, target_id)
         if (entry.qualifiers) {
           for (const [qPredId, qVal] of Object.entries(entry.qualifiers)) {
             if (!isSentinel(qVal)) {
-              fact("has_qualifier", escStr(subjectId), escStr(predId), escStr(rankKey), escStr(qPredId));
+              fact("has_qualifier", escStr(subjectId), escStr(predId), escStr(stmtId), escStr(qPredId));
               if (typeof qVal === "string" && qVal.startsWith("@")) {
                 const qTargetId = qVal.slice(1);
                 fact("qualifier_entity_ref",
-                  escStr(subjectId), escStr(predId), escStr(rankKey), escStr(qPredId), escStr(qTargetId));
+                  escStr(subjectId), escStr(predId), escStr(stmtId), escStr(qPredId), escStr(qTargetId));
               }
             }
           }
@@ -203,7 +237,7 @@ export function emitFacts(lensSet: LoadedLensSet): { facts: string; provenance: 
     }
   }
 
-  return { facts: lines.join("\n"), provenance };
+  return { facts: lines.join("\n"), provenance: { stmt: stmtProv, predicate: predicateProv, lens: lensProv } };
 }
 
 function parseCardinality(card: string): [number, number] {
@@ -444,11 +478,23 @@ function formatViolationMessage(raw: RawViolation): { entityId: string; predicat
   }
 }
 
+// Predicate-keyed rules: look up provenance from predicateProv
+const PREDICATE_KEYED_RULES = new Set([
+  "alias_self_reference",
+  "alias_cycle",
+  "predicate_lens_mismatch",
+]);
+
+// Lens-keyed rules
+const LENS_KEYED_RULES = new Set([
+  "lens_dep_cycle",
+]);
+
 /** Attach file:line provenance to raw Datalog violations. */
 export function enrichViolations(
   rawViolations: RawViolation[],
   lensSet: LoadedLensSet,
-  provenance: ProvenanceMap
+  provenance: ProvenanceMaps
 ): Violation[] {
   const violations: Violation[] = [];
 
@@ -456,11 +502,29 @@ export function enrichViolations(
     const severity = RULE_SEVERITY[raw.rule] ?? "error";
     const { entityId, predicateId, message, lens: lensHint } = formatViolationMessage(raw);
 
-    // Find provenance: try entity provenance first
-    const entityProv = provenance.get(`entity\0${entityId}`);
-    const file = entityProv?.file ?? "(datalog)";
-    const line = entityProv?.line ?? 0;
-    const lens = entityProv?.lensId ?? lensHint;
+    let file: string;
+    let line: number;
+    let lens: string;
+
+    if (PREDICATE_KEYED_RULES.has(raw.rule)) {
+      // Use predicate provenance
+      const predProv = provenance.predicate.get(predicateId !== "?" ? predicateId : raw.args[0] ?? "");
+      file = predProv?.file ?? "(datalog)";
+      line = predProv?.line ?? 0;
+      lens = predProv?.lensId ?? lensHint;
+    } else if (LENS_KEYED_RULES.has(raw.rule)) {
+      // Use lens provenance
+      const lensProv = provenance.lens.get(lensHint);
+      file = lensProv?.manifestPath ?? "(datalog)";
+      line = 0;
+      lens = lensHint;
+    } else {
+      // Statement-keyed: look up entity provenance from stmt map
+      const entityProv = provenance.stmt.get(`entity#${entityId}`);
+      file = entityProv?.file ?? "(datalog)";
+      line = entityProv?.line ?? 0;
+      lens = entityProv?.lensId ?? lensHint;
+    }
 
     violations.push({ severity, lens, file, line, entityId, predicateId, rule: raw.rule, message });
   }

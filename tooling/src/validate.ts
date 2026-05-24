@@ -145,6 +145,7 @@ const DATALOG_RULES = new Set([
 
 const rulesPath = resolve(__dirname, "../../validate.ascent");
 const { facts, provenance } = emitFacts(fullLensSet);
+// provenance is now ProvenanceMaps: { stmt, predicate, lens }
 
 let datalogViolations: import("./lib/validate-lib.ts").Violation[] = [];
 try {

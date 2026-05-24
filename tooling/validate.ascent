@@ -27,8 +27,12 @@ relation entity(String, String);
 relation entity_def(String, String, String);
 relation entity_ref(String, String, String, String);
 relation stmt(String, String, String, String);
-relation stmt_src(String, String, String, String);
-relation is_sentinel(String, String, String);
+// statement(stmt_id, entity_id, predicate_id, value, rank, origin_lens)
+relation statement(String, String, String, String, String, String);
+// stmt_src(stmt_id, source_id) — keyed by stmt_id (not by rank bucket)
+relation stmt_src(String, String);
+// is_sentinel(stmt_id)
+relation is_sentinel(String);
 relation predicate_def(String, String, i32, i32, String, String);
 relation predicate_domain(String, String);
 relation predicate_range(String, String);
@@ -36,6 +40,7 @@ relation predicate_alias(String, String);
 relation source_def(String, String);
 relation lens(String, String, String);
 relation entity_owner(String, String, String);
+// stmt_rank(subject, pred, stmt_id, rank) — stmt_id is the statement index key
 relation stmt_rank(String, String, String, String);
 relation has_qualifier(String, String, String, String);
 relation qualifier_entity_ref(String, String, String, String, String);
@@ -74,7 +79,10 @@ dangling_entity_ref(x, p, t) <-- entity_ref(x, p, t, _), !entity(t, _);
 // ── Violation: dangling_source_ref ───────────────────────────────────────────
 
 relation dangling_source_ref(String, String, String);
-dangling_source_ref(x, p, s) <-- stmt_src(x, p, _, s), !source_def(s, _);
+dangling_source_ref(x, p, s) <--
+  stmt_src(sid, s),
+  statement(sid, x, p, _, _, _),
+  !source_def(s, _);
 
 // ── Derived: class membership ─────────────────────────────────────────────────
 
@@ -306,44 +314,48 @@ cardinality_violation_max(x, p, mx, c) <--
 
 // ── Violation: deprecated_no_end_time ────────────────────────────────────────
 // Deprecated statement without an end_time qualifier.
-// rank_idx for deprecated statements starts with "deprecated\0"
+// stmt_id is used as the join key across stmt_rank and has_qualifier.
 
 relation has_end_time(String, String, String);
-has_end_time(x, p, rk) <-- has_qualifier(x, p, rk, "end_time");
+has_end_time(x, p, sid) <-- has_qualifier(x, p, sid, "end_time");
 
 relation deprecated_no_end_time(String, String);
 deprecated_no_end_time(x, p) <--
-  stmt_rank(x, p, rk, "deprecated"),
-  !has_end_time(x, p, rk);
+  stmt_rank(x, p, sid, "deprecated"),
+  !has_end_time(x, p, sid);
 
 // ── Violation: end_without_start ─────────────────────────────────────────────
 // Non-deprecated, non-sentinel statement with end_time but no start_time.
 
 relation end_without_start(String, String);
 end_without_start(x, p) <--
-  stmt_rank(x, p, rk, rank), if rank != "deprecated",
-  has_qualifier(x, p, rk, "end_time"),
-  !has_qualifier(x, p, rk, "start_time"),
-  // Exclude sentinel stmts (is_sentinel tracks them)
-  !is_sentinel(x, p, rk);
+  stmt_rank(x, p, sid, rank), if rank != "deprecated",
+  has_qualifier(x, p, sid, "end_time"),
+  !has_qualifier(x, p, sid, "start_time"),
+  // Exclude sentinel stmts
+  !is_sentinel(sid);
 
 // ── Violation: source_required_violation ─────────────────────────────────────
 // Owner lens requires sources, but a non-deprecated non-structural statement has none.
 // Structural: instance_of and subclass_of on class entities are exempt.
+// Uses stmt_id (from statement relation) so each statement is checked independently —
+// a sourced sibling at the same rank does NOT exempt an unsourced one.
 
 relation source_required_violation(String, String);
-// For non-class entities: any predicate without source
+// For non-class entities: any statement without source
 source_required_violation(x, p) <--
-  stmt_rank(x, p, rk, rank), if rank != "deprecated",
-  entity_owner(x, owner, "true"),
-  !stmt_src(x, p, rank, _),
+  statement(sid, x, p, _, rank, _), if rank != "deprecated",
+  entity_owner(x, _, "true"),
+  !stmt_src(sid, _),
+  !is_sentinel(sid),
   !is_class(x);
 
 // For class entities: only non-structural predicates
 source_required_violation(x, p) <--
-  stmt_rank(x, p, rk, rank), if rank != "deprecated",
-  entity_owner(x, owner, "true"),
-  !stmt_src(x, p, rank, _),
+  statement(sid, x, p, _, rank, _), if rank != "deprecated",
+  entity_owner(x, _, "true"),
+  !stmt_src(sid, _),
+  !is_sentinel(sid),
   is_class(x),
   if p != "instance_of",
   if p != "subclass_of";

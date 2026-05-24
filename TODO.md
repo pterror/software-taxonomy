@@ -162,11 +162,14 @@ companion to `worldbuilding.*` but rooted in real industry folklore rather
 than fiction. The `mythology-demo` entity exists as a seed.
 
 **Worldbuilding sub-lens namespaces.** `worldbuilding` was always meant as a
-namespace of distinct universe lenses, not a single flat overlay:
-`worldbuilding.scifi`, `worldbuilding.fantasy`, `worldbuilding.grimdark`,
-`worldbuilding.space-opera`, `worldbuilding.mythology`. Lens architecture
-already supports namespacing; what's missing is the convention + a seeded
-example beyond mythology.
+namespace of distinct *named universes*, one lens per universe —
+`worldbuilding.<universe-name>`. No canonical universe names exist inside this
+corpus yet (existence, legacy, divergence, postmortem are separate paragarden
+projects, not lenses here). Genre / aesthetic — scifi, fantasy, grimdark,
+space-opera, solarpunk, etc. — is a *property* of a universe, not the
+namespace key; one universe can mix multiple. Lens architecture already
+supports namespacing; what's missing is naming the first in-corpus universe
+and a genre/aesthetic predicate to tag it with.
 
 **Adversarial scalability subagent.** Distinct from 4.2's correctness wave: a
 standing agent whose job is to stress-test how the corpus / pipeline behaves at

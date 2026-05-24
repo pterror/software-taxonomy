@@ -32,7 +32,8 @@
       },
       "sources": [
         {
-          "id": "wp:nginx@1353230091"
+          "id": "wp:nginx@1353230091",
+          "snippet": "The software was created by Russian developer [[Igor Sysoev]] and publicly released in 2004."
         }
       ]
     },

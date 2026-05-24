@@ -6,3 +6,4 @@ result-*
 .env
 .envrc.local
 .validator-cache/
+.snippet-worklist.json

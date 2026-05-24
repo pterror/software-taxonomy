@@ -11,6 +11,10 @@
     "new-statement": "bun src/new-statement.ts",
     "snippet-todo": "bun src/snippet-todo.ts",
     "verify-snippets": "bun src/verify-snippets.ts",
+    "snippet-worklist": "bun src/snippet-worklist.ts",
+    "review-snippets": "bun src/review-snippets.ts",
+    "snippet-status": "bun src/snippet-status.ts",
+    "sourceless-report": "bun src/sourceless-report.ts",
     "repl": "bun src/repl.ts"
   },
   "dependencies": {

@@ -10,6 +10,7 @@
 
 import { loadData } from "./lib/load.js";
 import { q } from "./lib/store.js";
+import { fetchSourceText } from "./lib/source-fetch.js";
 
 const args = process.argv.slice(2);
 
@@ -34,12 +35,13 @@ const db = loadData();
 interface SourceMeta {
   id: string;
   kind: string;
+  url: string;
   revid?: number;
 }
 
 const sourceMeta = new Map<string, SourceMeta>();
-for (const row of q({ q: [{ where: [["?e", "source/id", "?id"], ["?e", "source/kind", "?kind"]] }], select: ["id", "kind"] }, db)) {
-  sourceMeta.set(row["id"] as string, { id: row["id"] as string, kind: row["kind"] as string });
+for (const row of q({ q: [{ where: [["?e", "source/id", "?id"], ["?e", "source/kind", "?kind"], ["?e", "source/url", "?url"]] }], select: ["id", "kind", "url"] }, db)) {
+  sourceMeta.set(row["id"] as string, { id: row["id"] as string, kind: row["kind"] as string, url: row["url"] as string });
 }
 for (const row of q({ q: [{ where: [["?e", "source/id", "?id"], ["?e", "source/revid", "?r"]] }], select: ["id", "r"] }, db)) {
   const meta = sourceMeta.get(row["id"] as string);
@@ -74,20 +76,10 @@ if (links.length === 0) {
   process.exit(0);
 }
 
-// Cache fetched revisions in memory
-const revisionCache = new Map<number, string | null>(); // revid → wikitext or null on error
-
-async function fetchRevision(revid: number): Promise<string | null> {
-  if (revisionCache.has(revid)) return revisionCache.get(revid)!;
-  const url = `https://en.wikipedia.org/w/index.php?oldid=${revid}&action=raw`;
+async function fetchRevision(sourceId: string, revid: number, url: string): Promise<string | null> {
   try {
-    const res = await fetch(url);
-    if (!res.ok) { revisionCache.set(revid, null); return null; }
-    const text = await res.text();
-    revisionCache.set(revid, text);
-    return text;
+    return await fetchSourceText(sourceId, { kind: "wikipedia", url, revid });
   } catch {
-    revisionCache.set(revid, null);
     return null;
   }
 }
@@ -97,7 +89,7 @@ let ok = 0, missing = 0, error = 0;
 for (const link of links) {
   const meta = sourceMeta.get(link.sourceId)!;
   if (!meta.revid) { error++; console.log(`ERROR  ${link.stmtId}  ${link.sourceId}  (no revid)`); continue; }
-  const text = await fetchRevision(meta.revid);
+  const text = await fetchRevision(link.sourceId, meta.revid, meta.url);
   if (text === null) {
     error++;
     console.log(`ERROR  ${link.stmtId}  ${link.sourceId}  (fetch failed)`);

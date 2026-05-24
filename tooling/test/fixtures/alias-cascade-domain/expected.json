@@ -1,0 +1,3 @@
+[
+  { "rule": "domain_violation", "entityId": "person:bill", "predicateId": "made_by" }
+]

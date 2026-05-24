@@ -1,0 +1,4 @@
+{"id":"instance_of","label":"instance of","description":"d","lens":"core","value_type":"entity","domain":null,"range":null,"cardinality":"0..*","expect_preferred":false}
+{"id":"subclass_of","label":"subclass of","description":"d","lens":"core","value_type":"entity","domain":null,"range":null,"cardinality":"0..*","expect_preferred":false}
+{"id":"developed_by","label":"developed by","description":"d","lens":"core","value_type":"entity","domain":["sw:app"],"range":null,"cardinality":"0..*","expect_preferred":false}
+{"id":"made_by","label":"made by","description":"alias","lens":"core","value_type":"entity","domain":null,"range":null,"cardinality":"0..*","expect_preferred":false,"alias_of":"developed_by"}

@@ -1,0 +1,6 @@
+{"id":"meta:class","labels":{"en":"Class"},"statements":{"instance_of":[{"value":"@meta:class"}]}}
+{"id":"cls:a","labels":{"en":"A"},"statements":{"instance_of":[{"value":"@meta:class"}]}}
+{"id":"cls:b","labels":{"en":"B"},"statements":{"instance_of":[{"value":"@meta:class"}],"subclass_of":[{"value":"@cls:a"}]}}
+{"id":"cls:c","labels":{"en":"C"},"statements":{"instance_of":[{"value":"@meta:class"}],"subclass_of":[{"value":"@cls:b"}]}}
+{"id":"entity:x","labels":{"en":"X"},"statements":{"instance_of":[{"value":"@cls:c"}],"my_pred":[{"value":"@entity:y"}]}}
+{"id":"entity:y","labels":{"en":"Y"},"statements":{}}

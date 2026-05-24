@@ -1,0 +1,3 @@
+{"id":"instance_of","label":"instance of","description":"d","lens":"core","value_type":"entity","domain":null,"range":null,"cardinality":"0..*","expect_preferred":false}
+{"id":"subclass_of","label":"subclass of","description":"d","lens":"core","value_type":"entity","domain":null,"range":null,"cardinality":"0..*","expect_preferred":false}
+{"id":"my_pred","label":"my pred","description":"d","lens":"core","value_type":"entity","domain":["cls:a"],"range":null,"cardinality":"0..*","expect_preferred":false}

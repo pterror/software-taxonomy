@@ -1,0 +1,4 @@
+{"id":"meta:class","labels":{"en":"Class"},"statements":{"instance_of":[{"value":"@meta:class"}]}}
+{"id":"sw:app","labels":{"en":"Application"},"statements":{"instance_of":[{"value":"@meta:class"}]}}
+{"id":"person:bill","labels":{"en":"Bill"},"statements":{"made_by":[{"value":"@org:acme"}]}}
+{"id":"org:acme","labels":{"en":"Acme"},"statements":{}}

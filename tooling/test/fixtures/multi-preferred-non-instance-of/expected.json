@@ -1,0 +1,3 @@
+[
+  { "rule": "multi_preferred", "entityId": "thing:alpha", "predicateId": "label" }
+]

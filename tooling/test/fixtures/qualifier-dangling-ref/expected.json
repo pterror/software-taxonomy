@@ -1,0 +1,3 @@
+[
+  { "rule": "qualifier_dangling_ref", "entityId": "thing:alpha", "predicateId": "label" }
+]

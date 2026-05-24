@@ -1,0 +1,1 @@
+{"id":"pred_self","label":"self","description":"d","lens":"core","value_type":"string","domain":null,"range":null,"cardinality":"0..*","alias_of":"pred_self"}

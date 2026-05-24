@@ -1,0 +1,7 @@
+{"id":"pred_a","label":"a","description":"d","lens":"core","value_type":"string","domain":null,"range":null,"cardinality":"0..*","alias_of":"pred_b"}
+{"id":"pred_b","label":"b","description":"d","lens":"core","value_type":"string","domain":null,"range":null,"cardinality":"0..*","alias_of":"pred_c"}
+{"id":"pred_c","label":"c","description":"d","lens":"core","value_type":"string","domain":null,"range":null,"cardinality":"0..*","alias_of":"pred_d"}
+{"id":"pred_d","label":"d","description":"d","lens":"core","value_type":"string","domain":null,"range":null,"cardinality":"0..*","alias_of":"pred_e"}
+{"id":"pred_e","label":"e","description":"d","lens":"core","value_type":"string","domain":null,"range":null,"cardinality":"0..*","alias_of":"pred_f"}
+{"id":"pred_f","label":"f","description":"d","lens":"core","value_type":"string","domain":null,"range":null,"cardinality":"0..*","alias_of":"pred_g"}
+{"id":"pred_g","label":"g","description":"d","lens":"core","value_type":"string","domain":null,"range":null,"cardinality":"0..*"}

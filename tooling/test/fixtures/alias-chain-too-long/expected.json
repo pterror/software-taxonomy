@@ -1,0 +1,4 @@
+[
+  { "rule": "alias-chain-too-long", "predicateId": "pred_a" },
+  { "rule": "unknown-predicate", "entityId": "thing:alpha", "predicateId": "pred_a" }
+]

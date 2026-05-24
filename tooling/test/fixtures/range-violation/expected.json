@@ -1,0 +1,3 @@
+[
+  { "rule": "range_violation", "entityId": "entity:sw", "predicateId": "developed_by" }
+]

@@ -122,6 +122,8 @@ interface ExpectedViolation {
   severity?: string;
   entityId?: string;
   predicateId?: string;
+  /** If specified, the number of times this violation must appear. Default: 1. */
+  count?: number;
 }
 
 // ---- Run a single fixture ----
@@ -162,19 +164,32 @@ async function runFixture(fixturePath: string): Promise<{ passed: boolean; messa
 
   let passed = true;
 
+  // Check each expected violation (with multiplicity)
   for (const exp of expected) {
-    const found = allViolations.some(v =>
+    const requiredCount = exp.count ?? 1;
+    const matches = allViolations.filter(v =>
       v.rule === exp.rule &&
       (!exp.severity || v.severity === exp.severity) &&
       (!exp.entityId || v.entityId === exp.entityId) &&
       (!exp.predicateId || v.predicateId === exp.predicateId)
     );
-    if (!found) {
-      messages.push(`MISSING  rule=${exp.rule}${exp.entityId ? ` entityId=${exp.entityId}` : ""}${exp.predicateId ? ` predicateId=${exp.predicateId}` : ""}${exp.severity ? ` severity=${exp.severity}` : ""}`);
+    if (matches.length < requiredCount) {
+      const detail = `rule=${exp.rule}${exp.entityId ? ` entityId=${exp.entityId}` : ""}${exp.predicateId ? ` predicateId=${exp.predicateId}` : ""}${exp.severity ? ` severity=${exp.severity}` : ""}`;
+      if (matches.length === 0) {
+        messages.push(`MISSING  ${detail}`);
+      } else {
+        messages.push(`TOO_FEW  ${detail} (expected ${requiredCount}, got ${matches.length})`);
+      }
+      passed = false;
+    } else if (exp.count !== undefined && matches.length > requiredCount) {
+      // Only enforce exact count when count is explicitly specified
+      const detail = `rule=${exp.rule}${exp.entityId ? ` entityId=${exp.entityId}` : ""}${exp.predicateId ? ` predicateId=${exp.predicateId}` : ""}`;
+      messages.push(`TOO_MANY  ${detail} (expected ${requiredCount}, got ${matches.length})`);
       passed = false;
     }
   }
 
+  // Check for unexpected violations
   for (const v of allViolations) {
     if (v.severity === "info") continue; // info messages not checked
     const covered = expected.some(exp =>

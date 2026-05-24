@@ -1,0 +1,3 @@
+[
+  { "rule": "dangling_extension", "entityId": "nonexistent:entity" }
+]

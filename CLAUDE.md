@@ -95,8 +95,7 @@ Validation is split across two layers:
 - `schema/entity.schema.json`, `schema/predicate.schema.json`, `schema/source.schema.json`, `schema/manifest.schema.json`
 
 **TypeScript structural checks** (`tooling/src/lib/validate-lib.ts`) — checks requiring TS semantics:
-- `lens-dependency-cycle`, `duplicate-predicate-id`, `predicate-lens-mismatch`
-- `dangling-extension`, `own-entity-extension`
+- `lens-dependency-cycle`, `duplicate-predicate-id`
 - `unknown-predicate`, `deprecated-predicate`, `alias-chain-too-long`
 - `value-type`, `qualifier-value-type`
 
@@ -109,10 +108,33 @@ Validation is split across two layers:
 - `source_required_violation`, `cross_lens_fictional`
 - `qualifier_unknown_predicate`, `qualifier_dangling_ref`
 - `alias_self_reference`, `alias_cycle`
+- `predicate_lens_mismatch`, `dangling_extension`, `own_entity_extension`
+
+**Alias constraint cascade:** `alias_of` now fully propagates constraints via Datalog.
+`canonical_predicate(alias, canonical)` is derived transitively from `predicate_alias`.
+`effective_predicate_def/domain/range` resolve through aliases. All domain, range, cardinality,
+and `expect_preferred` checks consult `effective_predicate_def` — an alias predicate inherits
+all constraints of its canonical automatically, without any TS fallback.
+
+**Statement-indexed facts:** Datalog facts use `stmt_id = "<entity>#<predicate>#<index>"` as
+the primary key for statement relations. `stmt_src(stmt_id, source)` is per-statement (not
+per-rank-bucket), so `source_required_violation` fires for each unsourced statement
+individually — a sourced sibling at the same rank does NOT exempt an unsourced one.
+
+**Provenance dispatch:** `enrichViolations` dispatches provenance lookup by rule category.
+Predicate-keyed rules (alias_self_reference, alias_cycle, predicate_lens_mismatch) use
+predicate-level provenance. Statement-keyed rules use entity-level provenance.
+Datalog violations are credited to per-lens error/warning counts in the summary table.
 
 **To add a new invariant:** edit `tooling/validate.ascent`. Declare an output relation and write the rule. The harness (`tooling/src/lib/datalog.ts`) picks it up automatically if you add the relation name to `VIOLATION_RELATIONS` and `RULE_SEVERITY`.
 
 **Regression fixtures:** `tooling/test/fixtures/`. Each fixture is a minimal lens set + `expected.json`. Run: `bun run test-fixtures`.
+
+**Fixture conventions:**
+- `expected.json` is an array of `{ rule, entityId?, predicateId?, severity?, count? }` objects.
+- All rules are checked: both MISSING expected and UNEXPECTED actual violations fail the fixture.
+- `count` (default 1): specifying explicitly enforces multiplicity. Useful for catching regressions like source_required silently skipping a statement.
+- `transitive-subclass-3hop` and other "clean" fixtures use `expected.json: []` to assert zero violations.
 
 ## Validator warnings reference
 
@@ -240,6 +262,15 @@ The validator enforces referential integrity and warns on missing sources. Do no
 
 ## Status
 
+**Phase 3.10** complete — regression fixes for Phase 3.9 Datalog migration + fixture coverage:
+- **source_required fix**: statements now use `stmt_id = "<entity>#<predicate>#<index>"` as primary key. `stmt_src(stmt_id, source)` is per-statement — a sourced sibling no longer exempts an unsourced one at the same rank. Fixes critical regression #1.
+- **alias cascade fix**: `canonical_predicate` + `effective_predicate_def/domain/range` derived in Datalog. Domain, range, cardinality, and expect_preferred checks now consult effective definitions, so alias predicates inherit all constraints transitively. Fixes critical regression #2.
+- **predicate provenance**: enrichViolations dispatches by rule category (predicate-keyed vs statement-keyed vs lens-keyed). Predicate violations (alias_self_reference, alias_cycle, predicate_lens_mismatch) now report correct file:line instead of `(datalog) [?]`. Fixes regression #3.
+- **per-lens summary**: Datalog violations now contribute to per-lens error/warning counts in the validation summary table. Fixes regression #4.
+- **migration completion**: `predicate_lens_mismatch`, `dangling_extension`, `own_entity_extension` moved from TS to Datalog. TS handles only: cycle detection, schema validation, value-type, qualifier-value-type, alias-chain-too-long, unknown-predicate.
+- **error message fidelity**: range_violation includes target id; cross_lens_fictional includes subject entity; duplicate_entity_id distinguishes same-lens (both line numbers) vs cross-lens.
+- **fixture coverage**: 5 → 24 fixtures; harness strengthened with `count` multiplicity field and UNEXPECTED violation checking.
+
 **Phase 3.9** complete — migrate graph-invariant validator from procedural TypeScript to Datalog (ascent-interpreter):
 - All graph invariants moved to `tooling/validate.ascent` (18 rule clusters, ~400 lines of Datalog).
 - `tooling/src/lib/datalog.ts` added: fact emission, subprocess harness, output parsing, provenance enrichment.
@@ -275,4 +306,4 @@ The validator enforces referential integrity and warns on missing sources. Do no
 
 **Phase 3.6** complete — hardening pass two: cross-lens entity extension records (overlay model), sentinel cardinality semantics (count toward max, not min), tightened id pattern, multi-preferred-instance-of error, qualifier validation, source schema strictness (revid required for wikipedia, last_verified required for official), factual error corrections in seed corpus, predicate relocation (fork/lineage predicates to core), and tool improvements (tree --lens dependent loading, query --lens-family default action, structured cycle errors).
 
-Next: **Phase 3.9** — Biology overlay substrate (~26 organ/metabolism class entities, organ vs feature naming, biology predicate expansion).
+Next: **Phase 3.11** — Biology overlay substrate (~26 organ/metabolism class entities, organ vs feature naming, biology predicate expansion). Phase 3.10 closed the last validator gap blocking biology ingest (unsourced statement leak via regression #1).

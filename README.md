@@ -95,9 +95,11 @@ bun run check-links                                    # HEAD-check all Wikipedi
 
 1. **JSON Schema (AJV)** — checks the shape of every record against the JSON Schema files in `schema/`. Fails fast; semantic passes are skipped on schema errors.
 
-2. **TypeScript structural checks** (`tooling/src/lib/validate-lib.ts`) — checks that require runtime type reasoning: `value-type`, `qualifier-value-type`, `unknown-predicate`, `predicate-lens-mismatch`, extension structural integrity, `alias-chain-too-long`.
+2. **TypeScript structural checks** (`tooling/src/lib/validate-lib.ts`) — checks that require runtime type reasoning: `value-type`, `qualifier-value-type`, `unknown-predicate`, `alias-chain-too-long`.
 
-3. **Datalog graph invariants** (`tooling/validate.ascent`) — checks over the entity/statement/predicate graph: referential integrity, cardinality, domain/range, multi-preferred, source-required, cross-lens fictional, alias cycles, temporal qualifier rules. Evaluated by `ascent-interpreter` (available via `nix develop`).
+3. **Datalog graph invariants** (`tooling/validate.ascent`) — checks over the entity/statement/predicate graph: referential integrity, cardinality, domain/range, multi-preferred, source-required, cross-lens fictional, alias cycles, temporal qualifier rules. Also: `predicate_lens_mismatch`, `dangling_extension`, `own_entity_extension`. Evaluated by `ascent-interpreter` (available via `nix develop`).
+
+Alias constraints cascade: `alias_of` predicates inherit domain, range, cardinality, and expect_preferred from their canonical predicate via `effective_predicate_def`. Statement-level source-required checks are per-statement (not per-rank-bucket) — a sourced sibling doesn't exempt an unsourced one.
 
 To add a new graph invariant: declare an output relation in `validate.ascent` and write the rule. Add the relation name to `VIOLATION_RELATIONS` and `RULE_SEVERITY` in `tooling/src/lib/datalog.ts`.
 
@@ -126,6 +128,7 @@ Do not add statements about release dates, authors, or lineage without a `source
 | 3.7 | done | Validator parity (extension records), temporal modeling discipline (Wikidata rank pattern), concept-class splits (cron, make), two audit waves of temporal/multi-value corrections (~28 programs), tooling fixes |
 | 3.8 | done | Validator refactor (single validateStatementEntry), qualifier validation on deprecated, multi-preferred on merged graph, qualifier entity-ref/sentinel support, new warnings (deprecated-no-end-time, end-without-start, no-preferred-rank), interpretive source last_verified, temporal completions (vim, sublime-text, vscode), PostgreSQL concept split |
 | 3.9 | done | Migrate graph-invariant validation from TypeScript to Datalog (ascent-interpreter); 18 rule clusters in validate.ascent; regression fixture system |
+| 3.10 | done | Fix 6 regressions from 3.9 migration: statement-indexed facts, alias constraint cascade, predicate provenance, per-lens summary, migration completion (3 more checks to Datalog); 5 → 24 fixtures with multiplicity harness |
 | 4 | next | Biology overlay substrate: organ/metabolism class entities, organ vs feature naming, biology predicate expansion |
 | 4 | — | Wikidata ingest tool |
 | 5 | — | Bulk ingest with LLM-assisted statement extraction |

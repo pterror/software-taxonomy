@@ -7,3 +7,8 @@ result-*
 .envrc.local
 .validator-cache/
 .snippet-worklist.json
+
+# Normalize
+.normalize/*
+!.normalize/config.toml
+!.normalize/memory/
